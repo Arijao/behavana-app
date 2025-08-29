@@ -6,7 +6,7 @@
     <title>BEHAVANA - Système de Gestion</title>
     <!-- ... ao anatin'ny <head> ... -->
     <meta name="theme-color" content="#6750a4">
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/behavana-app/manifest.json">
     <!-- ... -->
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -6384,7 +6384,7 @@
         // Fisoratana anarana ny Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('/behavana-app/sw.js') // <-- AHITSY ETO
                     .then(registration => {
                         console.log('Service Worker enregistré avec succès:', registration);
                     })

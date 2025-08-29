@@ -2,21 +2,22 @@
   "name": "BEHAVANA - Gestion de Collecte",
   "short_name": "BEHAVANA",
   "description": "Application de gestion des avances et de la collecte de vanille.",
-  "start_url": "/index.html",
+  "start_url": "/behavana-app/index.html",
   "display": "standalone",
   "background_color": "#fffbfe",
   "theme_color": "#6750a4",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/logo.jpg",
+      "src": "/behavana-app/logo.jpg",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/logo.jpg",
+      "src": "/behavana-app/logo.jpg",
       "type": "image/png",
       "sizes": "512x512"
     }
   ]
 }
+

@@ -1,12 +1,9 @@
 const CACHE_NAME = 'behavana-cache-v1';
-// Lisitry ny rakitra fototra ilain'ny application mba handeha
 const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  // Ampidirina eto izay rakitra CSS na JS hafa ampiasainao
-  // Ohatra: '/style.css', '/autre-script.js'
-  '/logo192.png',
-  '/logo512.png'
+  '/behavana-app/',
+  '/behavana-app/index.html',
+  '/behavana-app/logo.jpg',
+  '/behavana-app/logo.jpg'
 ];
 
 // Dingana 1: Fametrahana ny Service Worker (Installation)
