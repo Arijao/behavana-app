@@ -3629,7 +3629,6 @@
                 return;
             }
             
-            // Alaina ny sivana voafidy
             const filterCollectorId = document.getElementById('analysis-filter-collector').value;
             const filterQuality = document.getElementById('analysis-filter-quality').value;
 
@@ -3638,45 +3637,49 @@
                 appData.collectors;
             
             collectorsToShow.forEach(collector => {
-                // Alaina ny totalin'ny avances (tsy miova)
-                const totalAdvances = getTotalAdvances(collector.id);
+                // --- FANITSIANA MANOMBOKA ETO ---
 
-                // --- KAJY VAOVAO HO AN'NY CRÉDITS ---
-                // 1. Sivany aloha ny receptions araka ny kalitao voafidy
+                // 1. KAJIANA NY TOTALIN'NY VOLA NIVOAKA REHETRA (DEBITS)
+                const totalAdvances = getTotalAdvances(collector.id);
+                // AMPIANA: Alaina ny totalin'ny fandoavana (paiements) efa natao ho an'ity collecteur ity
+                const totalPaiements = (appData.paiements || [])
+                    .filter(p => p.collectorId === collector.id)
+                    .reduce((sum, p) => sum + p.amount, 0);
+                // Atambatra ireo mba hahazoana ny totalin'ny vola nivoaka marina
+                const totalDebits = totalAdvances + totalPaiements;
+
+                // 2. KAJIANA NY TOTALIN'NY VOLA NIDITRA REHETRA (CREDITS)
                 let filteredReceptions = appData.receptions.filter(r => r.collectorId === collector.id);
                 if (filterQuality) {
                     filteredReceptions = filteredReceptions.filter(r => r.quality === filterQuality);
                 }
-                
-                // 2. Kajiana ny sandan'ireo receptions voasivana ireo
                 const totalDeliveriesFiltered = filteredReceptions.reduce((sum, reception) => sum + reception.totalValue, 0);
-
-                // 3. Alaina ny totalin'ny famerenam-bola (tsy miova)
                 const totalRemboursements = (appData.remboursements || [])
                     .filter(rem => rem.collectorId === collector.id)
                     .reduce((sum, rem) => sum + rem.amount, 0);
-                
-                // 4. Atambatra ny vola miditra rehetra (livraisons voasivana + remboursements)
                 const totalCredits = totalDeliveriesFiltered + totalRemboursements;
-                // ------------------------------------
-
-                // Kajiana ny balance vaovao mifototra amin'ny crédit voasivana
-                const balance = totalCredits - totalAdvances;
+                
+                // 3. KAJIANA NY ELANELANY MARINA
+                // Ankehitriny dia efa tafiditra daholo na ny avances na ny paiements
+                const balance = totalCredits - totalDebits;
+                
+                // --- MIVERINA AMIN'NY LAONINY NY TOHINY ---
                 const status = getCollectorStatus(balance);
                 
                 let actionButton = '';
                 if (status.class === 'debiteur') {
                     actionButton = `<button class="btn btn-icon btn-success" onclick="openRemboursementModal(${collector.id})" title="Enregistrer un remboursement"><span class="material-icons" style="color: white;">paid</span></button>`;
-                } else if (status.class === 'crediteur') {
+                } else if (status.class === 'crediteur' && balance > 0) { // Hamarino tsara hoe mihoatra ny 0 ny balance
                     actionButton = `<button class="btn btn-icon btn-primary" onclick="payCollectorCredit(${collector.id})" title="Payer le solde créditeur"><span class="material-icons">payments</span></button>`;
                 }
 
                 const row = document.createElement('tr');
+                // OVANA KELY NY FAMPISEHOANA MBA HAZAVA TSARA
                 row.innerHTML = `
                     <td data-label="Collecteur">${collector.name}</td>
-                    <td data-label="Total Avances">${formatCurrency(totalAdvances)}</td>
-                    <td data-label="Total Crédits (Filtré)">${formatCurrency(totalCredits)}</td>
-                    <td data-label="Solde (Filtré)">${formatCurrency(Math.abs(balance))}</td>
+                    <td data-label="Total Débits (Avances + Paiements)">${formatCurrency(totalDebits)}</td>
+                    <td data-label="Total Crédits (Livr. + Remb.)">${formatCurrency(totalCredits)}</td>
+                    <td data-label="Solde">${formatCurrency(balance)}</td>
                     <td data-label="Statut"><span class="status-badge status-${status.class}">${status.label}</span></td>
                     <td class="actions-cell">
                         <button class="btn btn-icon btn-outline" onclick="showCollectorDetails(${collector.id})" title="Détails">
@@ -3689,6 +3692,7 @@
             });
             initTableSorting();
         }
+
 
 
         // Fiasa vaovao hamenoana ny sivana araka ny kalitao
@@ -3922,13 +3926,21 @@
                             executeWhenReady(() => {
                                 if (!db) {
                                     console.warn('Database not available, importing to memory');
-                                    // Import to memory as fallback
+                                    
+                                    // --- FANITSIANA ETO ---
+                                    // Ampiana daholo ny karazana angona rehetra mba ho feno ny import
                                     appData = {
                                         collectors: importedData.collectors || [],
                                         advances: importedData.advances || [],
                                         receptions: importedData.receptions || [],
-                                        deliveries: importedData.deliveries || []
+                                        deliveries: importedData.deliveries || [],
+                                        qualities: importedData.qualities || [],
+                                        expenses: importedData.expenses || [],
+                                        remboursements: importedData.remboursements || [],
+                                        paiements: importedData.paiements || []
                                     };
+                                    // -------------------------
+
                                     updateAllTables();
                                     alert('Données importées avec succès (mode mémoire)!');
                                     return;
@@ -3937,10 +3949,9 @@
                                 console.log('Starting database import process...');
                                 
                                 try {
-                                    // Clear existing data first
+                                    // Ireto fizarana ireto dia efa mety satria ny asa rehetra dia ataon'ireo fiasa antsoiny
                                     clearAllData(() => {
                                         console.log('Database cleared, starting import...');
-                                        // Import new data after clearing
                                         importNewData(importedData);
                                     });
                                 } catch (error) {
@@ -3960,156 +3971,122 @@
             input.click();
         }
 
+
         // Helper function to clear all data
         function clearAllData(callback) {
-            if (!db || db.readyState === 'done') {
+            // Fizarana fallback (tsy miova fa ampiana ny stores vaovao)
+            if (!db) {
                 console.warn('Database not available for clearing, clearing memory only');
                 appData = {
-                    collectors: [],
-                    advances: [],
-                    receptions: [],
-                    deliveries: []
+                    collectors: [], advances: [], receptions: [], deliveries: [],
+                    qualities: [], expenses: [], remboursements: [], paiements: []
                 };
                 if (callback) callback();
                 return;
             }
 
-            const stores = ['collectors', 'advances', 'receptions', 'deliveries', 'expenses'];
-            let clearedStores = 0;
+            // Lisitra FENO an'ireo "stores" rehetra misy ao anaty DB
+            const stores = [
+                'collectors', 'advances', 'receptions', 'deliveries', 
+                'expenses', 'qualities', 'remboursements', 'paiements'
+            ];
             
-            try {
-                stores.forEach(storeName => {
-                    const transaction = db.transaction([storeName], 'readwrite');
-                    const store = transaction.objectStore(storeName);
-                    const clearRequest = store.clear();
-                    
-                    clearRequest.onsuccess = function() {
-                        clearedStores++;
-                        console.log(`Cleared store: ${storeName} (${clearedStores}/${stores.length})`);
-                        if (clearedStores === stores.length) {
-                            console.log('All stores cleared successfully');
-                            // Wait a bit for the database to settle
-                            setTimeout(() => {
-                                if (callback) callback();
-                            }, 200);
-                        }
-                    };
-                    
-                    clearRequest.onerror = function(event) {
-                        console.error(`Error clearing ${storeName}:`, event.target.error);
-                        clearedStores++;
-                        if (clearedStores === stores.length) {
-                            if (callback) callback();
-                        }
-                    };
+            // Fomba fiasa tsara kokoa: Transaction iray monja ho an'ny famafana rehetra
+            const transaction = db.transaction(stores, 'readwrite');
 
-                    transaction.onerror = function(event) {
-                        console.error(`Transaction error clearing ${storeName}:`, event.target.error);
-                        clearedStores++;
-                        if (clearedStores === stores.length) {
-                            if (callback) callback();
-                        }
-                    };
-                });
-            } catch (error) {
-                console.error('Error accessing database for clearing:', error);
+            transaction.oncomplete = () => {
+                console.log('All stores cleared successfully.');
                 if (callback) callback();
-            }
+            };
+
+            transaction.onerror = (event) => {
+                console.error('Transaction error during clearing:', event.target.error);
+                if (callback) callback(); // Antsoy foana ny callback na misy erreur aza
+            };
+
+            // Fafana tsirairay ny store tsirairay ao anatin'ilay transaction tokana
+            stores.forEach(storeName => {
+                if (db.objectStoreNames.contains(storeName)) {
+                    transaction.objectStore(storeName).clear();
+                }
+            });
         }
+
 
         // Helper function to import new data
         function importNewData(importedData) {
             console.log('Starting import process with data:', importedData);
             
-            const collectorIdMapping = {}; // Mapping des anciens IDs vers les nouveaux
+            const collectorIdMapping = {}; // Fitehirizana ny fifandraisana: ID taloha -> ID vaovao
             
-            // Étape 1: Importer les collecteurs d'abord
+            // Dingana 1: Ampidirina aloha ny COLLECTORS mba hahazoana ID vaovao
             importCollectors(importedData.collectors || [], (newCollectorIds) => {
                 console.log('Collectors imported with new IDs:', newCollectorIds);
                 
-                // Étape 2: Créer le mapping des IDs
+                // Dingana 2: Amboarina ny "mapping" mampifandray ny ID taloha sy vaovao
                 (importedData.collectors || []).forEach((collector, index) => {
-                    const oldId = collector.exportId || collector.id;
+                    const oldId = collector.id; // Alaina ny ID tany am-boalohany
                     const newId = newCollectorIds[index];
                     if (oldId && newId) {
                         collectorIdMapping[oldId] = newId;
-                        console.log(`Mapping: ${oldId} → ${newId}`);
                     }
                 });
-                
                 console.log('Complete ID mapping:', collectorIdMapping);
                 
-                // Étape 3: Importer les avances avec les nouveaux IDs
-                const advancesWithNewIds = (importedData.advances || []).map((advance, index) => {
-                    const oldCollectorId = advance.collectorExportId || advance.collectorId;
-                    const newCollectorId = collectorIdMapping[oldCollectorId];
-                    
-                    console.log(`Advance ${index}: oldCollectorId=${oldCollectorId}, newCollectorId=${newCollectorId}`);
-                    
-                    if (newCollectorId) {
-                        return {
-                            amount: advance.amount,
-                            date: advance.date,
-                            collectorId: newCollectorId,
-                            createdAt: advance.createdAt || new Date().toISOString()
-                        };
-                    } else {
-                        console.warn(`No mapping found for advance collector ID: ${oldCollectorId}`);
-                        return null;
-                    }
-                }).filter(Boolean);
-                
-                console.log('Advances with new IDs:', advancesWithNewIds);
-                
-                // Étape 4: Importer les réceptions avec les nouveaux IDs  
-                const receptionsWithNewIds = (importedData.receptions || []).map((reception, index) => {
-                    const oldCollectorId = reception.collectorExportId || reception.collectorId;
-                    const newCollectorId = collectorIdMapping[oldCollectorId];
-                    
-                    console.log(`Reception ${index}: oldCollectorId=${oldCollectorId}, newCollectorId=${newCollectorId}`);
-                    
-                    if (newCollectorId) {
-                        return {
-                            collectorId: newCollectorId,
-                            date: reception.date,
-                            grossWeight: reception.grossWeight,
-                            bagCount: reception.bagCount,
-                            bagWeight: reception.bagWeight,
-                            netWeight: reception.netWeight,
-                            quality: reception.quality,
-                            price: reception.price,
-                            totalValue: reception.totalValue,
-                            createdAt: reception.createdAt || new Date().toISOString()
-                        };
-                    } else {
-                        console.warn(`No mapping found for reception collector ID: ${oldCollectorId}`);
-                        return null;
-                    }
-                }).filter(Boolean);
-                
-                console.log('Receptions with new IDs:', receptionsWithNewIds);
-                
-                // Étape 5: Importer les autres données
-                let remainingImports = 0;
-                const totalImports = 3; // advances, receptions, deliveries
+                // Fiasa kely mpanampy hanoloana ny "collectorId" taloha amin'ny vaovao
+                const createNewDataWithMappedIds = (items) => {
+                    if (!items) return [];
+                    return items.map(item => {
+                        // Raha misy "collectorId" ilay angona, soloina ny ID vaovao
+                        if (item.collectorId && collectorIdMapping[item.collectorId]) {
+                            const newItem = { ...item };
+                            newItem.collectorId = collectorIdMapping[item.collectorId];
+                            delete newItem.id; // Fafana ny ID taloha mba hamoronan'i DB vaovao
+                            return newItem;
+                        }
+                        // Raha tsy misy ifandraisany amin'ny collecteur (ohatra: qualities, expenses)
+                        const newItem = { ...item };
+                        delete newItem.id;
+                        return newItem;
+                    });
+                };
+
+                // Dingana 3: Amboarina daholo ny lisitry ny angona rehetra miaraka amin'ny ID efa voaova
+                const storesToImport = [
+                    { name: 'qualities', data: createNewDataWithMappedIds(importedData.qualities) },
+                    { name: 'expenses', data: createNewDataWithMappedIds(importedData.expenses) },
+                    { name: 'advances', data: createNewDataWithMappedIds(importedData.advances) },
+                    { name: 'receptions', data: createNewDataWithMappedIds(importedData.receptions) },
+                    { name: 'deliveries', data: createNewDataWithMappedIds(importedData.deliveries) },
+                    // --- IRETO NO ANJARA TENA ILAINA ---
+                    { name: 'remboursements', data: createNewDataWithMappedIds(importedData.remboursements) },
+                    { name: 'paiements', data: createNewDataWithMappedIds(importedData.paiements) }
+                ];
+
+                // Dingana 4: Ampidirina any anaty DB daholo ny angona rehetra
+                let remainingImports = storesToImport.length;
+                if (remainingImports === 0) {
+                    showToast("Tsy misy angona hita ao anaty rakitra.", "error");
+                    return;
+                }
                 
                 const checkComplete = () => {
-                    remainingImports++;
-                    console.log(`Import completed: ${remainingImports}/${totalImports}`);
-                    if (remainingImports >= totalImports) {
+                    remainingImports--;
+                    if (remainingImports === 0) {
                         setTimeout(() => {
                             console.log('All imports completed, reloading data...');
-                            loadData();
+                            loadData(); // Ity no manavao ny fampisehoana rehetra
                             alert('Données importées avec succès! Toutes les relations ont été préservées.');
                         }, 500);
                     }
                 };
                 
-                importStoreData('advances', advancesWithNewIds, checkComplete);
-                importStoreData('receptions', receptionsWithNewIds, checkComplete);
-                importStoreData('deliveries', importedData.deliveries || [], checkComplete);
+                storesToImport.forEach(storeInfo => {
+                    importStoreData(storeInfo.name, storeInfo.data, checkComplete);
+                });
             });
         }
+
 
         // Helper function to import collectors and return their new IDs
         function importCollectors(collectors, callback) {
