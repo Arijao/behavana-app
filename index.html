@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BEHAVANA - Système de Gestion</title>
-    <!-- ... ao anatin'ny <head> ... -->
-    <meta name="theme-color" content="#6750a4">
-    <link rel="manifest" href="/behavana-app/manifest.json">
-    <!-- ... -->
-
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <!-- 1. Fifandraisana amin'ny Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- 2. Loko ho an'ny "address bar" amin'ny finday -->
+    <meta name="theme-color" content="#6750a4"/>
+    <!-- 3. Sary masina ho an'ny fitaovana Apple -->
+    <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -3871,26 +3871,18 @@
         // Export/Import Functions
         function exportData() {
             const dataToExport = {
-                collectors: appData.collectors.map(collector => ({
-                    ...collector,
-                    exportId: collector.id // Garder l'ID original pour les relations
-                })),
-                advances: appData.advances.map(advance => ({
-                    ...advance,
-                    exportId: advance.id,
-                    collectorExportId: advance.collectorId // Référence à l'export ID du collecteur
-                })),
-                receptions: appData.receptions.map(reception => ({
-                    ...reception,
-                    exportId: reception.id,
-                    collectorExportId: reception.collectorId // Référence à l'export ID du collecteur
-                })),
-                deliveries: appData.deliveries.map(delivery => ({
-                    ...delivery,
-                    exportId: delivery.id
-                })),
+                collectors: appData.collectors || [],
+                advances: appData.advances || [],
+                receptions: appData.receptions || [],
+                deliveries: appData.deliveries || [],
+                qualities: appData.qualities || [],
+                expenses: appData.expenses || [],
+                // --- IRETO NO ANJARA TENA ILAINA AMPIANA ---
+                remboursements: appData.remboursements || [],
+                paiements: appData.paiements || [],
+                // -------------------------------------------
                 exportDate: new Date().toISOString(),
-                version: '1.0'
+                version: '2.0' // Ovaina ny version mba hahafantarana fa format vaovao ity
             };
             
             const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
@@ -3900,12 +3892,15 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `behavana-data-${new Date().toISOString().split('T')[0]}.json`;
+            // Ovaina kely ny anaran'ny rakitra mba hisy "v2"
+            a.download = `behavana-data-v2-${new Date().toISOString().split('T')[0]}.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            showToast("Exportation des données terminée.", "success");
         }
+
 
         function importData() {
             const input = document.createElement('input');
@@ -4011,7 +4006,6 @@
                 }
             });
         }
-
 
         // Helper function to import new data
         function importNewData(importedData) {
@@ -6358,19 +6352,18 @@
             showToast("Export Excel vita soa aman-tsara!", "success");
         }
 
-        // Fisoratana anarana ny Service Worker
+        //=================== KAODY PWA HO AN'NY SERVICE WORKER =================== 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/behavana-app/sw.js') // <-- AHITSY ETO
+                navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('Service Worker enregistré avec succès:', registration);
+                        console.log('Service Worker voasoratra anarana soa aman-tsara:', registration);
                     })
                     .catch(error => {
-                        console.log('Échec de l\'enregistrement du Service Worker:', error);
+                        console.log('Fisoratana anarana Service Worker nisy hadisoana:', error);
                     });
             });
         }
-
     </script>
     </body>
 </html>

@@ -2,6 +2,7 @@ const CACHE_NAME = 'behavana-cache-v1';
 const URLS_TO_CACHE = [
   '/behavana-app/',
   '/behavana-app/index.html',
+  '/manifest.json',
   '/behavana-app/logo.jpg',
   '/behavana-app/logo.jpg'
 ];
@@ -32,3 +33,19 @@ self.addEventListener('fetch', event => {
       })
   );
 });
+// Dingana 3: Fampiasana (Activation) - Manadio cache taloha
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
