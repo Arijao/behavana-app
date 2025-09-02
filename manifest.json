@@ -4,11 +4,11 @@
   "description": "Application de gestion des avances et de la collecte de vanille.",
   "lang": "fr-FR",
   
-  "start_url": "/behavana-app/",
+  "start_url": "/behavana-app/index.html",
   "scope": "/behavana-app/",
   
   "display": "standalone",
-  "background_color": "#fffbfe",
+  "background_color": "#FFFFFF",
   "theme_color": "#6750a4",
   "orientation": "portrait-primary",
   
@@ -22,6 +22,12 @@
       "src": "/behavana-app/logo.jpg",
       "type": "image/jpeg",
       "sizes": "512x512"
+    },
+    {
+      "src": "/behavana-app/logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ]
 }
