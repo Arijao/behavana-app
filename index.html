@@ -83,6 +83,42 @@
 </script>
 
     <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+    
     /* ==========================================
     RESPONSIVE FIXES FOR MOBILE & LANDSCAPE
     ========================================== */
@@ -597,6 +633,42 @@
     
 </style>
     <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+    
     /* ==========================================
     GLASSMORPHISM THEME - Inspired by Modern UI
     ========================================== */
@@ -4299,7 +4371,43 @@
     <link rel="preconnect" href="https:
     <link href="https:
                     <title>Facture - BEHAVANA</title>
-                    <style> body{font-family:Arial, sans-serif;margin:20px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#f2f2f2;}.collector-section{margin-bottom:30px;}.collector-name{font-size:18px;font-weight:bold;margin-bottom:10px;}.total{font-weight:bold;background-color:#f9f9f9;}
+                    <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+     body{font-family:Arial, sans-serif;margin:20px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#f2f2f2;}.collector-section{margin-bottom:30px;}.collector-name{font-size:18px;font-weight:bold;margin-bottom:10px;}.total{font-weight:bold;background-color:#f9f9f9;}
     .form-label {
         color: var(--md-sys-color-on-surface) !important;
         font-weight: 600 !important;
@@ -4396,7 +4504,43 @@
     <link rel="preconnect" href="https:
     <link href="https:
                     <title>Reçu - ${collector.name} - ${formatDate(receptionDate)}</title>
-                    <style> body{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;margin:20px;font-size:13px;color:#333;}.receipt-container{border:1px solid #ccc;padding:25px;max-width:700px;margin:auto;background-color:#fff;}.header{text-align:center;margin-bottom:20px;}.company-name{font-size:26px;font-weight:bold;color:#6750a4;}.receipt-title{font-size:18px;font-weight:500;margin:5px 0;text-transform:uppercase;letter-spacing:1px;}.info-section{border-top:1px dashed #ccc;border-bottom:1px dashed #ccc;padding:15px 0;margin-bottom:20px;display:flex;justify-content:space-between;}.info-section div{line-height:1.7;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{padding:8px;text-align:left;border-bottom:1px solid #eee;}th{background-color:#f9f9f9;font-weight:600;}.text-right{text-align:right;}.total-row{background-color:#f5f5f5;font-weight:bold;border-top:2px solid #333;}.footer{margin-top:30px;padding-top:20px;display:flex;justify-content:space-around;}.signature-box{width:40%;border-top:1px solid #333;padding-top:8px;text-align:center;font-size:12px;}
+                    <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+     body{font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;margin:20px;font-size:13px;color:#333;}.receipt-container{border:1px solid #ccc;padding:25px;max-width:700px;margin:auto;background-color:#fff;}.header{text-align:center;margin-bottom:20px;}.company-name{font-size:26px;font-weight:bold;color:#6750a4;}.receipt-title{font-size:18px;font-weight:500;margin:5px 0;text-transform:uppercase;letter-spacing:1px;}.info-section{border-top:1px dashed #ccc;border-bottom:1px dashed #ccc;padding:15px 0;margin-bottom:20px;display:flex;justify-content:space-between;}.info-section div{line-height:1.7;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{padding:8px;text-align:left;border-bottom:1px solid #eee;}th{background-color:#f9f9f9;font-weight:600;}.text-right{text-align:right;}.total-row{background-color:#f5f5f5;font-weight:bold;border-top:2px solid #333;}.footer{margin-top:30px;padding-top:20px;display:flex;justify-content:space-around;}.signature-box{width:40%;border-top:1px solid #333;padding-top:8px;text-align:center;font-size:12px;}
     .form-label {
         color: var(--md-sys-color-on-surface) !important;
         font-weight: 600 !important;
@@ -4476,7 +4620,43 @@
     <link rel="preconnect" href="https:
     <link href="https:
                     <title>Analyse des Collecteurs - BEHAVANA</title>
-                    <style> body{font-family:Arial, sans-serif;margin:20px;font-size:10px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:6px;text-align:left;}th{background-color:#f2f2f2;font-weight:bold;}.status-debiteur{color:#ba1a1a;font-weight:bold;}.status-crediteur{color:#2e7d32;font-weight:bold;}.status-equilibre{color:#625b71;}.amount{text-align:right;}.total-row{background-color:#e8def8;font-weight:bold;}.total-row td{border-top:2px solid #6750a4;}
+                    <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+     body{font-family:Arial, sans-serif;margin:20px;font-size:10px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:6px;text-align:left;}th{background-color:#f2f2f2;font-weight:bold;}.status-debiteur{color:#ba1a1a;font-weight:bold;}.status-crediteur{color:#2e7d32;font-weight:bold;}.status-equilibre{color:#625b71;}.amount{text-align:right;}.total-row{background-color:#e8def8;font-weight:bold;}.total-row td{border-top:2px solid #6750a4;}
     .form-label {
         color: var(--md-sys-color-on-surface) !important;
         font-weight: 600 !important;
@@ -4568,7 +4748,43 @@
     <link rel="preconnect" href="https:
     <link href="https:
                     <title>Analyse des Poids Livrés - BEHAVANA</title>
-                    <style> body{font-family:Arial, sans-serif;margin:20px;font-size:10px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:6px;text-align:right;}th{background-color:#f2f2f2;font-weight:bold;text-align:center;}td.collector-name{text-align:left;font-weight:bold;}.total-col{background-color:#e8def8;font-weight:bold;}.total-row th, .total-row td{border-top:2px solid #6750a4;background-color:#e8def8;font-weight:bold;}
+                    <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+     body{font-family:Arial, sans-serif;margin:20px;font-size:10px;}.header{text-align:center;margin-bottom:30px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:6px;text-align:right;}th{background-color:#f2f2f2;font-weight:bold;text-align:center;}td.collector-name{text-align:left;font-weight:bold;}.total-col{background-color:#e8def8;font-weight:bold;}.total-row th, .total-row td{border-top:2px solid #6750a4;background-color:#e8def8;font-weight:bold;}
     .form-label {
         color: var(--md-sys-color-on-surface) !important;
         font-weight: 600 !important;
@@ -4999,7 +5215,43 @@
     <link rel="preconnect" href="https:
     <link href="https:
                     <title>Rapport Détaillé - ${collector.name}</title>
-                    <style> body{font-family:Arial, sans-serif;margin:20px;color:#333;font-size:12px;}.header{text-align:center;margin-bottom:20px;border-bottom:2px solid #6750a4;padding-bottom:15px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}.report-title{font-size:18px;color:#666;}.collector-info{background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:20px;}.summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:20px;text-align:center;}.summary-card{border:1px solid #ddd;border-radius:8px;padding:10px;}.summary-value{font-size:18px;font-weight:bold;}.summary-label{font-size:11px;color:#666;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#f2f2f2;font-weight:bold;}.section-title{font-size:16px;font-weight:bold;color:#333;margin:25px 0 10px 0;border-bottom:1px solid #ccc;padding-bottom:5px;}.total-row{background-color:#f8f9fa;font-weight:bold;}.amount-positive{color:#2e7d32;}.amount-negative{color:#ba1a1a;} 
+                    <style>
+
+    /* Landscape Mode Optimization for Small Screens */
+    @media (max-height: 600px) and (orientation: landscape) {
+        .header { height: 48px !important; }
+        .main-content { padding-top: 55px !important; }
+        .sidebar { width: 240px !important; }
+        .overview-stats { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important; }
+        .modal-content { 
+            max-height: 98vh !important; 
+            overflow-y: auto !important;
+            margin: 5px auto !important;
+            padding: 10px !important;
+        }
+        .form-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-card { padding: 8px !important; }
+        .stat-icon { width: 32px !important; height: 32px !important; font-size: 18px !important; }
+    }
+
+    /* Specific fixes for Redmi Note 8 Pro and similar devices */
+    @media (max-width: 450px) {
+        .overview-stats { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .stat-value { font-size: 16px !important; }
+        .header { padding: 0 10px !important; }
+        .global-search-wrapper { margin: 0 5px !important; }
+        .data-table td { 
+            padding-left: 45% !important; 
+            font-size: 11px !important;
+            white-space: normal !important;
+            word-break: break-word !important;
+        }
+        .data-table td:before { width: 40% !important; }
+        .btn { padding: 8px 12px !important; font-size: 12px !important; }
+        .form-group { margin-bottom: 10px !important; }
+        input, select, textarea { font-size: 16px !important; } /* Prevent zoom on focus in iOS/Android */
+    }
+     body{font-family:Arial, sans-serif;margin:20px;color:#333;font-size:12px;}.header{text-align:center;margin-bottom:20px;border-bottom:2px solid #6750a4;padding-bottom:15px;}.company-name{font-size:24px;font-weight:bold;color:#6750a4;}.report-title{font-size:18px;color:#666;}.collector-info{background:#f8f9fa;padding:15px;border-radius:8px;margin-bottom:20px;}.summary-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-bottom:20px;text-align:center;}.summary-card{border:1px solid #ddd;border-radius:8px;padding:10px;}.summary-value{font-size:18px;font-weight:bold;}.summary-label{font-size:11px;color:#666;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th, td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#f2f2f2;font-weight:bold;}.section-title{font-size:16px;font-weight:bold;color:#333;margin:25px 0 10px 0;border-bottom:1px solid #ccc;padding-bottom:5px;}.total-row{background-color:#f8f9fa;font-weight:bold;}.amount-positive{color:#2e7d32;}.amount-negative{color:#ba1a1a;} 
     .form-label {
         color: var(--md-sys-color-on-surface) !important;
         font-weight: 600 !important;
