@@ -2916,375 +2916,247 @@
             }
         }
 
-        /* === YEAR SELECTOR - iOS VOLUME STYLE === */
+        /* ========================================
+        YEAR SLIDER - MODERN DRAGGABLE STYLE
+        ======================================== */
 
-        .year-selector-modern {
+        .year-slider-container {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-left: 8px;
             position: relative;
+            margin-left: 12px;
+            padding: 8px 0;
         }
 
-        /* Barre verticale de visualisation */
-        .year-track {
-            width: 3px;
-            height: 40px;
+        .year-slider-track {
+            width: 6px;
+            height: 80px;
             background: rgba(255, 255, 255, 0.15);
             border-radius: 10px;
             position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            overflow: visible;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
         }
 
-        .year-track-fill {
+        .year-slider-track:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .year-slider-fill {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
             height: 50%;
-            background: linear-gradient(180deg, 
-                rgba(255, 215, 0, 0.9),
-                rgba(255, 193, 7, 0.8)
-            );
+            background: linear-gradient(180deg, rgba(255, 215, 0, 0.9), rgba(255, 193, 7, 0.8));
             border-radius: 10px;
             transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 -2px 8px rgba(255, 215, 0, 0.6);
+            box-shadow: 0 -2px 12px rgba(255, 215, 0, 0.6);
+            pointer-events: none;
         }
 
-        /* Marques sur la barre (optionnel) */
-        .year-marks {
+        .year-slider-thumb {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 4px 0;
-        }
-
-        .year-mark {
-            width: 100%;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Conteneur des contrôles */
-        .year-controls {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        /* Boutons +/- */
-        .year-btn {
-            width: 24px !important;
-            height: 24px !important;
-            padding: 0;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(103, 80, 164, 0.95), rgba(107, 87, 120, 0.9));
+            border: 3px solid rgba(255, 215, 0, 0.8);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(60, 60, 60, 0.7) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            border-radius: 50% !important;
-            cursor: pointer;
-            transition: all 0.2s ease !important;
-            backdrop-filter: blur(10px) !important;
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-
-        .year-btn:hover {
-            background: rgba(80, 80, 80, 0.9) !important;
-            border-color: rgba(255, 255, 255, 0.4) !important;
-            transform: scale(1.1);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-        }
-
-        .year-btn:active {
-            transform: scale(0.95);
-        }
-
-        .year-btn .material-icons {
-            font-size: 16px;
-            color: white;
-        }
-
-        /* Affichage GRAND de l'année - Style iOS */
-        .year-display-large {
-            font-size: 28px !important;
-            font-weight: 700;
-            color: #FFD700 !important;
-            text-shadow: 
-                0 2px 8px rgba(255, 215, 0, 0.6),
-                0 0 20px rgba(255, 215, 0, 0.4),
-                0 4px 12px rgba(0, 0, 0, 0.8);
-            letter-spacing: -1px;
-            line-height: 1;
-            min-width: 60px;
-            text-align: center;
+            cursor: grab;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 215, 0, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .year-slider-thumb:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            border-color: rgba(255, 215, 0, 1);
+            box-shadow: 
+                0 12px 32px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.7),
+                inset 0 2px 6px rgba(255, 255, 255, 0.4);
+        }
+
+        .year-slider-thumb:active,
+        .year-slider-thumb.dragging {
+            cursor: grabbing;
+            transform: translate(-50%, -50%) scale(1.15);
+            border-color: rgba(255, 215, 0, 1);
+            box-shadow: 
+                0 16px 40px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(255, 215, 0, 0.9),
+                inset 0 3px 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .year-display-compact {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFD700;
+            text-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.8),
+                0 0 20px rgba(255, 215, 0, 0.6);
+            letter-spacing: -0.5px;
+            user-select: none;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        /* Animation de changement */
-        .year-display-large.changing {
-            transform: scale(1.2);
-            text-shadow: 
-                0 4px 16px rgba(255, 215, 0, 0.9),
-                0 0 30px rgba(255, 215, 0, 0.6),
-                0 6px 20px rgba(0, 0, 0, 0.8);
+        /* Animation pulse */
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
         }
 
-        /* === RESPONSIVE - Mobile et Tablette === */
+        .year-slider-thumb.changing {
+            animation: pulse 0.4s ease;
+        }
 
-        /* Tablette et mobile portrait */
+        /* ========================================
+        RESPONSIVE - TABLETTE
+        ======================================== */
         @media (max-width: 992px) {
-            .year-selector-modern {
-                gap: 5px !important;
-                margin-left: 6px !important;
+            .year-slider-container {
+                margin-left: 8px;
             }
             
-            .year-track {
-                width: 2.5px !important;
-                height: 35px !important;
+            .year-slider-track {
+                width: 5px;
+                height: 70px;
             }
             
-            .year-controls {
-                gap: 3px !important;
+            .year-slider-thumb {
+                width: 56px;
+                height: 56px;
             }
             
-            .year-btn {
-                width: 22px !important;
-                height: 22px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 14px !important;
-            }
-            
-            .year-display-large {
-                font-size: 24px !important;
-                min-width: 52px !important;
+            .year-display-compact {
+                font-size: 18px;
             }
         }
 
-        /* Mode paysage */
-        @media (max-height: 600px) and (orientation: landscape) {
-            .year-selector-modern {
-                gap: 3px !important;
-                margin-left: 4px !important;
-            }
-            
-            .year-track {
-                width: 2px !important;
-                height: 28px !important;
-            }
-            
-            .year-controls {
-                gap: 2px !important;
-            }
-            
-            .year-btn {
-                width: 20px !important;
-                height: 20px !important;
-                min-width: 20px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 14px !important;
-            }
-            
-            .year-display-large {
-                font-size: 18px !important;
-                min-width: 38px !important;
-                letter-spacing: -0.5px !important;
-            }
-        }
-
-        /* Mobile petit écran */
+        /* ========================================
+        RESPONSIVE - MOBILE
+        ======================================== */
         @media (max-width: 768px) {
-            .year-selector-modern {
-                gap: 4px !important;
-                margin-left: 4px !important;
+            .year-slider-container {
+                margin-left: 6px;
+                padding: 6px 0;
             }
             
-            .year-track {
-                width: 2px !important;
-                height: 32px !important;
+            .year-slider-track {
+                width: 4px;
+                height: 60px;
             }
             
-            .year-controls {
-                gap: 3px !important;
+            .year-slider-thumb {
+                width: 50px;
+                height: 50px;
+                border-width: 2px;
             }
             
-            .year-btn {
-                width: 20px !important;
-                height: 20px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 13px !important;
-            }
-            
-            .year-display-large {
-                font-size: 22px !important;
-                min-width: 48px !important;
-                letter-spacing: -0.5px !important;
+            .year-display-compact {
+                font-size: 16px;
             }
         }
 
-        /* Très petit écran (iPhone SE, etc) */
+        /* ========================================
+        RESPONSIVE - PETIT MOBILE
+        ======================================== */
         @media (max-width: 375px) {
-            .year-selector-modern {
-                gap: 3px !important;
-                margin-left: 3px !important;
+            .year-slider-container {
+                margin-left: 4px;
             }
             
-            .year-track {
-                display: none !important; /* Cache la barre sur très petit écran */
+            .year-slider-track {
+                width: 3px;
+                height: 50px;
             }
             
-            .year-controls {
-                gap: 2px !important;
+            .year-slider-thumb {
+                width: 44px;
+                height: 44px;
             }
             
-            .year-btn {
-                width: 18px !important;
-                height: 18px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 12px !important;
-            }
-            
-            .year-display-large {
-                font-size: 20px !important;
-                min-width: 42px !important;
+            .year-display-compact {
+                font-size: 14px;
             }
         }
 
-        /* === LANDSCAPE MODE FIXES (812x375 et similaires) === */
+        /* ========================================
+        RESPONSIVE - PAYSAGE
+        ======================================== */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .year-slider-container {
+                margin-left: 6px;
+                padding: 4px 0;
+            }
+            
+            .year-slider-track {
+                width: 4px;
+                height: 50px;
+            }
+            
+            .year-slider-thumb {
+                width: 42px;
+                height: 42px;
+            }
+            
+            .year-display-compact {
+                font-size: 14px;
+            }
+        }
+
         @media (max-height: 500px) and (orientation: landscape) {
-            /* HEADER - Flexbox avec ordre forcé */
-            .header {
-                height: 42px !important;
-                padding: 0 6px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                flex-wrap: nowrap !important;
-                gap: 4px !important;
-            }
-            
-            /* ORDRE D'AFFICHAGE */
-            #sidebar-toggle {
-                order: 1;
-                flex-shrink: 0;
-                width: 32px !important;
-                height: 32px !important;
-            }
-            
-            .global-search-wrapper {
-                order: 2;
-                flex: 0 1 auto;
-                max-width: 120px !important;
-                min-width: 80px !important;
-                height: 30px !important;
-                margin: 0 !important;
-            }
-            
-            #global-search-input {
-                font-size: 11px !important;
-                padding: 0 8px !important;
-            }
-            
-            /* YEAR SELECTOR - TOUJOURS VISIBLE ET COMPACT */
-            .year-selector-modern {
+            .year-slider-container {
                 order: 3;
-                flex-shrink: 0 !important;
-                gap: 2px !important;
-                margin: 0 !important;
-            }
-            
-            .year-track {
-                width: 2px !important;
-                height: 24px !important;
-            }
-            
-            .year-controls {
-                gap: 2px !important;
-            }
-            
-            .year-btn {
-                width: 18px !important;
-                height: 18px !important;
-                min-width: 18px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 12px !important;
-            }
-            
-            .year-display-large {
-                font-size: 16px !important;
-                min-width: 34px !important;
-                letter-spacing: -0.5px !important;
-            }
-            
-            /* HEADER ACTIONS */
-            .header-actions {
-                order: 4;
                 flex-shrink: 0;
-                gap: 2px !important;
+                margin: 0 4px;
             }
             
-            .header-actions .btn-icon {
-                width: 32px !important;
-                height: 32px !important;
+            .year-slider-track {
+                width: 3px;
+                height: 40px;
             }
             
-            .header-actions .material-icons {
-                font-size: 18px !important;
+            .year-slider-thumb {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .year-display-compact {
+                font-size: 12px;
             }
         }
 
-        /* iPhone SE Landscape et plus petit */
+        /* iPhone SE Paysage */
         @media (max-width: 667px) and (max-height: 375px) and (orientation: landscape) {
-            .header {
-                padding: 0 4px !important;
-                gap: 3px !important;
+            .year-slider-track {
+                width: 3px;
+                height: 36px;
             }
             
-            .global-search-wrapper {
-                max-width: 100px !important;
+            .year-slider-thumb {
+                width: 32px;
+                height: 32px;
             }
             
-            .year-selector-modern {
-                gap: 2px !important;
-            }
-            
-            .year-display-large {
-                font-size: 14px !important;
-                min-width: 30px !important;
-            }
-            
-            .year-btn {
-                width: 16px !important;
-                height: 16px !important;
-            }
-            
-            .year-btn .material-icons {
-                font-size: 10px !important;
-            }
-            
-            .year-track {
-                width: 1.5px !important;
-                height: 20px !important;
+            .year-display-compact {
+                font-size: 11px;
             }
         }
+
 
 
         /* Dashboard Overview */
@@ -4128,28 +4000,15 @@
                         oninput="debouncedGlobalSearch()">
                 </div>
 
-                <div class="year-selector-modern">
-                    <!-- Barre verticale de visualisation -->
-                    <div class="year-track">
-                        <div class="year-track-fill" id="year-track-fill"></div>
-                        <div class="year-marks">
-                            <!-- Généré par JavaScript -->
+                <div class="year-slider-container">
+                    <div class="year-slider-track" id="yearSliderTrack">
+                        <div class="year-slider-fill" id="yearSliderFill"></div>
+                        <div class="year-slider-thumb" id="yearSliderThumb">
+                            <span class="year-display-compact" id="yearDisplay">2026</span>
                         </div>
                     </div>
-                    
-                    <!-- Contrôles -->
-                    <div class="year-controls">
-                        <button id="year-prev" class="year-btn" onclick="changeYear(-1)" title="Année précédente">
-                            <span class="material-icons">remove</span>
-                        </button>
-                        
-                        <div class="year-display-large" id="year-display">2026</div>
-                        
-                        <button id="year-next" class="year-btn" onclick="changeYear(1)" title="Année suivante">
-                            <span class="material-icons">add</span>
-                        </button>
-                    </div>
                 </div>
+
 
 
                 <div class="header-actions">
@@ -10814,47 +10673,169 @@
             makeQualityChartClickable();
         });
 
-        // Fonction pour changer l'année avec animation
-        function changeYear(direction) {
-            const display = document.getElementById('year-display');
+        // ========================================
+        // YEAR SLIDER - DRAGGABLE FUNCTIONALITY
+        // ========================================
+
+        let isDragging = false;
+        let startY = 0;
+        let startYear = 0;
+
+        function initYearSlider() {
+            const track = document.getElementById('yearSliderTrack');
+            const thumb = document.getElementById('yearSliderThumb');
+            const fill = document.getElementById('yearSliderFill');
+            const display = document.getElementById('yearDisplay');
+            
+            if (!track || !thumb) return;
+            
             const now = new Date().getFullYear();
             const minYear = now - 5;
             const maxYear = now + 2;
-            const newYear = currentYear + direction;
             
-            // Vérifier les limites
-            if (newYear < minYear || newYear > maxYear) {
-                // Animation de "rejet"
-                display.style.color = '#ff4444';
-                display.style.transform = 'translateX(' + (direction * -10) + 'px)';
-                setTimeout(() => {
-                    display.style.color = '';
-                    display.style.transform = '';
-                }, 200);
-                return;
+            // Initialiser la position
+            updateSliderPosition();
+            
+            // Click sur la track pour jump
+            track.addEventListener('click', (e) => {
+                if (e.target === thumb || thumb.contains(e.target)) return;
+                
+                const rect = track.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const percentage = 1 - (clickY / rect.height); // Inversé car 0 en haut
+                const range = maxYear - minYear;
+                const newYear = Math.round(minYear + (percentage * range));
+                
+                if (newYear >= minYear && newYear <= maxYear) {
+                    currentYear = newYear;
+                    localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    updateSliderPosition();
+                    refreshAllData();
+                }
+            });
+            
+            // Drag avec souris
+            thumb.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+            
+            // Drag avec tactile
+            thumb.addEventListener('touchstart', startDragTouch, { passive: false });
+            document.addEventListener('touchmove', dragTouch, { passive: false });
+            document.addEventListener('touchend', stopDrag);
+            
+            // Scroll avec molette sur le thumb
+            thumb.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const direction = e.deltaY > 0 ? -1 : 1;
+                const newYear = currentYear + direction;
+                
+                if (newYear >= minYear && newYear <= maxYear) {
+                    currentYear = newYear;
+                    localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    updateSliderPosition();
+                    refreshAllData();
+                }
+            }, { passive: false });
+            
+            function startDrag(e) {
+                isDragging = true;
+                startY = e.clientY;
+                startYear = currentYear;
+                thumb.classList.add('dragging');
+                e.preventDefault();
             }
             
-            // Animation de changement
-            display.classList.add('changing');
-            setTimeout(() => {
-                display.classList.remove('changing');
-            }, 300);
+            function startDragTouch(e) {
+                isDragging = true;
+                startY = e.touches[0].clientY;
+                startYear = currentYear;
+                thumb.classList.add('dragging');
+                e.preventDefault();
+            }
             
-            // Mise à jour
-            currentYear = newYear;
-            display.textContent = currentYear;
-            localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+            function drag(e) {
+                if (!isDragging) return;
+                
+                const rect = track.getBoundingClientRect();
+                const deltaY = startY - e.clientY;
+                const pixelsPerYear = rect.height / (maxYear - minYear);
+                const yearDelta = Math.round(deltaY / pixelsPerYear);
+                const newYear = Math.max(minYear, Math.min(maxYear, startYear + yearDelta));
+                
+                if (newYear !== currentYear) {
+                    currentYear = newYear;
+                    updateSliderPosition(false);
+                }
+            }
             
-            // Mettre à jour la barre de progression
-            updateYearTrack();
+            function dragTouch(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const rect = track.getBoundingClientRect();
+                const deltaY = startY - e.touches[0].clientY;
+                const pixelsPerYear = rect.height / (maxYear - minYear);
+                const yearDelta = Math.round(deltaY / pixelsPerYear);
+                const newYear = Math.max(minYear, Math.min(maxYear, startYear + yearDelta));
+                
+                if (newYear !== currentYear) {
+                    currentYear = newYear;
+                    updateSliderPosition(false);
+                }
+            }
             
-            // Mettre à jour le dashboard
+            function stopDrag() {
+                if (isDragging) {
+                    isDragging = false;
+                    thumb.classList.remove('dragging');
+                    localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    refreshAllData();
+                }
+            }
+        }
+
+        function updateSliderPosition(animate = true) {
+            const thumb = document.getElementById('yearSliderThumb');
+            const fill = document.getElementById('yearSliderFill');
+            const display = document.getElementById('yearDisplay');
+            const track = document.getElementById('yearSliderTrack');
+            
+            if (!thumb || !track) return;
+            
+            const now = new Date().getFullYear();
+            const minYear = now - 5;
+            const maxYear = now + 2;
+            const range = maxYear - minYear;
+            const position = (currentYear - minYear) / range;
+            
+            // Position du thumb (inversé: haut = année future)
+            const thumbPosition = (1 - position) * 100;
+            thumb.style.top = `${thumbPosition}%`;
+            
+            // Hauteur du fill
+            if (fill) {
+                fill.style.height = `${position * 100}%`;
+            }
+            
+            // Afficher l'année
+            if (display) {
+                display.textContent = currentYear;
+            }
+            
+            // Animation
+            if (animate) {
+                thumb.classList.add('changing');
+                setTimeout(() => thumb.classList.remove('changing'), 400);
+            }
+        }
+
+        function refreshAllData() {
             const overviewMonthEl = document.getElementById('overview-month');
             if (overviewMonthEl) {
                 overviewMonthEl.textContent = `Année ${currentYear}`;
             }
             
-            // Mettre à jour toutes les données
             invalidateCache();
             buildCache();
             updateAllTables();
@@ -10862,52 +10843,24 @@
             updatePrixRevientAnalysis();
             updateCharts();
             
-            // Toast de confirmation
             showToast(`Année ${currentYear}`, 'success', 1000);
         }
 
-        // Mettre à jour la hauteur de la barre
-        function updateYearTrack() {
-            const track = document.getElementById('year-track-fill');
-            if (!track) return;
-            
-            const now = new Date().getFullYear();
-            const minYear = now - 5;
-            const maxYear = now + 2;
-            const range = maxYear - minYear;
-            const position = currentYear - minYear;
-            const percentage = (position / range) * 100;
-            
-            track.style.height = percentage + '%';
-        }
-
-        // Initialiser l'affichage au chargement
+        // Initialiser au chargement
         function initYearDisplay() {
             const saved = parseInt(localStorage.getItem(ACTIVE_YEAR_STORAGE_KEY), 10);
             const now = new Date().getFullYear();
             currentYear = !isNaN(saved) ? saved : now;
-            
-            const display = document.getElementById('year-display');
-            if (display) {
-                display.textContent = currentYear;
-            }
             
             const overviewMonthEl = document.getElementById('overview-month');
             if (overviewMonthEl) {
                 overviewMonthEl.textContent = `Année ${currentYear}`;
             }
             
-            // Initialiser la barre
-            updateYearTrack();
+            // Attendre que le DOM soit complètement chargé
+            setTimeout(initYearSlider, 100);
         }
 
-        // Remplacer initYearSelector() par initYearDisplay() dans DOMContentLoaded
-        document.addEventListener('DOMContentLoaded', function() {
-            initDB();
-            loadSettings();
-            initYearDisplay(); // <-- ICI au lieu de initYearSelector()
-            // ... reste du code
-        });
 
         // Validation en temps réel pour le nom du collecteur
         function validateCollectorNameLive() {
