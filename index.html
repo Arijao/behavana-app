@@ -31,6 +31,62 @@
         @media (max-height: 600px) and (orientation: landscape) {
             .header {
                 height: 48px !important;
+                padding: 0 8px !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                flex-wrap: nowrap !important;
+            }
+
+            /* YEAR SELECTOR - Toujours visible en paysage */
+            .year-selector {
+                display: flex !important;
+                margin-left: 6px !important;
+                gap: 4px !important;
+                flex-shrink: 0 !important;
+            }
+            
+            .year-label {
+                display: none !important;  /* Cache "Année" pour gagner de l'espace */
+            }
+            
+            #active-year {
+                min-width: 65px !important;
+                max-width: 75px !important;
+                padding: 5px 10px !important;
+                font-size: 13px !important;
+                height: 34px !important;
+                border-radius: 8px !important;
+            }
+            
+            /* Barre de recherche plus compacte */
+            .global-search-wrapper {
+                max-width: 140px !important;
+                height: 34px !important;
+                margin: 0 4px !important;
+                flex-shrink: 1 !important;
+            }
+            
+            #global-search-input {
+                font-size: 11px !important;
+            }
+            
+            /* Header actions compactes */
+            .header-actions {
+                gap: 3px !important;
+                flex-shrink: 0 !important;
+            }
+            
+            .header-actions .btn-icon {
+                width: 34px !important;
+                height: 34px !important;
+            }
+
+            #sidebar-toggle {
+                flex-shrink: 0 !important;
+                padding: 6px !important;
+                width: 34px !important;
+                height: 34px !important;
             }
 
             .main-content {
@@ -86,6 +142,7 @@
             }
         }
 
+
         /* Specific fixes for Redmi Note 8 Pro and similar devices */
         @media (max-width: 450px) {
             .overview-stats {
@@ -139,8 +196,8 @@
         }
 
         /* ==========================================
-    RESPONSIVE FIXES FOR MOBILE & LANDSCAPE
-    ========================================== */
+         RESPONSIVE FIXES FOR MOBILE & LANDSCAPE
+        ========================================== */
         @media (max-width: 992px) {
 
             .sidebar {
@@ -1676,6 +1733,19 @@
             opacity: 0.6;
         }
 
+        /* Champs readonly - non focusables */
+        input[readonly],
+        textarea[readonly] {
+            cursor: not-allowed !important;
+            opacity: 0.7 !important;
+        }
+
+        input[readonly]:focus,
+        textarea[readonly]:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
         .form-select {
             width: 100%;
             padding: 12px 16px;
@@ -1697,7 +1767,7 @@
 
         .form-select:focus {
             border-color: var(--md-sys-color-primary);
-            box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1);
+            box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1)!important;
             transform: translateY(-1px);
         }
 
@@ -2056,32 +2126,15 @@
         .modal-content .form-input,
         .modal-content .form-select,
         .modal-content .form-textarea {
-            padding: 12px 16px;
+            padding: 10px 14px;
             font-size: 14px;
             width: 100%;
             border: 2px solid var(--md-sys-color-outline-variant);
             border-radius: 12px;
-            background-color: var(--md-sys-color-surface-container-low);
+            background-color: var(--md-sys-color-surface);
             color: var(--md-sys-color-on-surface);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
-        }
-
-        .modal-content .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 20px;
-            padding-right: 40px;
-            background-color: #1a1a1a !important;
-            color: #ffffff !important;
-            border-color: #333 !important;
-        }
-
-        .modal-content .form-select option {
-            background-color: #1a1a1a;
-            color: #ffffff;
         }
 
         .modal-content .form-input:focus,
@@ -2786,6 +2839,454 @@
             color: rgba(255, 255, 255, 0.5) !important;
         }
 
+        .year-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 12px;
+        }
+
+        .year-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9) !important;
+            opacity: 1 !important;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            white-space: nowrap;
+        }
+
+        #active-year {
+            min-width: 85px !important;
+            max-width: 110px !important;
+            padding: 8px 14px !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            color: rgba(255, 255, 255, 1) !important;
+            background: linear-gradient(135deg, rgba(103, 80, 164, 0.9), rgba(107, 87, 120, 0.85)) !important;
+            border: 2px solid rgba(255, 255, 255, 0.4) !important;
+            border-radius: 10px !important;
+            box-shadow: 0 4px 16px rgba(103, 80, 164, 0.6), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: blur(15px) !important;
+            cursor: pointer !important;
+            transition: all 0.3s ease !important;
+            text-align: center !important;
+            letter-spacing: 0.5px !important;
+        }
+
+        #active-year:hover {
+            background: linear-gradient(135deg, rgba(103, 80, 164, 1), rgba(107, 87, 120, 1)) !important;
+            border-color: rgba(255, 255, 255, 0.6) !important;
+            box-shadow: 0 6px 24px rgba(103, 80, 164, 0.8), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+            transform: translateY(-2px) !important;
+        }
+
+        #active-year:focus {
+            outline: none !important;
+            border-color: rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 0 0 3px rgba(103, 80, 164, 0.4),
+                        0 6px 24px rgba(103, 80, 164, 0.8) !important;
+        }
+
+        /* Options du dropdown */
+        #active-year option {
+            background-color: rgba(40, 40, 40, 0.98) !important;
+            color: white !important;
+            padding: 12px !important;
+            font-size: 15px !important;
+            font-weight: 600 !important;
+        }
+
+        #active-year option:hover,
+        #active-year option:checked {
+            background: linear-gradient(135deg, rgba(103, 80, 164, 0.9), rgba(107, 87, 120, 0.8)) !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .year-label {
+                display: none;
+            }
+            
+            #active-year {
+                min-width: 75px !important;
+                padding: 6px 12px !important;
+                font-size: 15px !important;
+            }
+        }
+
+        /* === YEAR SELECTOR - iOS VOLUME STYLE === */
+
+        .year-selector-modern {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 8px;
+            position: relative;
+        }
+
+        /* Barre verticale de visualisation */
+        .year-track {
+            width: 3px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .year-track-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 215, 0, 0.9),
+                rgba(255, 193, 7, 0.8)
+            );
+            border-radius: 10px;
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 -2px 8px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Marques sur la barre (optionnel) */
+        .year-marks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .year-mark {
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Conteneur des contrôles */
+        .year-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Boutons +/- */
+        .year-btn {
+            width: 24px !important;
+            height: 24px !important;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(60, 60, 60, 0.7) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 50% !important;
+            cursor: pointer;
+            transition: all 0.2s ease !important;
+            backdrop-filter: blur(10px) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .year-btn:hover {
+            background: rgba(80, 80, 80, 0.9) !important;
+            border-color: rgba(255, 255, 255, 0.4) !important;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .year-btn:active {
+            transform: scale(0.95);
+        }
+
+        .year-btn .material-icons {
+            font-size: 16px;
+            color: white;
+        }
+
+        /* Affichage GRAND de l'année - Style iOS */
+        .year-display-large {
+            font-size: 28px !important;
+            font-weight: 700;
+            color: #FFD700 !important;
+            text-shadow: 
+                0 2px 8px rgba(255, 215, 0, 0.6),
+                0 0 20px rgba(255, 215, 0, 0.4),
+                0 4px 12px rgba(0, 0, 0, 0.8);
+            letter-spacing: -1px;
+            line-height: 1;
+            min-width: 60px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* Animation de changement */
+        .year-display-large.changing {
+            transform: scale(1.2);
+            text-shadow: 
+                0 4px 16px rgba(255, 215, 0, 0.9),
+                0 0 30px rgba(255, 215, 0, 0.6),
+                0 6px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        /* === RESPONSIVE - Mobile et Tablette === */
+
+        /* Tablette et mobile portrait */
+        @media (max-width: 992px) {
+            .year-selector-modern {
+                gap: 5px !important;
+                margin-left: 6px !important;
+            }
+            
+            .year-track {
+                width: 2.5px !important;
+                height: 35px !important;
+            }
+            
+            .year-controls {
+                gap: 3px !important;
+            }
+            
+            .year-btn {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 14px !important;
+            }
+            
+            .year-display-large {
+                font-size: 24px !important;
+                min-width: 52px !important;
+            }
+        }
+
+        /* Mode paysage */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .year-selector-modern {
+                gap: 3px !important;
+                margin-left: 4px !important;
+            }
+            
+            .year-track {
+                width: 2px !important;
+                height: 28px !important;
+            }
+            
+            .year-controls {
+                gap: 2px !important;
+            }
+            
+            .year-btn {
+                width: 20px !important;
+                height: 20px !important;
+                min-width: 20px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 14px !important;
+            }
+            
+            .year-display-large {
+                font-size: 18px !important;
+                min-width: 38px !important;
+                letter-spacing: -0.5px !important;
+            }
+        }
+
+        /* Mobile petit écran */
+        @media (max-width: 768px) {
+            .year-selector-modern {
+                gap: 4px !important;
+                margin-left: 4px !important;
+            }
+            
+            .year-track {
+                width: 2px !important;
+                height: 32px !important;
+            }
+            
+            .year-controls {
+                gap: 3px !important;
+            }
+            
+            .year-btn {
+                width: 20px !important;
+                height: 20px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 13px !important;
+            }
+            
+            .year-display-large {
+                font-size: 22px !important;
+                min-width: 48px !important;
+                letter-spacing: -0.5px !important;
+            }
+        }
+
+        /* Très petit écran (iPhone SE, etc) */
+        @media (max-width: 375px) {
+            .year-selector-modern {
+                gap: 3px !important;
+                margin-left: 3px !important;
+            }
+            
+            .year-track {
+                display: none !important; /* Cache la barre sur très petit écran */
+            }
+            
+            .year-controls {
+                gap: 2px !important;
+            }
+            
+            .year-btn {
+                width: 18px !important;
+                height: 18px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 12px !important;
+            }
+            
+            .year-display-large {
+                font-size: 20px !important;
+                min-width: 42px !important;
+            }
+        }
+
+        /* === LANDSCAPE MODE FIXES (812x375 et similaires) === */
+        @media (max-height: 500px) and (orientation: landscape) {
+            /* HEADER - Flexbox avec ordre forcé */
+            .header {
+                height: 42px !important;
+                padding: 0 6px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important;
+                gap: 4px !important;
+            }
+            
+            /* ORDRE D'AFFICHAGE */
+            #sidebar-toggle {
+                order: 1;
+                flex-shrink: 0;
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .global-search-wrapper {
+                order: 2;
+                flex: 0 1 auto;
+                max-width: 120px !important;
+                min-width: 80px !important;
+                height: 30px !important;
+                margin: 0 !important;
+            }
+            
+            #global-search-input {
+                font-size: 11px !important;
+                padding: 0 8px !important;
+            }
+            
+            /* YEAR SELECTOR - TOUJOURS VISIBLE ET COMPACT */
+            .year-selector-modern {
+                order: 3;
+                flex-shrink: 0 !important;
+                gap: 2px !important;
+                margin: 0 !important;
+            }
+            
+            .year-track {
+                width: 2px !important;
+                height: 24px !important;
+            }
+            
+            .year-controls {
+                gap: 2px !important;
+            }
+            
+            .year-btn {
+                width: 18px !important;
+                height: 18px !important;
+                min-width: 18px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 12px !important;
+            }
+            
+            .year-display-large {
+                font-size: 16px !important;
+                min-width: 34px !important;
+                letter-spacing: -0.5px !important;
+            }
+            
+            /* HEADER ACTIONS */
+            .header-actions {
+                order: 4;
+                flex-shrink: 0;
+                gap: 2px !important;
+            }
+            
+            .header-actions .btn-icon {
+                width: 32px !important;
+                height: 32px !important;
+            }
+            
+            .header-actions .material-icons {
+                font-size: 18px !important;
+            }
+        }
+
+        /* iPhone SE Landscape et plus petit */
+        @media (max-width: 667px) and (max-height: 375px) and (orientation: landscape) {
+            .header {
+                padding: 0 4px !important;
+                gap: 3px !important;
+            }
+            
+            .global-search-wrapper {
+                max-width: 100px !important;
+            }
+            
+            .year-selector-modern {
+                gap: 2px !important;
+            }
+            
+            .year-display-large {
+                font-size: 14px !important;
+                min-width: 30px !important;
+            }
+            
+            .year-btn {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            .year-btn .material-icons {
+                font-size: 10px !important;
+            }
+            
+            .year-track {
+                width: 1.5px !important;
+                height: 20px !important;
+            }
+        }
+
+
         /* Dashboard Overview */
         .dashboard-overview {
             background: rgba(60, 60, 60, 0.6) !important;
@@ -2904,11 +3405,38 @@
             color: rgba(255, 255, 255, 0.9) !important;
         }
 
-        .form-input::placeholder,
-        .form-select option,
-        .form-textarea::placeholder {
+        /* Placeholder color */
+        .form-inputplaceholder,
+        .form-textareaplaceholder {
             color: rgba(255, 255, 255, 0.5) !important;
         }
+
+        /* === CORRECTION POUR VISIBILITÉ DES OPTIONS DANS SELECT === */
+        .form-select option {
+            background-color: #2a2a2a !important;  /* Fond noir pour les options */
+            color: white !important;               /* Texte blanc */
+            padding: 8px !important;
+        }
+
+        .form-select option:hover,
+        .form-select option:focus,
+        .form-select option:checked {
+            background-color: rgba(103, 80, 164, 0.8) !important;
+            color: white !important;
+        }
+
+        .form-select:focus {
+            background: rgba(40, 40, 40, 0.95) !important;
+            border: 2px solid rgba(103, 80, 164, 0.8) !important;
+            box-shadow: 0 0 20px rgba(103, 80, 164, 0.5) !important;
+        }
+
+        .form-select option:disabled {
+            background-color: #1a1a1a !important;
+            color: rgba(255, 255, 255, 0.4) !important;
+            font-style: italic;
+        }
+
 
         .form-input:focus,
         .form-select:focus,
@@ -3062,8 +3590,8 @@
         }
 
         /* ============================================
-    LANDSCAPE MODE FIXES (812x375 ary mitovy)
-    ============================================ */
+        LANDSCAPE MODE FIXES (812x375 ary mitovy)
+        ============================================ */
         @media (max-height: 500px) and (orientation: landscape) {
 
             /* HEADER - Kely kokoa */
@@ -3376,6 +3904,60 @@
             }
         }
 
+        /* === BOUTON "+ Ajouter"  RESPONSIVE === */
+
+        /* Par défaut, le bouton garde son padding normal */
+        .btn-add-weight {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            justify-content: center !important;
+        }
+
+        /* En mode paysage ou petit écran : cache le texte, garde l'icône */
+        @media (max-width: 768px) {
+            .btn-add-weight {
+                padding: 0 12px !important;  /* Réduit le padding */
+                min-width: 44px !important;   /* Garde la zone tactile */
+            }
+            
+            .btn-add-weight .btn-text {
+                display: none !important;     /* Cache "Hampiditra" */
+            }
+            
+            .btn-add-weight .material-icons {
+                margin: 0 !important;         /* Centre l'icône */
+            }
+        }
+
+        /* Mode paysage très petit (comme sur ton screenshot) */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .btn-add-weight {
+                padding: 0 10px !important;
+                min-width: 40px !important;
+                height: 36px !important;
+            }
+            
+            .btn-add-weight .btn-text {
+                display: none !important;
+            }
+            
+            .btn-add-weight .material-icons {
+                font-size: 20px !important;
+            }
+        }
+
+        /* Mode très petit (mobile portrait) */
+        @media (max-width: 450px) {
+            .btn-add-weight {
+                padding: 0 10px !important;
+            }
+            
+            .btn-add-weight .btn-text {
+                display: none !important;
+            }
+        }
+        /*======                          =======*/
         /* Hover effect ho anny clickable chart */
         .chart-container:has(#qualityChart):hover {
             transform: translateY(-2px);
@@ -3546,6 +4128,30 @@
                         oninput="debouncedGlobalSearch()">
                 </div>
 
+                <div class="year-selector-modern">
+                    <!-- Barre verticale de visualisation -->
+                    <div class="year-track">
+                        <div class="year-track-fill" id="year-track-fill"></div>
+                        <div class="year-marks">
+                            <!-- Généré par JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Contrôles -->
+                    <div class="year-controls">
+                        <button id="year-prev" class="year-btn" onclick="changeYear(-1)" title="Année précédente">
+                            <span class="material-icons">remove</span>
+                        </button>
+                        
+                        <div class="year-display-large" id="year-display">2026</div>
+                        
+                        <button id="year-next" class="year-btn" onclick="changeYear(1)" title="Année suivante">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
+                </div>
+
+
                 <div class="header-actions">
                     <button class="theme-toggle" id="theme-toggle" aria-label="Manova ny lohahevitra (maizina/mazava)">
                         <span class="material-icons" aria-hidden="true">dark_mode</span>
@@ -3571,7 +4177,7 @@
                         </div>
                         <div class="overview-stat">
                             <div class="overview-stat-value" id="overview-month">Ce Mois</div>
-                            <div class="overview-stat-label">Période Active</div>
+                            <div class="overview-stat-label">Année Active</div>
                         </div>
                     </div>
                 </div>
@@ -4338,15 +4944,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Collecteur</label>
-                    <select class="form-select" id="advance-collector" required onchange="updateAdvanceCollectorBalance()">
+                    <select class="form-select" id="advance-collector" required>
                         <option value="">Sélectionner un collecteur</option>
                     </select>
-                </div>
-                <div id="advance-collector-balance-container" style="display: none; margin-bottom: 15px; padding: 10px; border-radius: 8px; background: #f5f5f5;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #666;">Solde actuel:</span>
-                        <span id="advance-collector-balance" style="font-weight: bold; font-size: 15px;"></span>
-                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Montant (Ar)</label>
@@ -4388,7 +4988,7 @@
                     <div class="form-group">
                         <label class="form-label">Solde Actuel</label>
                         <input type="text" class="form-input" id="reception-collector-balance" readonly
-                            placeholder="Solde du collecteur">
+                            tabindex="-1" placeholder="Solde du collecteur">
                     </div>
 
                     <div class="form-group">
@@ -4409,16 +5009,16 @@
                         <div style="display: flex; gap: 10px; margin-top: 12px; align-items: stretch;">
                             <div style="flex: 1; display: flex; gap: 8px;">
                                 <input type="text" class="form-input" id="quick-weight-input"
-                                    placeholder="Lanja (kg)" style="flex: 1;"
+                                    placeholder="Poids (kg)" style="flex: 1;"
                                     onkeypress="if(event.key === 'Enter') { event.preventDefault(); addQuickWeight(); }">
                                 <input type="text" class="form-input" id="quick-tare-input"
                                     placeholder="Tare" style="width: 70px; background: var(--md-sys-color-surface-variant); border: 1px solid var(--md-sys-color-outline);"
                                     oninput="updateReceptionFromQuickWeights()">
-                                <button type="button" class="btn btn-primary" onclick="addQuickWeight()"
-                                    style="padding: 0 20px; white-space: nowrap;">
-                                    <span class="material-icons" style="font-size: 18px;">add</span>
-                                    Hampiditra
+                                <button type="button" class="btn btn-primary btn-add-weight" onclick="addQuickWeight" style="padding: 0 20px; white-space: nowrap">
+                                    <span class="material-icons" style="font-size: 18px">add</span>
+                                    <span class="btn-text">Ajouter</span>
                                 </button>
+
                             </div>
                         </div>
 
@@ -4482,7 +5082,7 @@
                             style="margin-top: 12px; padding: 10px; background: rgba(103, 80, 164, 0.1); border-radius: 6px; font-size: 11px; color: var(--md-sys-color-on-secondary-container);">
                             <span class="material-icons" style="font-size: 14px; vertical-align: middle;">info</span>
                             <strong>Fomba fampiasana:</strong> Ampidiro ny lanjan'ny gony tsirairay, dia tsindrio
-                            "Hampiditra" na "Enter". Ny total dia hiampy ho azy.
+                            "Ajouter" na "Enter". Ny total dia hiampy ho azy.
                         </div>
                     </div>
 
@@ -4500,7 +5100,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Poids Net (kg)</label>
-                        <input type="number" step="0.01" class="form-input" id="reception-net-weight">
+                        <input type="number" step="0.01" class="form-input" id="reception-net-weight" readonly tabindex="-1">
                     </div>
 
                     <div class="form-group">
@@ -4517,7 +5117,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Valeur Totale (Ar)</label>
-                        <input type="number" class="form-input" id="reception-total-value" readonly>
+                        <input type="number" class="form-input" id="reception-total-value" readonly tabindex="-1">
                     </div>
                 </div>
                 <div class="btn-group">
@@ -4545,17 +5145,23 @@
                     <label class="form-label">Date</label>
                     <input type="date" class="form-input" id="delivery-date" required>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label">Exportateur</label>
+                    <input type="text" class="form-input" id="delivery-exporter" placeholder="Nom de l'exportateur">
+                </div>
+
                 <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
                     <div class="form-group">
                         <label class="form-label">N° BL</label>
-                        <input type="text" class="form-input" id="delivery-bl" placeholder="Auto" readonly>
+                        <input type="text" class="form-input" id="delivery-bl" placeholder="Auto" readonly tabindex="-1">
                     </div>
                     <div class="form-group">
                         <label class="form-label">N° Facture</label>
-                        <input type="text" class="form-input" id="delivery-invoice" placeholder="Auto" readonly>
+                        <input type="text" class="form-input" id="delivery-invoice" placeholder="Auto" readonly tabindex="-1">
                     </div>
                 </div>
-                <!-- === BLOC VAOVAO AMPIANA === -->
+                <!-- BLOC QUALITÉ -->
                 <div class="form-group">
                     <label class="form-label">Qualité de la Vanille</label>
                     <input type="text" class="form-input" id="delivery-quality" list="quality-list" required placeholder="Sélectionner ou saisir la qualité">
@@ -4580,11 +5186,11 @@
                             <input type="text" class="form-input" id="delivery-quick-tare-input"
                                 placeholder="Tare" style="width: 70px; background: var(--md-sys-color-surface-variant); border: 1px solid var(--md-sys-color-outline); font-weight: bold; color: var(--md-sys-color-primary);"
                                 oninput="updateDeliveryFromQuickWeights()">
-                            <button type="button" class="btn btn-primary" onclick="addDeliveryQuickWeight()"
-                                style="padding: 0 20px; white-space: nowrap;">
-                                <span class="material-icons" style="font-size: 18px;">add</span>
-                                Hampiditra
+                            <button type="button" class="btn btn-primary btn-add-weight" onclick="addDeliveryQuickWeight" style="padding: 0 20px; white-space: nowrap">
+                                <span class="material-icons" style="font-size: 18px">add</span>
+                                <span class="btn-text">Ajouter</span>
                             </button>
+
                         </div>
                     </div>
 
@@ -4661,7 +5267,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Poids Net (kg)</label>
-                        <input type="text" class="form-input" id="delivery-weight" required readonly>
+                        <input type="text" class="form-input" id="delivery-weight" required readonly tabindex="-1">
                     </div>
                 </div>
 
@@ -4671,12 +5277,9 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Valeur Totale (Ar)</label>
-                    <input type="text" class="form-input" id="delivery-total-value" readonly>
+                    <input type="text" class="form-input" id="delivery-total-value" readonly tabindex="-1">
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Exportateur</label>
-                    <input type="text" class="form-input" id="delivery-exporter">
-                </div>
+                
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline"
                         onclick="closeModal('delivery-modal')">Annuler</button>
@@ -4872,6 +5475,9 @@
         let pendingOperations = [];
         let quickWeights = [];
         let deliveryQuickWeights = [];
+        let currentYear = new Date().getFullYear();
+        const ACTIVE_YEAR_STORAGE_KEY = 'behavana_active_year';
+
         function executeWhenReady(operation) {
             if (dbInitialized && db) {
                 operation();
@@ -4885,6 +5491,43 @@
                 operation();
             }
         }
+
+        function getYearFromDateString(dateStr) {
+            if (!dateStr) return null;
+            const d = new Date(dateStr);
+            if (Number.isNaN(d.getTime())) return null;
+            return d.getFullYear();
+        }
+
+        function isItemInCurrentYear(item) {
+            if (!item || !item.date) return false;
+            return getYearFromDateString(item.date) === currentYear;
+        }
+
+        function getAdvancesForCurrentYear() {
+            return (appData.advances || []).filter(isItemInCurrentYear);
+        }
+
+        function getReceptionsForCurrentYear() {
+            return (appData.receptions || []).filter(isItemInCurrentYear);
+        }
+
+        function getDeliveriesForCurrentYear() {
+            return (appData.deliveries || []).filter(isItemInCurrentYear);
+        }
+
+        function getExpensesForCurrentYear() {
+            return (appData.expenses || []).filter(isItemInCurrentYear);
+        }
+
+        function getRemboursementsForCurrentYear() {
+            return (appData.remboursements || []).filter(isItemInCurrentYear);
+        }
+
+        function getPaiementsForCurrentYear() {
+            return (appData.paiements || []).filter(isItemInCurrentYear);
+        }
+
         function initDB() {
             if (!window.indexedDB) {
                 console.warn('IndexedDB not supported, using memory storage');
@@ -5117,13 +5760,19 @@
             appData.collectors.forEach(collector => {
                 calculationCache.balances[collector.id] = calculateCollectorBalance(collector.id);
             });
+            const advYear  = getAdvancesForCurrentYear();
+            const expYear  = getExpensesForCurrentYear();
+            const recYear  = getReceptionsForCurrentYear();
+            const rembYear = getRemboursementsForCurrentYear();
+
             calculationCache.totals = {
-                advances: appData.advances.reduce((sum, a) => sum + a.amount, 0),
-                expenses: (appData.expenses || []).reduce((sum, e) => sum + e.amount, 0),
-                receptions: appData.receptions.reduce((sum, r) => sum + r.totalValue, 0),
-                weight: appData.receptions.reduce((sum, r) => sum + r.netWeight, 0),
-                remboursements: (appData.remboursements || []).reduce((sum, r) => sum + r.amount, 0)
+                advances:      advYear.reduce((s,a) => s + a.amount, 0),
+                expenses:      expYear.reduce((s,e) => s + e.amount, 0),
+                receptions:    recYear.reduce((s,r) => s + r.totalValue, 0),
+                weight:        recYear.reduce((s,r) => s + r.netWeight, 0),
+                remboursements:rembYear.reduce((s,r) => s + r.amount, 0)
             };
+
             calculationCache.isValid = true;
             console.timeEnd('Cache Build');
         }
@@ -5169,20 +5818,40 @@
             };
         }
         function updateEnhancedDashboard() {
-            const expensesData = appData.expenses || [];
-            const advancesData = appData.advances || [];
-            const receptionsData = appData.receptions || [];
-            const collectorsData = appData.collectors || [];
-            const deliveriesData = appData.deliveries || [];
+            const expensesData = getExpensesForCurrentYear();
+            const advancesData = getAdvancesForCurrentYear();
+            const receptionsData = getReceptionsForCurrentYear();
+            const deliveriesData = getDeliveriesForCurrentYear();
+            
+            // ✅ FILTRER: Collecteurs actifs (avec données) ET disponibles dans l'année
+            const collectorsData = appData.collectors.filter(collector => {
+                // D'abord vérifier si le collecteur existe dans cette année
+                if (!isCollectorAvailableInCurrentYear(collector)) {
+                    return false;
+                }
+                
+                // Ensuite vérifier s'il a des données
+                const hasAdvances = advancesData.some(a => a.collectorId === collector.id);
+                const hasReceptions = receptionsData.some(r => r.collectorId === collector.id);
+                const hasRemboursements = getRemboursementsForCurrentYear().some(rem => rem.collectorId === collector.id);
+                const hasPaiements = getPaiementsForCurrentYear().some(p => p.collectorId === collector.id);
+                
+                return hasAdvances || hasReceptions || hasRemboursements || hasPaiements;
+            });
+            
+            // ... reste du code identique
+            
             const totalAdvances = advancesData.reduce((sum, advance) => sum + advance.amount, 0);
             const totalExpenses = expensesData.reduce((sum, expense) => sum + expense.amount, 0);
             const totalMoneyOut = totalAdvances + totalExpenses;
             const totalVanillaValue = receptionsData.reduce((sum, reception) => sum + reception.totalValue, 0);
-            const totalRemboursements = (appData.remboursements || []).reduce((sum, rem) => sum + rem.amount, 0);
+            const totalRemboursements = appData.remboursements
+                .reduce((sum, rem) => sum + rem.amount, 0);
             const totalMoneyIn = totalVanillaValue + totalRemboursements;
             const totalVanillaWeight = receptionsData.reduce((sum, reception) => sum + reception.netWeight, 0);
             const balance = totalMoneyIn - totalMoneyOut;
-            const recoveryRate = totalMoneyOut > 0 ? (totalVanillaValue / totalMoneyOut * 100) : 0;
+            const recoveryRate = totalMoneyOut > 0 ? (totalVanillaValue / totalMoneyOut) * 100 : 0;
+            
             const globalBalanceInfo = {
                 balance: balance,
                 recoveryRate: recoveryRate.toFixed(1),
@@ -5193,19 +5862,25 @@
                 totalMoneyOut: totalMoneyOut,
                 totalVanillaValue: totalVanillaValue
             };
+            
             document.getElementById('total-advances').textContent = formatCurrency(totalAdvances);
             document.getElementById('total-expenses').textContent = formatCurrency(totalExpenses);
             document.getElementById('total-vanilla-value').textContent = formatCurrency(totalVanillaValue);
             document.getElementById('total-vanilla-weight').textContent = totalVanillaWeight.toFixed(2) + ' kg';
+            
             const totalTransactions = advancesData.length + receptionsData.length + deliveriesData.length + expensesData.length;
+            
             document.getElementById('overview-collectors').textContent = collectorsData.length;
             document.getElementById('overview-transactions').textContent = totalTransactions;
             document.getElementById('overview-month').textContent = getCurrentMonth();
+            
             updateGlobalBalanceCard(globalBalanceInfo);
             updateInsights(globalBalanceInfo);
             updateRentabiliteInsights();
             updateProgressBars(globalBalanceInfo, totalVanillaWeight);
         }
+
+
         function updateGlobalBalanceCard(balanceInfo) {
             const soldeCard = document.getElementById('solde-global-card');
             const soldeValue = document.getElementById('solde-global');
@@ -5315,6 +5990,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             initDB();
             loadSettings();
+            initYearDisplay();
+            validateCollectorNameLive();
+            validateCollectorCINLive();
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -5865,23 +6543,44 @@
             const form = document.getElementById('collector-form');
             const name = capitalizeWords(document.getElementById('collector-name').value);
             const phone = document.getElementById('collector-phone').value.replace(/\s/g, '');
-            const cin = document.getElementById('collector-cin').value;
+            const cin = document.getElementById('collector-cin').value.trim();
             const cinDate = document.getElementById('collector-cin-date').value;
             const address = document.getElementById('collector-address').value;
+            
+            // Validation téléphone
             if (phone && (phone.length !== 10 || !phone.startsWith('0'))) {
                 alert('Le numéro de téléphone doit contenir 10 chiffres et commencer par 0.');
                 return;
             }
-            const existingCollector = appData.collectors.find(c => {
-                if (c && c.name) {
-                    return c.name.toLowerCase() === name.toLowerCase() && c.id != form.dataset.editId;
-                }
-                return false;
+            
+            const editId = form.dataset.editId;
+            
+            // Vérifier unicité du nom
+            const existingName = appData.collectors.find(c => {
+                if (editId && c.id == editId) return false;
+                return c.name.toLowerCase() === name.toLowerCase();
             });
-            if (existingCollector) {
-                alert('Un collecteur avec ce nom existe déjà!');
+            
+            if (existingName) {
+                showToast('❌ Un collecteur avec ce nom existe déjà!', 'error', 3000);
+                document.getElementById('collector-name').focus();
                 return;
             }
+            
+            // Vérifier unicité du CIN
+            if (cin) {
+                const existingCIN = appData.collectors.find(c => {
+                    if (editId && c.id == editId) return false;
+                    return c.cin && c.cin.toLowerCase() === cin.toLowerCase();
+                });
+                
+                if (existingCIN) {
+                    showToast('❌ Un collecteur avec ce N° CIN existe déjà!', 'error', 3000);
+                    document.getElementById('collector-cin').focus();
+                    return;
+                }
+            }
+            
             const collector = {
                 name: name,
                 phone: phone,
@@ -5890,13 +6589,16 @@
                 address: address,
                 createdAt: new Date().toISOString()
             };
-            if (form.dataset.editId) {
-                collector.id = parseInt(form.dataset.editId);
+            
+            if (editId) {
+                collector.id = parseInt(editId);
             }
+            
             saveToDB('collectors', collector);
             closeModal('collector-modal');
-            showToast('Collecteur enregistré avec succès!');
+            showToast('✅ Collecteur enregistré avec succès!', 'success');
         }
+
         function saveAdvance() {
             const form = document.getElementById('advance-form');
             const cleanAmount = document.getElementById('advance-amount').value.replace(/\D/g, '');
@@ -6195,68 +6897,58 @@
             renderDeliveryQuickWeights();
             calculateDeliveryValues();
         }
-        function updateAdvanceCollectorBalance() {
-            const collectorId = document.getElementById('advance-collector').value;
-            const container = document.getElementById('advance-collector-balance-container');
-            const balanceSpan = document.getElementById('advance-collector-balance');
-            
-            if (!collectorId) {
-                container.style.display = 'none';
-                return;
-            }
-            
-            const balance = getCachedBalance(parseInt(collectorId));
-            const status = getCollectorStatus(balance);
-            
-            container.style.display = 'block';
-            balanceSpan.textContent = `${formatCurrency(Math.abs(balance))} Ar (${status.label})`;
-            
-            // Loko arakaraka ny statut
-            if (balance > 0) {
-                balanceSpan.style.color = '#2e7d32'; // Maitso ho an'ny créditeur
-            } else if (balance < 0) {
-                balanceSpan.style.color = '#d32f2f'; // Mena ho an'ny débiteur
-            } else {
-                balanceSpan.style.color = '#666';
-            }
-        }
-
         function updateCollectorSelects() {
             const selects = ['advance-collector', 'reception-collector', 'advance-filter-collector', 'analysis-filter-collector'];
+            
             selects.forEach(selectId => {
                 const select = document.getElementById(selectId);
                 const currentValue = select.value;
+                
+                // Garder seulement la première option (vide)
                 while (select.children.length > 1) {
                     select.removeChild(select.lastChild);
                 }
-                appData.collectors.forEach(collector => {
+                
+                // ✅ FILTRER: Seulement les collecteurs disponibles dans l'année actuelle
+                const availableCollectors = appData.collectors.filter(isCollectorAvailableInCurrentYear);
+                
+                availableCollectors.forEach(collector => {
                     const option = document.createElement('option');
                     option.value = collector.id;
                     option.textContent = collector.name;
                     select.appendChild(option);
                 });
+                
                 select.value = currentValue;
             });
         }
+
         function updateCollectorsTable() {
             const tbody = document.getElementById('collectors-table');
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
-            if (appData.collectors.length === 0) {
+            
+            // ✅ FILTRER: Seulement les collecteurs créés avant ou pendant l'année actuelle
+            const availableCollectors = appData.collectors.filter(isCollectorAvailableInCurrentYear);
+            
+            if (availableCollectors.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="8" class="empty-state">
                             <div class="material-icons">people_outline</div>
-                            <div>Aucun collecteur enregistré</div>
+                            <div>Aucun collecteur pour l'année ${currentYear}</div>
                         </td>
                     </tr>
                 `;
                 return;
             }
-            const paginatedCollectors = getPaginatedData(appData.collectors, 'collectors');
+            
+            const paginatedCollectors = getPaginatedData(availableCollectors, 'collectors');
+            
             paginatedCollectors.forEach(collector => {
                 const balance = getCachedBalance(collector.id);
                 const status = getCollectorStatus(balance);
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td data-label="Nom">${collector.name}</td>
@@ -6277,19 +6969,38 @@
                 `;
                 tbody.appendChild(row);
             });
+            
             let paginationDiv = tableWrapper.querySelector('.pagination-controls');
             if (!paginationDiv) {
                 paginationDiv = document.createElement('div');
                 paginationDiv.className = 'pagination-controls';
                 tableWrapper.appendChild(paginationDiv);
             }
-            paginationDiv.innerHTML = createPaginationControls('collectors', appData.collectors.length);
+            paginationDiv.innerHTML = createPaginationControls('collectors', availableCollectors.length);
             initTableSorting();
         }
+
+
+        // Ajoute cette fonction après getYearFromDateString()
+        function getCollectorCreationYear(collector) {
+            if (!collector.createdAt) return null;
+            const d = new Date(collector.createdAt);
+            if (Number.isNaN(d.getTime())) return null;
+            return d.getFullYear();
+        }
+
+        // Fonction pour vérifier si un collecteur existe dans l'année actuelle
+        function isCollectorAvailableInCurrentYear(collector) {
+            const creationYear = getCollectorCreationYear(collector);
+            if (!creationYear) return true; // Si pas de date, on l'affiche (ancien collecteur)
+            return creationYear <= currentYear; // Afficher si créé avant ou pendant l'année actuelle
+        }
+
         function updateAdvancesTable() {
             const tbody = document.getElementById('advances-table');
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
+            const sortedAdvances = filterAdvances();
             const filteredAdvances = filterAdvances();
             if (filteredAdvances.length === 0) {
                 tbody.innerHTML = `
@@ -6335,18 +7046,25 @@
             const tbody = document.getElementById('reception-table');
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
-            if (appData.receptions.length === 0) {
+
+            // 1) On ne garde que les réceptions de l'année active
+            const receptionsForYear = getReceptionsForCurrentYear();
+
+            if (receptionsForYear.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="8" class="empty-state">
                             <div class="material-icons">inventory</div>
-                            <div>Aucune réception enregistrée</div>
+                            <div>Aucune réception enregistrée pour cette année</div>
                         </td>
                     </tr>
                 `;
                 return;
             }
-            const paginatedReceptions = getPaginatedData(appData.receptions, 'receptions');
+
+            // 2) Pagination sur ces données filtrées
+            const paginatedReceptions = getPaginatedData(receptionsForYear, 'receptions');
+
             paginatedReceptions.forEach(reception => {
                 const collector = appData.collectors.find(c => c.id === reception.collectorId);
                 const row = document.createElement('tr');
@@ -6356,7 +7074,7 @@
                     <td>${reception.grossWeight} kg</td>
                     <td>${reception.netWeight} kg</td>
                     <td><span class="status-badge status-${reception.quality.toLowerCase()}">${reception.quality}</span></td>
-                    <td>${formatCurrency(reception.price)}/kg</td>
+                    <td>${formatCurrency(reception.price)}kg</td>
                     <td>${formatCurrency(reception.totalValue)}</td>
                     <td class="actions-cell">
                         <button class="btn btn-icon btn-outline" onclick="openReceptionModal(${reception.id})" title="Modifier">
@@ -6372,43 +7090,56 @@
                 `;
                 tbody.appendChild(row);
             });
+
             let paginationDiv = tableWrapper.querySelector('.pagination-controls');
             if (!paginationDiv) {
                 paginationDiv = document.createElement('div');
                 paginationDiv.className = 'pagination-controls';
                 tableWrapper.appendChild(paginationDiv);
             }
-            paginationDiv.innerHTML = createPaginationControls('receptions', appData.receptions.length);
+            paginationDiv.innerHTML = createPaginationControls('receptions', receptionsForYear.length);
             initTableSorting();
         }
+
         function updateDeliveryTable() {
             const tbody = document.getElementById('delivery-table');
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
-            if (appData.deliveries.length === 0) {
+
+            // 1) On part des livraisons de l'année active
+            const deliveriesForYear = getDeliveriesForCurrentYear();
+
+            if (deliveriesForYear.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" class="empty-state">
                             <div class="material-icons">local_shipping</div>
-                            <div>Aucune livraison enregistrée</div>
+                            <div>Aucune livraison enregistrée pour cette année</div>
                         </td>
                     </tr>
                 `;
                 return;
             }
-            const paginatedDeliveries = getPaginatedData(appData.deliveries, 'deliveries');
+
+            // 2) Pagination sur les données filtrées
+            const paginatedDeliveries = getPaginatedData(deliveriesForYear, 'deliveries');
+
             paginatedDeliveries.forEach(delivery => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${formatDate(delivery.date)}</td>
                     <td>
-                        <div style="font-weight: 600;">${delivery.bl || '-'}</div>
-                        <div style="font-size: 11px; opacity: 0.7;">${delivery.invoice}</div>
+                        <div style="font-weight: 600">${delivery.bl || '-'}</div>
+                        <div style="font-size: 11px; opacity: 0.7">${delivery.invoice || ''}</div>
                     </td>
-                    <td><span class="status-badge" style="background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container);">${delivery.quality || 'N/A'}</span></td>
+                    <td>
+                        <span class="status-badge" style="background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container)">
+                            ${delivery.quality || 'N/A'}
+                        </span>
+                    </td>
                     <td>${delivery.weight} kg</td>
                     <td>${formatCurrency(delivery.totalValue)}</td>
-                    <td>${delivery.exporter}</td>
+                    <td>${delivery.exporter || ''}</td>
                     <td class="actions-cell">
                         <button class="btn btn-icon btn-outline" onclick="openDeliveryModal(${delivery.id})" title="Modifier">
                             <span class="material-icons">edit</span>
@@ -6426,15 +7157,17 @@
                 `;
                 tbody.appendChild(row);
             });
+
             let paginationDiv = tableWrapper.querySelector('.pagination-controls');
             if (!paginationDiv) {
                 paginationDiv = document.createElement('div');
                 paginationDiv.className = 'pagination-controls';
                 tableWrapper.appendChild(paginationDiv);
             }
-            paginationDiv.innerHTML = createPaginationControls('deliveries', appData.deliveries.length);
+            paginationDiv.innerHTML = createPaginationControls('deliveries', deliveriesForYear.length);
             initTableSorting();
         }
+
         function updateAnalysisTable() {
             console.time('updateAnalysisTable');
             const tbody = document.getElementById('analysis-table');
@@ -6462,19 +7195,29 @@
             const paiementsParCollecteur = {};
             const remboursementsParCollecteur = {};
             const receptionsParCollecteur = {};
-            (appData.paiements || []).forEach(p => {
+
+            // 1) On part des données de l'année courante
+            const paiementsYear      = getPaiementsForCurrentYear();
+            const remboursementsYear = getRemboursementsForCurrentYear();
+            const receptionsYear     = getReceptionsForCurrentYear();
+
+            // 2) Agrégation par collecteur
+            paiementsYear.forEach(p => {
                 if (!paiementsParCollecteur[p.collectorId]) paiementsParCollecteur[p.collectorId] = 0;
                 paiementsParCollecteur[p.collectorId] += p.amount;
             });
-            (appData.remboursements || []).forEach(rem => {
+
+            remboursementsYear.forEach(rem => {
                 if (!remboursementsParCollecteur[rem.collectorId]) remboursementsParCollecteur[rem.collectorId] = 0;
                 remboursementsParCollecteur[rem.collectorId] += rem.amount;
             });
-            appData.receptions.forEach(r => {
+
+            receptionsYear.forEach(r => {
                 if (filterQuality && r.quality !== filterQuality) return;
                 if (!receptionsParCollecteur[r.collectorId]) receptionsParCollecteur[r.collectorId] = 0;
                 receptionsParCollecteur[r.collectorId] += r.totalValue;
             });
+
             const paginatedCollectors = getPaginatedData(collectorsToShow, 'analysis');
             const fragment = document.createDocumentFragment();
             paginatedCollectors.forEach(collector => {
@@ -6537,32 +7280,66 @@
             select.value = currentValue;
         }
         function calculateCollectorBalance(collectorId) {
+            const advances = getAdvancesForCurrentYear()
+                .filter(advance => advance.collectorId === collectorId);
+
+            const paiements = getPaiementsForCurrentYear()
+                .filter(p => p.collectorId === collectorId);
+
+            const receptions = getReceptionsForCurrentYear()
+                .filter(reception => reception.collectorId === collectorId);
+
+            const remboursements = getRemboursementsForCurrentYear()
+                .filter(rem => rem.collectorId === collectorId);
+
+            const totalAdvances = advances.reduce((sum, a) => sum + a.amount, 0);
+            const totalPaiements = paiements.reduce((sum, p) => sum + p.amount, 0);
+            const totalDebits = totalAdvances + totalPaiements;
+
+            const totalDeliveries = receptions.reduce((sum, r) => sum + r.totalValue, 0);
+            const totalRemboursements = remboursements.reduce((sum, rem) => sum + rem.amount, 0);
+            const totalCredits = totalDeliveries + totalRemboursements;
+
+            return totalCredits - totalDebits;
+        }
+
+        function calculateCollectorBalanceGlobal(collectorId) {
+            // On calcule sur TOUTES les données, sans filtre d'année
             const totalAdvances = (appData.advances || [])
-                .filter(advance => advance.collectorId === collectorId)
-                .reduce((sum, advance) => sum + advance.amount, 0);
+                .filter(a => a.collectorId === collectorId)
+                .reduce((sum, a) => sum + a.amount, 0);
+
             const totalPaiements = (appData.paiements || [])
                 .filter(p => p.collectorId === collectorId)
                 .reduce((sum, p) => sum + p.amount, 0);
+
             const totalDebits = totalAdvances + totalPaiements;
+
             const totalDeliveries = (appData.receptions || [])
-                .filter(reception => reception.collectorId === collectorId)
-                .reduce((sum, reception) => sum + reception.totalValue, 0);
+                .filter(r => r.collectorId === collectorId)
+                .reduce((sum, r) => sum + r.totalValue, 0);
+
             const totalRemboursements = (appData.remboursements || [])
                 .filter(rem => rem.collectorId === collectorId)
                 .reduce((sum, rem) => sum + rem.amount, 0);
+
             const totalCredits = totalDeliveries + totalRemboursements;
+
             return totalCredits - totalDebits;
         }
+
         function getTotalAdvances(collectorId) {
-            return appData.advances
+            return getAdvancesForCurrentYear()
                 .filter(advance => advance.collectorId === collectorId)
                 .reduce((sum, advance) => sum + advance.amount, 0);
         }
+
         function getTotalDeliveries(collectorId) {
-            return appData.receptions
+            return getReceptionsForCurrentYear()
                 .filter(reception => reception.collectorId === collectorId)
                 .reduce((sum, reception) => sum + reception.totalValue, 0);
         }
+
         function getCollectorStatus(balance) {
             if (balance > 0) {
                 return { class: 'crediteur', label: 'Créditeur' };
@@ -6573,7 +7350,7 @@
             }
         }
         function filterAdvances() {
-            let filtered = [...appData.advances];
+            let filtered = getAdvancesForCurrentYear();
             const collectorFilter = document.getElementById('advance-filter-collector').value;
             const startDate = document.getElementById('advance-filter-start').value;
             const endDate = document.getElementById('advance-filter-end').value;
@@ -7048,7 +7825,7 @@
                         .container { max-width: 800px; margin: auto; }
                         .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #6750a4; padding-bottom: 20px; margin-bottom: 30px; }
                         .company-info h1 { color: #6750a4; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 1px; }
-                        .company-info p { margin: 2px 0; color: #666; font-size: 14px; }
+                        .company-info p { margin: 2px 0; color: #6b7280; font-size: 10px; }
                         .doc-info { text-align: right; }
                         .doc-info h2 { margin: 0; color: #6750a4; font-size: 22px; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
                         .doc-meta { font-size: 14px; color: #444; }
@@ -7088,7 +7865,7 @@
                         <div class="header">
                             <div class="company-info">
                                 <h1>BEHAVANA</h1>
-                                <p>Collecte et Exportation de Vanille</p>
+                                <p>Collecte et Préparation de Vanille</p>
                                 <p>Antalaha, Madagascar</p>
                             </div>
                             <div class="doc-info">
@@ -7169,7 +7946,7 @@
                         </div>
 
                         <div class="footer">
-                            <p>Document généré par le Système de Gestion BEHAVANA le ${new Date().toLocaleString()}</p>
+                            <p>Document généré par BEHAVANA le ${new Date().toLocaleString()}</p>
                         </div>
                     </div>
                 </body>
@@ -7390,10 +8167,14 @@
             let totalCrediteur = 0;
             appData.collectors.forEach(collector => {
                 const totalAdvances = getTotalAdvances(collector.id);
-                const totalPaiements = (appData.paiements || []).filter(p => p.collectorId === collector.id).reduce((sum, p) => sum + p.amount, 0);
+                const totalPaiements = getPaiementsForCurrentYear()
+                    .filter(p => p.collectorId === collector.id)
+                    .reduce((sum, p) => sum + p.amount, 0);
                 const totalDebits = totalAdvances + totalPaiements;
                 const totalDeliveries = getTotalDeliveries(collector.id);
-                const totalRemboursements = (appData.remboursements || []).filter(rem => rem.collectorId === collector.id).reduce((sum, rem) => sum + rem.amount, 0);
+                const totalRemboursements = getRemboursementsForCurrentYear()
+                    .filter(rem => rem.collectorId === collector.id)
+                    .reduce((sum, rem) => sum + rem.amount, 0);
                 const totalCredits = totalDeliveries + totalRemboursements;
                 const balance = totalCredits - totalDebits;
                 const status = getCollectorStatus(balance);
@@ -7437,7 +8218,7 @@
             printWindow.print();
         }
         function exportPoidsAnalysis() {
-            const toutesLesQualites = [...new Set(appData.receptions.map(r => r.quality))].sort();
+            const toutesLesQualites = [...new Set(receptionsYear.map(r => r.quality))].sort();
             let pdfContent = `
                 <html>
                 <head>
@@ -7707,10 +8488,18 @@
                 alert("Tsy hita ny Collecteur!");
                 return;
             }
-            const advances = appData.advances.filter(a => a.collectorId === collectorId);
-            const receptions = appData.receptions.filter(r => r.collectorId === collectorId);
-            const remboursements = (appData.remboursements || []).filter(rem => rem.collectorId === collectorId);
-            const paiements = (appData.paiements || []).filter(p => p.collectorId === collectorId);
+            const advances = getAdvancesForCurrentYear()
+                .filter(a => a.collectorId === collectorId);
+
+            const receptions = getReceptionsForCurrentYear()
+                .filter(r => r.collectorId === collectorId);
+
+            const remboursements = getRemboursementsForCurrentYear()
+                .filter(rem => rem.collectorId === collectorId);
+
+            const paiements = getPaiementsForCurrentYear()
+                .filter(p => p.collectorId === collectorId);
+
             const totalAdvances = advances.reduce((sum, a) => sum + a.amount, 0);
             const totalDeliveries = receptions.reduce((sum, r) => sum + r.totalValue, 0);
             const totalRemboursements = remboursements.reduce((sum, rem) => sum + rem.amount, 0);
@@ -7766,16 +8555,33 @@
                         <div style="background: var(--md-sys-color-error-container); color: var(--md-sys-color-on-error-container); padding: 20px; border-radius: 12px; text-align: center;">
                             <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">${formatCurrency(totalAdvances)}</div>
                             <div style="font-size: 14px; opacity: 0.8;">Total Avances</div>
+                            <div style="font-size: 11px; margin-top: 4px; opacity: 0.7;">(Année ${currentYear})</div>
                         </div>
                         <div style="background: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container); padding: 20px; border-radius: 12px; text-align: center;">
                             <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">${formatCurrency(totalDeliveries)}</div>
                             <div style="font-size: 14px; opacity: 0.8;">Total Livraisons</div>
+                            <div style="font-size: 11px; margin-top: 4px; opacity: 0.7;">(Année ${currentYear})</div>
                         </div>
                         <div style="background: ${balance >= 0 ? 'var(--md-sys-color-success-container)' : 'var(--md-sys-color-error-container)'}; color: ${balance >= 0 ? 'var(--md-sys-color-on-success-container)' : 'var(--md-sys-color-on-error-container)'}; padding: 20px; border-radius: 12px; text-align: center;">
                             <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">${formatCurrency(Math.abs(balance))}</div>
-                            <div style="font-size: 14px; opacity: 0.8;">Solde Actuel</div>
+                            <div style="font-size: 14px; opacity: 0.8;">Solde ${currentYear}</div>
                             <div style="font-size: 12px; margin-top: 4px; font-weight: 500;">${status.label}</div>
                         </div>
+
+                        <!-- NOUVELLE CARTE : Solde Global -->
+                        ${(() => {
+                            const globalBalance = calculateCollectorBalanceGlobal(collectorId);
+                            const globalStatus = getCollectorStatus(globalBalance);
+                            return `
+                            <div style="background: ${globalBalance >= 0 ? 'var(--md-sys-color-primary-container)' : 'var(--md-sys-color-error-container)'}; color: ${globalBalance >= 0 ? 'var(--md-sys-color-on-primary-container)' : 'var(--md-sys-color-on-error-container)'}; padding: 20px; border-radius: 12px; text-align: center; border: 2px solid var(--md-sys-color-primary);">
+                                <div style="font-size: 24px; font-weight: bold; margin-bottom: 4px;">${formatCurrency(Math.abs(globalBalance))}</div>
+                                <div style="font-size: 14px; opacity: 0.8;">Dette Totale</div>
+                                <div style="font-size: 11px; margin-top: 4px; opacity: 0.7;">(Toutes années)</div>
+                                <div style="font-size: 12px; margin-top: 4px; font-weight: 500;">${globalStatus.label}</div>
+                            </div>
+                            `;
+                        })()}
+
                     </div>
                     <!-- Transaction History Tabs (efa ahitsy ny filaharana) -->
                     <div style="margin-bottom: 24px;">
@@ -8120,12 +8926,12 @@
             switch (tableName) {
                 case 'collectors': return appData.collectors || [];
                 case 'advances': return filterAdvances();
-                case 'receptions': return appData.receptions || [];
-                case 'deliveries': return appData.deliveries || [];
+                case 'receptions': return getReceptionsForCurrentYear();
+                case 'deliveries': return getDeliveriesForCurrentYear();
                 case 'analysis': return appData.collectors || [];
-                case 'expenses': return appData.expenses || [];
-                case 'remboursements': return appData.remboursements || [];
-                case 'paiements': return appData.paiements || [];
+                case 'expenses': return getExpensesForCurrentYear();
+                case 'remboursements': return getRemboursementsForCurrentYear();
+                case 'paiements': return getPaiementsForCurrentYear();
                 default: return [];
             }
         }
@@ -8806,7 +9612,7 @@
                 }
             });
             const advancesByCollector = {};
-            appData.advances.forEach(advance => {
+            getAdvancesForCurrentYear().forEach(advance => {
                 const collector = appData.collectors.find(c => c.id === advance.collectorId);
                 if (collector) {
                     advancesByCollector[collector.name] = (advancesByCollector[collector.name] || 0) + advance.amount;
@@ -8863,10 +9669,9 @@
                 }
             });
             const weightByQuality = {};
-            appData.receptions.forEach(reception => {
-                if (reception.quality) {
-                    weightByQuality[reception.quality] = (weightByQuality[reception.quality] || 0) + reception.netWeight;
-                }
+            getReceptionsForCurrentYear().forEach(reception => {
+                if (!weightByQuality[reception.quality]) weightByQuality[reception.quality] = 0;
+                weightByQuality[reception.quality] += reception.netWeight;
             });
             const qualityCtx = document.getElementById('qualityChart').getContext('2d');
             if (qualityChartInstance) qualityChartInstance.destroy();
@@ -8917,7 +9722,7 @@
                 `;
                 return;
             }
-            const sortedExpenses = [...appData.expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sortedExpenses = [...getExpensesForCurrentYear()].sort((a, b) => new Date(b.date) - new Date(a.date));
             const paginatedExpenses = getPaginatedData(sortedExpenses, 'expenses');
             paginatedExpenses.forEach(expense => {
                 const row = document.createElement('tr');
@@ -9133,7 +9938,7 @@
                 `;
                 return;
             }
-            const sortedRemboursements = [...remboursementsData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sortedRemboursements = [...getRemboursementsForCurrentYear()].sort((a, b) => new Date(b.date) - new Date(a.date));
             const paginatedRemboursements = getPaginatedData(sortedRemboursements, 'remboursements');
             paginatedRemboursements.forEach(rem => {
                 const collector = appData.collectors.find(c => c.id === rem.collectorId);
@@ -9239,7 +10044,7 @@
                 `;
                 return;
             }
-            const sortedPaiements = [...paiementsData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const sortedPaiements = [...getPaiementsForCurrentYear()].sort((a, b) => new Date(b.date) - new Date(a.date));
             const paginatedPaiements = getPaginatedData(sortedPaiements, 'paiements');
             paginatedPaiements.forEach(p => {
                 const collector = appData.collectors.find(c => c.id === p.collectorId);
@@ -9338,11 +10143,23 @@
                 showToast("Tsy hita ny collecteur!", "error");
                 return;
             }
-            const advances = appData.advances.filter(a => a.collectorId === collectorId);
-            const receptions = appData.receptions.filter(r => r.collectorId === collectorId);
-            const remboursements = (appData.remboursements || []).filter(rem => rem.collectorId === collectorId);
-            const paiements = (appData.paiements || []).filter(p => p.collectorId === collectorId);
+
+            // >>> Données filtrées sur l'année active <<<
+            const advances = getAdvancesForCurrentYear()
+                .filter(a => a.collectorId === collectorId);
+
+            const receptions = getReceptionsForCurrentYear()
+                .filter(r => r.collectorId === collectorId);
+
+            const remboursements = getRemboursementsForCurrentYear()
+                .filter(rem => rem.collectorId === collectorId);
+
+            const paiements = getPaiementsForCurrentYear()
+                .filter(p => p.collectorId === collectorId);
+            // <<< fin des 4 lignes modifiées >>>
+
             const workbook = XLSX.utils.book_new();
+
             const summaryData = [
                 ["Rapport Détaillé du Collecteur"],
                 [],
@@ -9350,16 +10167,18 @@
                 ["Téléphone:", collector.phone || 'N/A'],
                 ["CIN:", `${collector.cin || 'N/A'} (délivré le: ${collector.cinDate ? formatDate(collector.cinDate) : 'N/A'})`],
                 [],
-                ["RÉSUMÉ FINANCIER"],
+                ["RÉSUMÉ FINANCIER (Année " + currentYear + ")"],
                 ["Total Avances:", getTotalAdvances(collectorId)],
                 ["Total Livraisons (Valeur):", getTotalDeliveries(collectorId)],
                 ["Total Remboursements:", remboursements.reduce((sum, r) => sum + r.amount, 0)],
                 ["Total Paiements de Solde:", paiements.reduce((sum, p) => sum + p.amount, 0)],
                 ["Solde Actuel:", calculateCollectorBalance(collectorId)]
             ];
+
             const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
             summarySheet['!cols'] = [{ wch: 25 }, { wch: 25 }];
             XLSX.utils.book_append_sheet(workbook, summarySheet, "Résumé");
+
             const advancesData = advances.map(a => ({
                 Date: formatDate(a.date),
                 Motif: a.motif || '',
@@ -9368,16 +10187,20 @@
             const advancesSheet = XLSX.utils.json_to_sheet(advancesData);
             advancesSheet['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(workbook, advancesSheet, "Avances");
+
             const receptionsData = receptions.map(r => ({
                 Date: formatDate(r.date),
                 "Poids Net (kg)": r.netWeight,
-                Qualité: r.quality,
+                "Qualité": r.quality,
                 "Prix/kg": r.price,
-                Valeur: r.totalValue
+                "Valeur": r.totalValue
             }));
             const receptionsSheet = XLSX.utils.json_to_sheet(receptionsData);
-            receptionsSheet['!cols'] = [{ wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+            receptionsSheet['!cols'] = [
+                { wch: 12 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }
+            ];
             XLSX.utils.book_append_sheet(workbook, receptionsSheet, "Livraisons");
+
             const rembData = remboursements.map(r => ({
                 Date: formatDate(r.date),
                 Note: r.note || '',
@@ -9386,6 +10209,7 @@
             const rembSheet = XLSX.utils.json_to_sheet(rembData);
             rembSheet['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(workbook, rembSheet, "Remboursements");
+
             const paiementsData = paiements.map(p => ({
                 Date: formatDate(p.date),
                 Note: p.note || '',
@@ -9394,10 +10218,16 @@
             const paiementsSheet = XLSX.utils.json_to_sheet(paiementsData);
             paiementsSheet['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 15 }];
             XLSX.utils.book_append_sheet(workbook, paiementsSheet, "Paiements de Solde");
+
             const today = new Date().toISOString().split('T')[0];
-            XLSX.writeFile(workbook, `Details_${collector.name.replace(/\s/g, '_')}_${today}.xlsx`);
+            XLSX.writeFile(
+                workbook,
+                `Details_${collector.name.replace(/\s/g, '_')}_${currentYear}_${today}.xlsx`
+            );
+
             showToast("Export Excel vita soa aman-tsara!", "success");
         }
+
         if ('serviceWorker' in navigator) {
             document.addEventListener('DOMContentLoaded', () => {
                 initDB();
@@ -9450,9 +10280,9 @@
                 return;
             }
 
-            // Calcul data
+            // Calcul data - FILTRÉE PAR ANNÉE ACTUELLE
             const qualityData = {};
-            (appData.receptions || []).forEach(reception => {
+            (getReceptionsForCurrentYear() || []).forEach(reception => {  // <-- CHANGEMENT ICI
                 const quality = reception.quality || 'Non spécifié';
                 if (!qualityData[quality]) {
                     qualityData[quality] = { poids: 0, count: 0 };
@@ -9471,11 +10301,11 @@
                 <tr>
                     <td colspan="4" class="empty-state">
                     <div class="material-icons">inventory</div>
-                    <div>Aucune réception enregistrée</div>
+                    <div>Aucune réception pour l'année ${currentYear}</div>
                     </td>
                 </tr>
                 `;
-                console.log('⚠️ Aucune réception pour afficher');
+                console.log(`⚠️ Aucune réception pour l'année ${currentYear}`);
                 return;
             }
 
@@ -9510,8 +10340,9 @@
                 </tr>
             `;
 
-            console.log(`✅ Table rendered: ${sortedData.length} qualities, ${totalPoids.toFixed(2)} kg total`);
+            console.log(`✅ Table rendered: ${sortedData.length} qualities, ${totalPoids.toFixed(2)} kg total (Année ${currentYear})`);
         }
+
 
         // ========================================
 
@@ -9814,11 +10645,9 @@
                 qualityChartModalInstance.destroy();
             }
 
-
-
-            // Calcul ny data
+            // Calcul ny data - FILTRÉE PAR ANNÉE ACTUELLE
             const qualityData = {};
-            appData.receptions.forEach(reception => {
+            getReceptionsForCurrentYear().forEach(reception => {  // <-- CHANGEMENT ICI
                 const quality = reception.quality || 'Non spécifié';
                 if (!qualityData[quality]) {
                     qualityData[quality] = 0;
@@ -9864,7 +10693,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Distribution des Poids par Qualité de Vanille',
+                            text: `Distribution des Poids par Qualité - Année ${currentYear}`,  // <-- CHANGEMENT ICI
                             font: {
                                 size: 16,
                                 weight: 'bold'
@@ -9911,6 +10740,7 @@
                 }
             });
         }
+
 
         // Table ny data
         function renderQualityTable() {
@@ -9983,6 +10813,191 @@
             // ... code hafa ...
             makeQualityChartClickable();
         });
+
+        // Fonction pour changer l'année avec animation
+        function changeYear(direction) {
+            const display = document.getElementById('year-display');
+            const now = new Date().getFullYear();
+            const minYear = now - 5;
+            const maxYear = now + 2;
+            const newYear = currentYear + direction;
+            
+            // Vérifier les limites
+            if (newYear < minYear || newYear > maxYear) {
+                // Animation de "rejet"
+                display.style.color = '#ff4444';
+                display.style.transform = 'translateX(' + (direction * -10) + 'px)';
+                setTimeout(() => {
+                    display.style.color = '';
+                    display.style.transform = '';
+                }, 200);
+                return;
+            }
+            
+            // Animation de changement
+            display.classList.add('changing');
+            setTimeout(() => {
+                display.classList.remove('changing');
+            }, 300);
+            
+            // Mise à jour
+            currentYear = newYear;
+            display.textContent = currentYear;
+            localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+            
+            // Mettre à jour la barre de progression
+            updateYearTrack();
+            
+            // Mettre à jour le dashboard
+            const overviewMonthEl = document.getElementById('overview-month');
+            if (overviewMonthEl) {
+                overviewMonthEl.textContent = `Année ${currentYear}`;
+            }
+            
+            // Mettre à jour toutes les données
+            invalidateCache();
+            buildCache();
+            updateAllTables();
+            updateEnhancedDashboard();
+            updatePrixRevientAnalysis();
+            updateCharts();
+            
+            // Toast de confirmation
+            showToast(`Année ${currentYear}`, 'success', 1000);
+        }
+
+        // Mettre à jour la hauteur de la barre
+        function updateYearTrack() {
+            const track = document.getElementById('year-track-fill');
+            if (!track) return;
+            
+            const now = new Date().getFullYear();
+            const minYear = now - 5;
+            const maxYear = now + 2;
+            const range = maxYear - minYear;
+            const position = currentYear - minYear;
+            const percentage = (position / range) * 100;
+            
+            track.style.height = percentage + '%';
+        }
+
+        // Initialiser l'affichage au chargement
+        function initYearDisplay() {
+            const saved = parseInt(localStorage.getItem(ACTIVE_YEAR_STORAGE_KEY), 10);
+            const now = new Date().getFullYear();
+            currentYear = !isNaN(saved) ? saved : now;
+            
+            const display = document.getElementById('year-display');
+            if (display) {
+                display.textContent = currentYear;
+            }
+            
+            const overviewMonthEl = document.getElementById('overview-month');
+            if (overviewMonthEl) {
+                overviewMonthEl.textContent = `Année ${currentYear}`;
+            }
+            
+            // Initialiser la barre
+            updateYearTrack();
+        }
+
+        // Remplacer initYearSelector() par initYearDisplay() dans DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initDB();
+            loadSettings();
+            initYearDisplay(); // <-- ICI au lieu de initYearSelector()
+            // ... reste du code
+        });
+
+        // Validation en temps réel pour le nom du collecteur
+        function validateCollectorNameLive() {
+            const nameInput = document.getElementById('collector-name');
+            const form = document.getElementById('collector-form');
+            
+            if (!nameInput) return;
+            
+            // Créer le message d'erreur s'il n'existe pas
+            let errorMsg = nameInput.parentElement.querySelector('.error-message');
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.style.cssText = 'color: #d32f2f; font-size: 12px; margin-top: 4px; display: none;';
+                nameInput.parentElement.appendChild(errorMsg);
+            }
+            
+            nameInput.addEventListener('input', function() {
+                const name = this.value.trim();
+                const editId = form.dataset.editId;
+                
+                if (name.length === 0) {
+                    this.style.borderColor = '';
+                    errorMsg.style.display = 'none';
+                    return;
+                }
+                
+                // Vérifier si le nom existe déjà
+                const exists = appData.collectors.some(c => {
+                    if (editId && c.id == editId) return false; // Ignorer lors de la modification
+                    return c.name.toLowerCase() === name.toLowerCase();
+                });
+                
+                if (exists) {
+                    this.style.borderColor = '#d32f2f';
+                    this.style.borderWidth = '2px';
+                    errorMsg.textContent = '⚠️ Ce nom existe déjà!';
+                    errorMsg.style.display = 'block';
+                } else {
+                    this.style.borderColor = '#4caf50';
+                    this.style.borderWidth = '2px';
+                    errorMsg.style.display = 'none';
+                }
+            });
+        }
+
+        // Validation en temps réel pour le CIN
+        function validateCollectorCINLive() {
+            const cinInput = document.getElementById('collector-cin');
+            const form = document.getElementById('collector-form');
+            
+            if (!cinInput) return;
+            
+            // Créer le message d'erreur s'il n'existe pas
+            let errorMsg = cinInput.parentElement.querySelector('.error-message');
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.style.cssText = 'color: #d32f2f; font-size: 12px; margin-top: 4px; display: none;';
+                cinInput.parentElement.appendChild(errorMsg);
+            }
+            
+            cinInput.addEventListener('input', function() {
+                const cin = this.value.trim();
+                const editId = form.dataset.editId;
+                
+                if (cin.length === 0) {
+                    this.style.borderColor = '';
+                    errorMsg.style.display = 'none';
+                    return;
+                }
+                
+                // Vérifier si le CIN existe déjà
+                const exists = appData.collectors.some(c => {
+                    if (editId && c.id == editId) return false; // Ignorer lors de la modification
+                    return c.cin && c.cin.toLowerCase() === cin.toLowerCase();
+                });
+                
+                if (exists) {
+                    this.style.borderColor = '#d32f2f';
+                    this.style.borderWidth = '2px';
+                    errorMsg.textContent = '⚠️ Ce N° CIN existe déjà!';
+                    errorMsg.style.display = 'block';
+                } else {
+                    this.style.borderColor = '#4caf50';
+                    this.style.borderWidth = '2px';
+                    errorMsg.style.display = 'none';
+                }
+            });
+        }
 
     </script>
 </body>
