@@ -1,36 +1,86 @@
 {
   "name": "BEHAVANA - Gestion de Collecte",
   "short_name": "BEHAVANA",
-  "description": "Application de gestion des avances et de la collecte de vanille.",
+  "description": "Application de gestion des avances et de la collecte de vanille - Fonctionne offline",
   "lang": "fr-FR",
   
   "start_url": "/behavana-app/index.html",
   "scope": "/behavana-app/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   
   "background_color": "#10081c",
   "theme_color": "#6750a4",
   
-  "orientation": "portrait-primary",
-  
   "icons": [
     {
-      "src": "/behavana-app/logo.jpg",
+      "src": "/behavana-app/logo-192.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/behavana-app/logo.jpg",
+      "src": "/behavana-app/logo-512.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/behavana-app/logo.jpg",
+      "src": "/behavana-app/logo-maskable.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  
+  "categories": ["business", "productivity", "finance"],
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  
+  "screenshots": [
+    {
+      "src": "/behavana-app/screenshot1.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Ajouter Avance",
+      "short_name": "Avance",
+      "description": "Enregistrer une nouvelle avance",
+      "url": "/behavana-app/index.html#advances",
+      "icons": [
+        {
+          "src": "/behavana-app/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Réception Vanille",
+      "short_name": "Réception",
+      "description": "Enregistrer une réception",
+      "url": "/behavana-app/index.html#reception",
+      "icons": [
+        {
+          "src": "/behavana-app/logo-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  
+  "share_target": {
+    "action": "/behavana-app/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text"
+    }
+  }
 }

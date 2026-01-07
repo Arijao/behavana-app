@@ -8,23 +8,46 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Icons&family=Material+Symbols+Outlined&display=swap"
         rel="stylesheet">
 
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BEHAVANA - Système de Gestion</title>
-
-
-
+    
+    <!-- SEO & Description -->
+    <meta name="description" content="Application de gestion des avances et de la collecte de vanille. Fonctionne offline.">
+    <meta name="keywords" content="behavana, vanille, gestion, collecte, avances">
+    <meta name="author" content="BEHAVANA">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/behavana-app/manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" href="/behavana-app/logo.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="/behavana-app/logo.jpg" type="image/jpeg">
+    
+    <!-- Theme Color (Android) -->
+    <meta name="theme-color" content="#6750a4">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#10081c">
+    
+    <!-- Apple PWA Support (iOS) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BEHAVANA">
+    <link rel="apple-touch-icon" href="/behavana-app/logo.jpg">
+    
+    <!-- Windows/MS Support -->
+    <meta name="msapplication-TileColor" content="#6750a4">
+    <meta name="msapplication-TileImage" content="/behavana-app/logo.jpg">
+    
+    <!-- External Libraries -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- 1. Fifandraisana amin'ny Manifest -->    <!-- <link rel="manifest" href="/behavana-app/manifest.json"> -->
-
-    <!-- 2. Loko ho an'ny "address bar" amin'ny finday -->
-    <meta name="theme-color" content="#6750a4" />
-    <!-- 3. Sary masina ho an'ny fitaovana Apple -->
-    <link rel="apple-touch-icon" href="/behavana-app/logo.jpg">
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+
+
 
     <style>
         /* Landscape Mode Optimization for Small Screens */
@@ -4694,7 +4717,7 @@
                             <thead>
                                 <tr>
                                     <th>Collecteur</th>
-                                    <th>Total Avances</th>
+                                    <th>Total Débits (Avances + paiements.)</th>
                                     <th>Total Crédits (Livr. + Remb.)</th>
                                     <th>Solde</th>
                                     <th>Statut</th>
@@ -7101,68 +7124,106 @@
             const tbody = document.getElementById('analysis-table');
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
-            if (appData.collectors.length === 0) {
+            
+            // ✅ FILTRER: Seulement les collecteurs disponibles dans l'année actuelle
+            const availableCollectors = appData.collectors.filter(isCollectorAvailableInCurrentYear);
+            
+            if (availableCollectors.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" class="empty-state">
                             <div class="material-icons">analytics</div>
-                            <div>Aucune donnée d'analyse disponible</div>
+                            <div>Aucun collecteur disponible pour l'année ${currentYear}</div>
                         </td>
                     </tr>
                 `;
                 return;
             }
+            
             const filterCollectorId = document.getElementById('analysis-filter-collector').value;
             const filterQuality = document.getElementById('analysis-filter-quality').value;
-            const collectorsToShow = filterCollectorId ?
-                appData.collectors.filter(c => c.id == filterCollectorId) :
-                appData.collectors;
+            
+            // ✅ FILTRER: Utiliser availableCollectors au lieu de appData.collectors
+            let collectorsToShow = filterCollectorId ?
+                availableCollectors.filter(c => c.id == filterCollectorId) :
+                availableCollectors;
+            
             if (!calculationCache.isValid) {
                 buildCache();
             }
+            
             const paiementsParCollecteur = {};
             const remboursementsParCollecteur = {};
             const receptionsParCollecteur = {};
-
-            // 1) On part des données de l'année courante
-            const paiementsYear      = getPaiementsForCurrentYear();
+            
+            // ✅ BON: On part des données de l'année courante
+            const paiementsYear = getPaiementsForCurrentYear();
             const remboursementsYear = getRemboursementsForCurrentYear();
-            const receptionsYear     = getReceptionsForCurrentYear();
-
-            // 2) Agrégation par collecteur
+            const receptionsYear = getReceptionsForCurrentYear();
+            
+            // Agrégation par collecteur
             paiementsYear.forEach(p => {
                 if (!paiementsParCollecteur[p.collectorId]) paiementsParCollecteur[p.collectorId] = 0;
                 paiementsParCollecteur[p.collectorId] += p.amount;
             });
-
+            
             remboursementsYear.forEach(rem => {
                 if (!remboursementsParCollecteur[rem.collectorId]) remboursementsParCollecteur[rem.collectorId] = 0;
                 remboursementsParCollecteur[rem.collectorId] += rem.amount;
             });
-
+            
             receptionsYear.forEach(r => {
                 if (filterQuality && r.quality !== filterQuality) return;
                 if (!receptionsParCollecteur[r.collectorId]) receptionsParCollecteur[r.collectorId] = 0;
                 receptionsParCollecteur[r.collectorId] += r.totalValue;
             });
-
+            
+            // ✅ OPTIONNEL: Filtrer pour n'afficher que ceux avec des transactions dans l'année
+            // (Tu peux commenter ces lignes si tu veux afficher tous les collecteurs même sans transaction)
+            collectorsToShow = collectorsToShow.filter(collector => {
+                const totalAdvances = getTotalAdvances(collector.id);
+                const totalPaiements = paiementsParCollecteur[collector.id] || 0;
+                const totalDeliveriesFiltered = receptionsParCollecteur[collector.id] || 0;
+                const totalRemboursements = remboursementsParCollecteur[collector.id] || 0;
+                
+                // Afficher si au moins une transaction existe
+                return (totalAdvances > 0 || totalPaiements > 0 || totalDeliveriesFiltered > 0 || totalRemboursements > 0);
+            });
+            
+            if (collectorsToShow.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">
+                            <div class="material-icons">inbox</div>
+                            <div>Aucune transaction pour l'année ${currentYear}</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
             const paginatedCollectors = getPaginatedData(collectorsToShow, 'analysis');
             const fragment = document.createDocumentFragment();
+            
             paginatedCollectors.forEach(collector => {
                 const totalAdvances = getTotalAdvances(collector.id);
                 const totalPaiements = paiementsParCollecteur[collector.id] || 0;
                 const totalDebits = totalAdvances + totalPaiements;
+                
                 const totalDeliveriesFiltered = receptionsParCollecteur[collector.id] || 0;
                 const totalRemboursements = remboursementsParCollecteur[collector.id] || 0;
                 const totalCredits = totalDeliveriesFiltered + totalRemboursements;
+                
                 const balance = totalCredits - totalDebits;
                 const status = getCollectorStatus(balance);
+                
                 let actionButton = '';
                 if (status.class === 'debiteur') {
                     actionButton = `<button class="btn btn-icon btn-success" onclick="openRemboursementModal(${collector.id})" title="Enregistrer un remboursement"><span class="material-icons" style="color: white;">paid</span></button>`;
                 } else if (status.class === 'crediteur' && balance > 0) {
                     actionButton = `<button class="btn btn-icon btn-primary" onclick="payCollectorCredit(${collector.id})" title="Payer le solde créditeur"><span class="material-icons">payments</span></button>`;
                 }
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td data-label="Collecteur">${collector.name}</td>
@@ -7179,7 +7240,9 @@
                 `;
                 fragment.appendChild(row);
             });
+            
             tbody.appendChild(fragment);
+            
             let paginationDiv = tableWrapper.querySelector('.pagination-controls');
             if (!paginationDiv) {
                 paginationDiv = document.createElement('div');
@@ -7187,9 +7250,11 @@
                 tableWrapper.appendChild(paginationDiv);
             }
             paginationDiv.innerHTML = createPaginationControls('analysis', collectorsToShow.length);
+            
             initTableSorting();
             console.timeEnd('updateAnalysisTable');
         }
+
         function updateAnalysisQualityFilter() {
             const select = document.getElementById('analysis-filter-quality');
             if (!select) return;
@@ -8898,7 +8963,7 @@
                 case 'receptions':
                 case 'reception':
                     tableName = 'receptions';
-                    filteredData = appData.receptions.filter(item => {
+                    filteredData = getReceptionsForCurrentYear().filter(item => {
                         const collector = appData.collectors.find(c => c.id === item.collectorId);
                         const searchStr = `${formatDate(item.date)} ${collector ? collector.name : ''} ${item.quality}`.toLowerCase();
                         return searchStr.includes(query);
@@ -8906,8 +8971,8 @@
                     break;
                 case 'delivery':
                     tableName = 'deliveries';
-                    filteredData = appData.deliveries.filter(item => {
-                        const searchStr = `${formatDate(item.date)} ${item.invoice} ${item.quality || ''} ${item.exporter}`.toLowerCase();
+                    filteredData = getDeliveriesForCurrentYear().filter(item => {
+                        const searchStr = `${formatDate(item.date)} ${item.invoice} ${item.quality} ${item.exporter}`.toLowerCase();
                         return searchStr.includes(query);
                     });
                     break;
@@ -8927,17 +8992,17 @@
                     break;
                 case 'remboursements':
                     tableName = 'remboursements';
-                    filteredData = (appData.remboursements || []).filter(item => {
+                    filteredData = getRemboursementsForCurrentYear().filter(item => {
                         const collector = appData.collectors.find(c => c.id === item.collectorId);
-                        const searchStr = `${formatDate(item.date)} ${collector ? collector.name : ''} ${item.note || ''}`.toLowerCase();
+                        const searchStr = `${formatDate(item.date)} ${collector ? collector.name : ''} ${item.note}`.toLowerCase();
                         return searchStr.includes(query);
                     });
                     break;
                 case 'paiements':
                     tableName = 'paiements';
-                    filteredData = (appData.paiements || []).filter(item => {
+                    filteredData = getPaiementsForCurrentYear().filter(item => {
                         const collector = appData.collectors.find(c => c.id === item.collectorId);
-                        const searchStr = `${formatDate(item.date)} ${collector ? collector.name : ''} ${item.note || ''}`.toLowerCase();
+                        const searchStr = `${formatDate(item.date)} ${collector ? collector.name : ''} ${item.note}`.toLowerCase();
                         return searchStr.includes(query);
                     });
                     break;
@@ -8952,21 +9017,29 @@
             const tbody = activeTable.querySelector('tbody');
             const tableWrapper = activeTable.closest('.data-table');
             if (!tbody) return;
+            
+            // ✅ NOUVEAU: Calculer les résumés
+            const summary = calculateSearchSummary(sectionId, filteredData);
+            
             const paginationDiv = tableWrapper.querySelector('.pagination-controls');
             if (paginationDiv) {
                 paginationDiv.innerHTML = `
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px; border-top: 1px solid var(--md-sys-color-outline-variant); background-color: var(--md-sys-color-primary-container);">
-                        <span class="material-icons" style="color: var(--md-sys-color-on-primary-container);">search</span>
-                        <span style="font-size: 14px; color: var(--md-sys-color-on-primary-container); font-weight: 500;">
-                            ${filteredData.length} résultat${filteredData.length > 1 ? 's' : ''} trouvé${filteredData.length > 1 ? 's' : ''} pour "${query}"
-                        </span>
-                        <button class="btn btn-outline" onclick="clearSearch()" style="margin-left: auto;">
-                            <span class="material-icons">close</span>
-                            Effacer la recherche
-                        </button>
+                    <div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; border-top: 1px solid var(--md-sys-color-outline-variant); background-color: var(--md-sys-color-primary-container);">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 16px;">
+                            <span class="material-icons" style="color: var(--md-sys-color-on-primary-container);">search</span>
+                            <span style="font-size: 14px; color: var(--md-sys-color-on-primary-container); font-weight: 500;">
+                                ${filteredData.length} résultat${filteredData.length > 1 ? 's' : ''} trouvé${filteredData.length > 1 ? 's' : ''} pour "${query}"
+                            </span>
+                            <button class="btn btn-outline" onclick="clearSearch()" style="margin-left: auto;">
+                                <span class="material-icons">close</span>
+                                Effacer la recherche
+                            </button>
+                        </div>
+                        ${summary ? `<div style="background: var(--md-sys-color-surface); padding: 12px; border-radius: 8px; color: var(--md-sys-color-on-surface);">${summary}</div>` : ''}
                     </div>
                 `;
             }
+            
             tbody.innerHTML = '';
             if (filteredData.length === 0) {
                 const colspan = activeTable.querySelectorAll('thead th').length;
@@ -8982,6 +9055,127 @@
             }
             renderTableRows(sectionId, tableName, filteredData, tbody);
         }
+
+        function calculateSearchSummary(sectionId, data) {
+            if (!data || data.length === 0) return '';
+            
+            switch (sectionId) {
+                case 'advances':
+                    // Calculer le total des avances
+                    const totalAdvances = data.reduce((sum, a) => sum + a.amount, 0);
+                    return `
+                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary);">account_balance_wallet</span>
+                            <strong>Montant Total:</strong>
+                            <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-primary);">${formatCurrency(totalAdvances)}</span>
+                        </div>
+                    `;
+                    
+                case 'receptions':
+                case 'reception':
+                    // Calculer poids et valeur par qualité
+                    const byQuality = {};
+                    let totalWeight = 0;
+                    let totalValue = 0;
+                    
+                    data.forEach(r => {
+                        if (!byQuality[r.quality]) {
+                            byQuality[r.quality] = { weight: 0, value: 0 };
+                        }
+                        byQuality[r.quality].weight += r.netWeight;
+                        byQuality[r.quality].value += r.totalValue;
+                        totalWeight += r.netWeight;
+                        totalValue += r.totalValue;
+                    });
+                    
+                    const qualitiesSummary = Object.entries(byQuality)
+                        .map(([quality, stats]) => `
+                            <div style="display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--md-sys-color-surface-variant); border-radius: 6px;">
+                                <span class="status-badge status-${quality.toLowerCase()}">${quality}</span>
+                                <strong>${stats.weight.toFixed(2)} kg</strong>
+                                <span style="opacity: 0.7;">•</span>
+                                <span>${formatCurrency(stats.value)}</span>
+                            </div>
+                        `).join('');
+                    
+                    return `
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                                ${qualitiesSummary}
+                            </div>
+                            <div style="display: flex; gap: 24px; justify-content: center; padding-top: 8px; border-top: 1px solid var(--md-sys-color-outline-variant);">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-icons" style="color: var(--md-sys-color-tertiary);">scale</span>
+                                    <strong>Total:</strong>
+                                    <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-tertiary);">${totalWeight.toFixed(2)} kg</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span class="material-icons" style="color: var(--md-sys-color-primary);">payments</span>
+                                    <strong>Valeur:</strong>
+                                    <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-primary);">${formatCurrency(totalValue)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                case 'delivery':
+                    // Calculer poids et valeur totale des livraisons
+                    const totalDeliveryWeight = data.reduce((sum, d) => sum + d.weight, 0);
+                    const totalDeliveryValue = data.reduce((sum, d) => sum + d.totalValue, 0);
+                    
+                    return `
+                        <div style="display: flex; gap: 24px; justify-content: center; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="material-icons" style="color: var(--md-sys-color-tertiary);">local_shipping</span>
+                                <strong>Poids Total:</strong>
+                                <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-tertiary);">${totalDeliveryWeight.toFixed(2)} kg</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="material-icons" style="color: var(--md-sys-color-primary);">payments</span>
+                                <strong>Valeur Totale:</strong>
+                                <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-primary);">${formatCurrency(totalDeliveryValue)}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                case 'remboursements':
+                    // Total des remboursements
+                    const totalRembours = data.reduce((sum, r) => sum + r.amount, 0);
+                    return `
+                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                            <span class="material-icons" style="color: var(--md-sys-color-success);">paid</span>
+                            <strong>Total Remboursé:</strong>
+                            <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-success);">${formatCurrency(totalRembours)}</span>
+                        </div>
+                    `;
+                    
+                case 'paiements':
+                    // Total des paiements
+                    const totalPaiements = data.reduce((sum, p) => sum + p.amount, 0);
+                    return `
+                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary);">payments</span>
+                            <strong>Total Payé:</strong>
+                            <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-primary);">${formatCurrency(totalPaiements)}</span>
+                        </div>
+                    `;
+                    
+                case 'expenses':
+                    // Total des dépenses
+                    const totalExpenses = data.reduce((sum, e) => sum + e.amount, 0);
+                    return `
+                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                            <span class="material-icons" style="color: var(--md-sys-color-error);">receipt_long</span>
+                            <strong>Total Dépenses:</strong>
+                            <span style="font-size: 18px; font-weight: bold; color: var(--md-sys-color-error);">${formatCurrency(totalExpenses)}</span>
+                        </div>
+                    `;
+                    
+                default:
+                    return '';
+            }
+        }
+
         function renderTableRows(sectionId, tableName, data, tbody) {
             switch (sectionId) {
                 case 'collectors':
@@ -9083,15 +9277,18 @@
                 case 'analysis':
                     data.forEach(collector => {
                         const totalAdvances = getTotalAdvances(collector.id);
-                        const totalPaiements = (appData.paiements || [])
+                        const totalPaiements = getPaiementsForCurrentYear()
                             .filter(p => p.collectorId === collector.id)
                             .reduce((sum, p) => sum + p.amount, 0);
+                        
                         const totalDebits = totalAdvances + totalPaiements;
                         const totalDeliveries = getTotalDeliveries(collector.id);
-                        const totalRemboursements = (appData.remboursements || [])
+                        const totalRemboursements = getRemboursementsForCurrentYear()
                             .filter(rem => rem.collectorId === collector.id)
                             .reduce((sum, rem) => sum + rem.amount, 0);
+                        
                         const totalCredits = totalDeliveries + totalRemboursements;
+                        
                         const balance = totalCredits - totalDebits;
                         const status = getCollectorStatus(balance);
                         let actionButton = '';
@@ -10156,15 +10353,70 @@
             showToast("Export Excel vita soa aman-tsara!", "success");
         }
 
+        // ✅ SERVICE WORKER REGISTRATION AMBOARIANA
         if ('serviceWorker' in navigator) {
-            document.addEventListener('DOMContentLoaded', () => {
-                initDB();
-                navigator.serviceWorker.register('/behavana-app/sw.js')
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
-                        console.log('Service Worker voasoratra anarana soa aman-tsara:', registration);
+                        console.log('✅ Service Worker enregistré:', registration.scope);
+                        
+                        // Vérifier les mises à jour
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nouvelle version disponible
+                                    if (confirm('Misy version vaovao! Havaozina ve?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                        window.location.reload();
+                                    }
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ Service Worker registration failed:', error);
                     });
+                
+                // Écouter les changements de contrôleur
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    window.location.reload();
+                });
             });
         }
+
+        // ✅ AFFICHER STATUS OFFLINE/ONLINE
+        window.addEventListener('online', () => {
+            showToast('📶 Connecté à Internet', 'success', 2000);
+        });
+
+        window.addEventListener('offline', () => {
+            showToast('📵 Mode Hors-ligne - Données enregistrées localement', 'info', 3000);
+        });
+
+        // ✅ INSTALLER PROMPT PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Afficher un bouton d'installation si tu veux
+            console.log('💾 App peut être installée!');
+            
+            // Optionnel: Créer un bouton d'installation
+            setTimeout(() => {
+                if (confirm('📱 Installer BEHAVANA sur votre appareil?')) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('✅ App installée!');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            }, 5000); // Demander après 5 secondes
+        });
+
 
         function updateCollectorBalanceDisplay() {
             const collectorId = parseInt(document.getElementById('reception-collector').value);
