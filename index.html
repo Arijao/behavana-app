@@ -2917,7 +2917,7 @@
         }
 
         /* ========================================
-        YEAR SLIDER - MODERN DRAGGABLE STYLE
+        YEAR SLIDER - FLUID ANIMATION STYLE (Dribbble-inspired)
         ======================================== */
 
         .year-slider-container {
@@ -2937,12 +2937,20 @@
             cursor: pointer;
             overflow: visible;
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic ease */
         }
 
         .year-slider-track:hover {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 12px rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.25);
+            width: 8px; /* Morphing effect - mitombo ny width */
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 215, 0, 0.4);
+            transform: scaleY(1.05); /* Mihalava kely rehefa hover */
+        }
+
+        .year-slider-track.dragging {
+            background: rgba(255, 255, 255, 0.3);
+            width: 9px; /* Mitombo bebe kokoa rehefa drag */
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 215, 0, 0.6);
         }
 
         .year-slider-fill {
@@ -2953,7 +2961,7 @@
             height: 50%;
             background: linear-gradient(180deg, rgba(255, 215, 0, 0.9), rgba(255, 193, 7, 0.8));
             border-radius: 10px;
-            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic bounce */
             box-shadow: 0 -2px 12px rgba(255, 215, 0, 0.6);
             pointer-events: none;
         }
@@ -2972,33 +2980,44 @@
             align-items: center;
             justify-content: center;
             cursor: grab;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic ease */
             box-shadow: 
                 0 8px 24px rgba(0, 0, 0, 0.4),
                 0 0 20px rgba(255, 215, 0, 0.5),
                 inset 0 2px 4px rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(10px);
             z-index: 10;
+            pointer-events: auto;
+            touch-action: none;
         }
 
         .year-slider-thumb:hover {
-            transform: translate(-50%, -50%) scale(1.1);
+            transform: translate(-50%, -50%) scale(1.15); /* Elastic scale */
             border-color: rgba(255, 215, 0, 1);
+            border-width: 4px; /* Morphing border - mivadika ny border */
             box-shadow: 
-                0 12px 32px rgba(0, 0, 0, 0.5),
-                0 0 30px rgba(255, 215, 0, 0.7),
-                inset 0 2px 6px rgba(255, 255, 255, 0.4);
+                0 16px 40px rgba(0, 0, 0, 0.6),
+                0 0 35px rgba(255, 215, 0, 0.8),
+                inset 0 3px 8px rgba(255, 255, 255, 0.5);
         }
 
         .year-slider-thumb:active,
         .year-slider-thumb.dragging {
             cursor: grabbing;
-            transform: translate(-50%, -50%) scale(1.15);
+            transform: translate(-50%, -50%) scale(1.2) rotate(5deg); /* Extra rotation rehefa drag */
             border-color: rgba(255, 215, 0, 1);
+            border-width: 5px;
             box-shadow: 
-                0 16px 40px rgba(0, 0, 0, 0.6),
-                0 0 40px rgba(255, 215, 0, 0.9),
-                inset 0 3px 8px rgba(255, 255, 255, 0.5);
+                0 20px 50px rgba(0, 0, 0, 0.7),
+                0 0 50px rgba(255, 215, 0, 1),
+                inset 0 4px 10px rgba(255, 255, 255, 0.6);
+            animation: thumbPulse 0.6s ease-in-out infinite; /* Breathing effect rehefa drag */
+        }
+
+        /* Breathing animation rehefa drag */
+        @keyframes thumbPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
         }
 
         .year-display-compact {
@@ -3007,20 +3026,35 @@
             color: #FFD700;
             text-shadow: 
                 0 2px 8px rgba(0, 0, 0, 0.8),
-                0 0 20px rgba(255, 215, 0, 0.6);
+                0 0 25px rgba(255, 215, 0, 0.7);
             letter-spacing: -0.5px;
             user-select: none;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 11;
+            position: relative;
         }
 
-        /* Animation pulse */
-        @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.05); }
-        }
-
+        /* Animation rehefa miova ny taona */
         .year-slider-thumb.changing {
-            animation: pulse 0.4s ease;
+            animation: thumbBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes thumbBounce {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.25); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .year-display-compact.changing {
+            animation: yearFlash 0.4s ease;
+        }
+
+        @keyframes yearFlash {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.3); color: #FFF; }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         /* ========================================
@@ -3034,6 +3068,10 @@
             .year-slider-track {
                 width: 5px;
                 height: 70px;
+            }
+            
+            .year-slider-track:hover {
+                width: 7px;
             }
             
             .year-slider-thumb {
@@ -3060,10 +3098,25 @@
                 height: 60px;
             }
             
+            .year-slider-track:hover {
+                width: 6px;
+            }
+            
             .year-slider-thumb {
                 width: 50px;
                 height: 50px;
                 border-width: 2px;
+            }
+            
+            .year-slider-thumb:hover {
+                transform: translate(-50%, -50%) scale(1.1);
+                border-width: 3px;
+            }
+            
+            .year-slider-thumb:active,
+            .year-slider-thumb.dragging {
+                transform: translate(-50%, -50%) scale(1.15) rotate(3deg);
+                border-width: 4px;
             }
             
             .year-display-compact {
@@ -3082,6 +3135,10 @@
             .year-slider-track {
                 width: 3px;
                 height: 50px;
+            }
+            
+            .year-slider-track:hover {
+                width: 5px;
             }
             
             .year-slider-thumb {
@@ -3108,6 +3165,10 @@
                 height: 50px;
             }
             
+            .year-slider-track:hover {
+                width: 6px;
+            }
+            
             .year-slider-thumb {
                 width: 42px;
                 height: 42px;
@@ -3130,6 +3191,10 @@
                 height: 40px;
             }
             
+            .year-slider-track:hover {
+                width: 5px;
+            }
+            
             .year-slider-thumb {
                 width: 36px;
                 height: 36px;
@@ -3145,6 +3210,10 @@
             .year-slider-track {
                 width: 3px;
                 height: 36px;
+            }
+            
+            .year-slider-track:hover {
+                width: 4px;
             }
             
             .year-slider-thumb {
@@ -10674,7 +10743,7 @@
         });
 
         // ========================================
-        // YEAR SLIDER - DRAGGABLE FUNCTIONALITY
+        // YEAR SLIDER - FLUID DRAGGABLE FUNCTIONALITY
         // ========================================
 
         let isDragging = false;
@@ -10690,13 +10759,13 @@
             if (!track || !thumb) return;
             
             const now = new Date().getFullYear();
-            const minYear = now - 5;
-            const maxYear = now + 2;
+            const minYear = now - 3;
+            const maxYear = now + 4;
             
             // Initialiser la position
             updateSliderPosition();
             
-            // Click sur la track pour jump
+            // Click sur la track pour jump avec animation
             track.addEventListener('click', (e) => {
                 if (e.target === thumb || thumb.contains(e.target)) return;
                 
@@ -10709,7 +10778,7 @@
                 if (newYear >= minYear && newYear <= maxYear) {
                     currentYear = newYear;
                     localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
-                    updateSliderPosition();
+                    updateSliderPosition(true); // Animation activée
                     refreshAllData();
                 }
             });
@@ -10719,10 +10788,29 @@
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', stopDrag);
             
-            // Drag avec tactile
+            // Drag avec tactile - AVEC PASSIVE FALSE pour mobile
             thumb.addEventListener('touchstart', startDragTouch, { passive: false });
             document.addEventListener('touchmove', dragTouch, { passive: false });
             document.addEventListener('touchend', stopDrag);
+            
+            // Click sur track avec tactile
+            track.addEventListener('touchstart', (e) => {
+                if (e.target === thumb || thumb.contains(e.target)) return;
+                
+                const rect = track.getBoundingClientRect();
+                const touchY = e.touches[0].clientY - rect.top;
+                const percentage = 1 - (touchY / rect.height);
+                const range = maxYear - minYear;
+                const newYear = Math.round(minYear + (percentage * range));
+                
+                if (newYear >= minYear && newYear <= maxYear) {
+                    currentYear = newYear;
+                    localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    updateSliderPosition(true);
+                    refreshAllData();
+                }
+                e.preventDefault();
+            }, { passive: false });
             
             // Scroll avec molette sur le thumb
             thumb.addEventListener('wheel', (e) => {
@@ -10733,7 +10821,7 @@
                 if (newYear >= minYear && newYear <= maxYear) {
                     currentYear = newYear;
                     localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
-                    updateSliderPosition();
+                    updateSliderPosition(true);
                     refreshAllData();
                 }
             }, { passive: false });
@@ -10743,6 +10831,7 @@
                 startY = e.clientY;
                 startYear = currentYear;
                 thumb.classList.add('dragging');
+                track.classList.add('dragging'); // AMPIANA - manova ny track koa
                 e.preventDefault();
             }
             
@@ -10751,6 +10840,7 @@
                 startY = e.touches[0].clientY;
                 startYear = currentYear;
                 thumb.classList.add('dragging');
+                track.classList.add('dragging'); // AMPIANA
                 e.preventDefault();
             }
             
@@ -10765,13 +10855,13 @@
                 
                 if (newYear !== currentYear) {
                     currentYear = newYear;
-                    updateSliderPosition(false);
+                    updateSliderPosition(false); // Tsy misy animation rehefa drag
                 }
             }
             
             function dragTouch(e) {
                 if (!isDragging) return;
-                e.preventDefault();
+                e.preventDefault(); // IMPORTANTE - manakatona ny default scroll
                 
                 const rect = track.getBoundingClientRect();
                 const deltaY = startY - e.touches[0].clientY;
@@ -10781,7 +10871,7 @@
                 
                 if (newYear !== currentYear) {
                     currentYear = newYear;
-                    updateSliderPosition(false);
+                    updateSliderPosition(false); // Tsy misy animation rehefa drag
                 }
             }
             
@@ -10789,7 +10879,17 @@
                 if (isDragging) {
                     isDragging = false;
                     thumb.classList.remove('dragging');
+                    track.classList.remove('dragging'); // AMPIANA
                     localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    
+                    // AMPIANA: Animation bounce rehefa avy drag
+                    thumb.classList.add('changing');
+                    display.classList.add('changing');
+                    setTimeout(() => {
+                        thumb.classList.remove('changing');
+                        display.classList.remove('changing');
+                    }, 600);
+                    
                     refreshAllData();
                 }
             }
@@ -10804,8 +10904,8 @@
             if (!thumb || !track) return;
             
             const now = new Date().getFullYear();
-            const minYear = now - 5;
-            const maxYear = now + 2;
+            const minYear = now - 3;
+            const maxYear = now + 4;
             const range = maxYear - minYear;
             const position = (currentYear - minYear) / range;
             
@@ -10813,7 +10913,7 @@
             const thumbPosition = (1 - position) * 100;
             thumb.style.top = `${thumbPosition}%`;
             
-            // Hauteur du fill
+            // Hauteur du fill avec smooth transition
             if (fill) {
                 fill.style.height = `${position * 100}%`;
             }
@@ -10823,10 +10923,18 @@
                 display.textContent = currentYear;
             }
             
-            // Animation
+            // Animation si demandée
             if (animate) {
                 thumb.classList.add('changing');
-                setTimeout(() => thumb.classList.remove('changing'), 400);
+                if (display) {
+                    display.classList.add('changing');
+                }
+                setTimeout(() => {
+                    thumb.classList.remove('changing');
+                    if (display) {
+                        display.classList.remove('changing');
+                    }
+                }, 600);
             }
         }
 
@@ -10858,7 +10966,10 @@
             }
             
             // Attendre que le DOM soit complètement chargé
-            setTimeout(initYearSlider, 100);
+            setTimeout(() => {
+                initYearSlider();
+                updateSliderPosition(false); // Initialisation sans animation
+            }, 100);
         }
 
 
