@@ -4744,7 +4744,6 @@
                 <div class="credit-card">
                     <div class="credit-icon">
                     </div>
-
                     <div class="credit-text">
                         <p>Application développée et maintenue par</p>
                         <a href="#" target="_blank" class="credit-name">Rado Mandimbiarijao Developer</a>
@@ -4753,9 +4752,53 @@
                         Version 1.0.0
                     </div>
                 </div>
+                
                 <div class="form-container">
                     <h2>Paramètres</h2>
 
+                    <!-- 👇 AMPIDIRO ETO ITY BLOC VAOVAO ITY 👇 -->
+                    <!-- ============================ -->
+                    <!-- 📱 INSTALLATION PWA -->
+                    <!-- ============================ -->
+                    <div class="form-group" style="background: var(--md-sys-color-secondary-container); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                            <span class="material-icons" style="color: var(--md-sys-color-primary); font-size: 32px;">
+                                install_mobile
+                            </span>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; font-size: 16px; margin-bottom: 4px;">
+                                    📱 Installation de l'Application
+                                </div>
+                                <div style="font-size: 13px; color: var(--md-sys-color-on-surface-variant);">
+                                    Installer BEHAVANA pour un accès rapide et hors-ligne
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            id="pwa-install-btn" 
+                            onclick="installApp()" 
+                            class="btn btn-primary" 
+                            style="width: 100%; display: none; margin-bottom: 12px;">
+                            <span class="material-icons">download</span>
+                            Installer l'Application
+                        </button>
+                        
+                        <!-- Instructions iOS -->
+                        <div style="font-size: 12px; color: var(--md-sys-color-outline); padding: 12px; background: var(--md-sys-color-surface-variant); border-radius: 8px; border-left: 3px solid var(--md-sys-color-primary);">
+                            <div style="display: flex; align-items: start; gap: 8px;">
+                                <span class="material-icons" style="font-size: 18px;">info</span>
+                                <div>
+                                    <strong>📱 iPhone/iPad:</strong> Tsindrio ny <strong>Share button</strong> 
+                                    <span class="material-icons" style="font-size: 14px; vertical-align: middle;">ios_share</span>, 
+                                    dia safidio <strong>"Add to Home Screen"</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ============================ -->
+
+                    <!-- Resto des paramètres (efa misy) -->
                     <div class="form-group">
                         <label class="form-label">Apparence</label>
                         <select class="form-select" id="theme-select">
@@ -4803,14 +4846,14 @@
                     </div>
                 </div>
 
-                <!-- Ampiana ao anatin'ny <section id="settings"> -->
+                <!-- Gestion des Qualités -->
                 <div class="data-table" style="margin-top: 32px;">
                     <div class="table-header">
                         <h2 class="table-title">Gestion des Qualités de Vanille</h2>
                         <button class="btn btn-primary" onclick="openQualityModal()">
                             <span class="material-icons">add</span>
                             Ajouter Qualité
-                        </button>
+            </button>
                     </div>
                     <table>
                         <thead>
@@ -4825,8 +4868,8 @@
                         </tbody>
                     </table>
                 </div>
-
             </section>
+
         </main>
     </div>
 
@@ -10394,28 +10437,58 @@
             showToast('📵 Mode Hors-ligne - Données enregistrées localement', 'info', 3000);
         });
 
-        // ✅ INSTALLER PROMPT PWA
+        // ✅ INSTALLER PROMPT PWA 
         let deferredPrompt;
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            
-            // Afficher un bouton d'installation si tu veux
             console.log('💾 App peut être installée!');
             
-            // Optionnel: Créer un bouton d'installation
-            setTimeout(() => {
-                if (confirm('📱 Installer BEHAVANA sur votre appareil?')) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('✅ App installée!');
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            }, 5000); // Demander après 5 secondes
+            // Mampiseho bouton installation automatiquement
+            const installBtn = document.getElementById('pwa-install-btn');
+            if (installBtn) {
+                installBtn.style.display = 'inline-flex';
+            }
+            
+            // Toast notification
+            showToast('💾 Afaka installer ny app! Jereo ny Settings.', 'info', 4000);
         });
+
+        // Fonction d'installation - appelée par le bouton
+        function installApp() {
+            if (!deferredPrompt) {
+                showToast('⚠️ Azo installer sahady ny app, na tsy mbola vonona.', 'warning', 3000);
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    showToast('✅ App nao-installer soa aman-tsara!', 'success', 3000);
+                    console.log('✅ App installée!');
+                    
+                    // Manafina ny bouton
+                    const installBtn = document.getElementById('pwa-install-btn');
+                    if (installBtn) installBtn.style.display = 'none';
+                } else {
+                    showToast('Installation annulée', 'info', 2000);
+                }
+                deferredPrompt = null;
+            });
+        }
+
+        // Vérifier si déjà installé
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ BEHAVANA a été installé avec succès!');
+            showToast('✅ Installation réussie!', 'success', 3000);
+            deferredPrompt = null;
+            
+            // Manafina ny bouton installation
+            const installBtn = document.getElementById('pwa-install-btn');
+            if (installBtn) installBtn.style.display = 'none';
+        });
+
 
 
         function updateCollectorBalanceDisplay() {
