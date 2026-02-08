@@ -46,8 +46,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-
-
+    <script src="reception-export-enhanced.js"></script>
 
     <style>
         /* Landscape Mode Optimization for Small Screens */
@@ -4050,9 +4049,9 @@
                 </li>
                 <li class="nav-item" role="none">
                     <a class="nav-link" data-section="reception" role="menuitem" tabindex="-1"
-                        data-tooltip="Réception Vanille">
+                        data-tooltip="Réception">
                         <span class="material-icons" aria-hidden="true">inventory</span>
-                        <span class="nav-text">Réception Vanille</span>
+                        <span class="nav-text">Réception</span>
                     </a>
                 </li>
                 <li class="nav-item" role="none">
@@ -4565,7 +4564,7 @@
             <section class="content-section" id="reception">
                 <div class="data-table">
                     <div class="table-header">
-                        <h2 class="table-title">Réception de la Vanille</h2>
+                        <h2 class="table-title">Suivi opérationnel des collecteurs</h2>
                         <div>
                             <button class="btn btn-outline" onclick="exportInvoice()">
                                 <span class="material-icons">picture_as_pdf</span>
@@ -4965,7 +4964,7 @@
     <div class="modal" id="reception-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Nouvelle Réception de Vanille</h3>
+                <h3 class="modal-title">Nouvelle Réception </h3>
                 <button class="close-btn" onclick="closeModal('reception-modal')">
                     <span class="material-icons">close</span>
                 </button>
@@ -6084,7 +6083,7 @@
                 'advances': 'Gestion des Avances',
                 'remboursements': 'Historique des Remboursements',
                 'paiements': 'Historique des Paiements',
-                'reception': 'Réception de la Vanille',
+                'reception': 'Réception',
                 'delivery': 'Livraison à l\'Exportateur',
                 'expenses': 'Gestion des Dépenses',
                 'analysis': 'Suivi & Analyse',
@@ -11387,6 +11386,344 @@
                 }
             });
         }
+
+        /**
+         * Module d'export PDF amélioré pour le module RÉCEPTION (Collecte)
+         * Version v1.4 - Modal épuré & Ticket thermique réaliste
+         */
+
+        (function() {
+            /**
+             * Génère un PDF au format A4 classique
+             */
+            function generateReceiptA4(receptionId) {
+                const baseReception = appData.receptions.find(r => r.id === receptionId);
+                if (!baseReception) return;
+                
+                const receptionDate = baseReception.date;
+                const collectorId = baseReception.collectorId;
+                const collector = appData.collectors.find(c => c.id === collectorId);
+                const dailyReceptions = appData.receptions.filter(r => r.collectorId === collectorId && r.date === receptionDate);
+                const totalNetWeight = dailyReceptions.reduce((sum, r) => sum + r.netWeight, 0);
+                const totalValue = dailyReceptions.reduce((sum, r) => sum + r.totalValue, 0);
+                const receiptNum = `R${new Date(receptionDate).getTime().toString().slice(-5)}${collectorId}`;
+
+                let pdfContent = `
+                    <html>
+                    <head>
+                        <title>Reçu - ${collector.name}</title>
+                        <style>
+                            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20mm; color: #333; line-height: 1.5; }
+                            .container { max-width: 800px; margin: auto; border: 1px solid #eee; padding: 40px; border-radius: 10px; }
+                            .header { text-align: center; border-bottom: 3px solid #6750a4; padding-bottom: 20px; margin-bottom: 30px; }
+                            .company { font-size: 32px; font-weight: bold; color: #6750a4; margin: 0; }
+                            .title { font-size: 18px; color: #666; text-transform: uppercase; letter-spacing: 3px; margin-top: 5px; }
+                            .info { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 15px; background: #fcfaff; padding: 20px; border-radius: 8px; }
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+                            th { background: #6750a4; color: white; padding: 12px; text-align: left; }
+                            td { padding: 12px; border-bottom: 1px solid #eee; }
+                            .total { font-weight: bold; background: #fcfaff; font-size: 16px; color: #6750a4; }
+                            .footer { margin-top: 60px; display: flex; justify-content: space-between; }
+                            .sig { width: 45%; border-top: 1px solid #333; text-align: center; padding-top: 10px; font-size: 13px; font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <div class="header">
+                                <div class="company">BEHAVANA</div>
+                                <div class="title">Reçu de Réception</div>
+                            </div>
+                            <div class="info">
+                                <div>
+                                    <strong>Collecteur:</strong> ${collector.name}<br>
+                                    <strong>CIN:</strong> ${collector.cin || 'N/A'}
+                                </div>
+                                <div style="text-align:right;">
+                                    <strong>Date:</strong> ${formatDate(receptionDate)}<br>
+                                    <strong>N° Reçu:</strong> ${receiptNum}
+                                </div>
+                            </div>
+                            <table>
+                                <thead><tr><th>Qualité</th><th style="text-align:right">Poids Net (kg)</th><th style="text-align:right">Valeur (Ar)</th></tr></thead>
+                                <tbody>
+                                    ${dailyReceptions.map(r => `<tr><td>Vanille ${r.quality}</td><td style="text-align:right">${r.netWeight.toFixed(2)}</td><td style="text-align:right">${formatCurrency(r.totalValue)}</td></tr>`).join('')}
+                                    <tr class="total"><td>TOTAL</td><td style="text-align:right">${totalNetWeight.toFixed(2)} kg</td><td style="text-align:right">${formatCurrency(totalValue)} Ar</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="footer"><div class="sig">Le Collecteur</div><div class="sig">Pour BEHAVANA</div></div>
+                            <div style="text-align:center; margin-top:40px; font-size:10px; color:#999;">Imprimé le ${new Date().toLocaleString()}</div>
+                        </div>
+                    </body>
+                    </html>`;
+                const win = window.open('', '_blank');
+                win.document.write(pdfContent);
+                win.document.close();
+                win.print();
+            }
+
+            /**
+             * Génère un ticket thermique réaliste 80mm avec code-barres
+             */
+            function generateReceiptThermal(receptionId) {
+                const baseReception = appData.receptions.find(r => r.id === receptionId);
+                if (!baseReception) return;
+
+                const receptionDate = baseReception.date;
+                const collectorId = baseReception.collectorId;
+                const collector = appData.collectors.find(c => c.id === collectorId);
+                const dailyReceptions = appData.receptions.filter(r => r.collectorId === collectorId && r.date === receptionDate);
+                const totalNetWeight = dailyReceptions.reduce((sum, r) => sum + r.netWeight, 0);
+                const totalValue = dailyReceptions.reduce((sum, r) => sum + r.totalValue, 0);
+                const receiptNum = `R${new Date(receptionDate).getTime().toString().slice(-5)}${collectorId}`;
+
+                let pdfContent = `
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <style>
+                            @page { 
+                                size: 80mm 297mm;
+                                margin: 0;
+                            }
+                            @media print {
+                                @page {
+                                    size: 80mm 297mm;
+                                    margin: 0;
+                                }
+                                html, body {
+                                    width: 80mm;
+                                    height: auto;
+                                }
+                            }
+                            * { 
+                                margin: 0; 
+                                padding: 0; 
+                                box-sizing: border-box; 
+                            }
+                            html {
+                                width: 80mm;
+                            }
+                            body { 
+                                font-family: 'Courier New', 'Consolas', monospace; 
+                                width: 80mm;
+                                max-width: 80mm;
+                                padding: 3mm 4mm;
+                                font-size: 9pt;
+                                line-height: 1.4;
+                                color: #000;
+                                background: white;
+                            }
+                            .center { text-align: center; }
+                            .right { text-align: right; }
+                            .bold { font-weight: bold; }
+                            .large { font-size: 11pt; }
+                            .xlarge { font-size: 13pt; }
+                            .small { font-size: 8pt; }
+                            .xsmall { font-size: 7pt; }
+                            
+                            .separator { 
+                                border-bottom: 1px dashed #000; 
+                                margin: 4mm 0; 
+                            }
+                            
+                            .double-separator {
+                                border-bottom: 2px solid #000;
+                                margin: 3mm 0;
+                            }
+                            
+                            .header {
+                                margin-bottom: 3mm;
+                            }
+                            
+                            .line {
+                                display: flex;
+                                justify-content: space-between;
+                                margin: 1mm 0;
+                            }
+                            
+                            .item-line {
+                                display: flex;
+                                justify-content: space-between;
+                                padding: 1mm 0;
+                                font-size: 8.5pt;
+                            }
+                            
+                            .total-box {
+                                border: 2px solid #000;
+                                padding: 3mm;
+                                margin: 4mm 0;
+                                text-align: center;
+                            }
+                            
+                            .barcode-container {
+                                text-align: center;
+                                margin: 5mm 0;
+                            }
+                            
+                            .barcode { 
+                                font-family: 'Libre Barcode 39', 'Courier New', monospace; 
+                                font-size: 32pt;
+                                letter-spacing: 0;
+                                line-height: 1;
+                                margin: 2mm 0;
+                            }
+                            
+                            .signature-area {
+                                margin-top: 8mm;
+                                text-align: center;
+                            }
+                            
+                            .signature-line {
+                                border-top: 1px solid #000;
+                                width: 50mm;
+                                margin: 3mm auto 2mm auto;
+                            }
+                        </style>
+                        <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+39&display=swap" rel="stylesheet">
+                    </head>
+                    <body>
+                        <!-- En-tête -->
+                        <div class="header center">
+                            <div class="bold xlarge">BEHAVANA</div>
+                            <div class="bold large">RECU RECEPTION</div>
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <!-- Informations réception -->
+                        <div class="small">
+                            <div class="line">
+                                <span>N° Recu:</span>
+                                <span class="bold">${receiptNum}</span>
+                            </div>
+                            <div class="line">
+                                <span>Date:</span>
+                                <span>${formatDate(receptionDate)}</span>
+                            </div>
+                            <div class="line">
+                                <span>Collecteur:</span>
+                                <span>${collector.name}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <!-- Articles -->
+                        <div class="small bold">DETAILS:</div>
+                        <div style="margin-top: 2mm;">
+                            ${dailyReceptions.map(r => `
+                                <div class="item-line">
+                                    <span>Vanille ${r.quality}</span>
+                                    <span class="bold">${r.netWeight.toFixed(2)} kg</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="double-separator"></div>
+                        
+                        <!-- Total -->
+                        <div class="total-box">
+                            <div class="bold large">TOTAL POIDS</div>
+                            <div class="bold xlarge" style="margin: 2mm 0;">${totalNetWeight.toFixed(2)} kg</div>
+                            <div class="separator" style="margin: 3mm 0;"></div>
+                            <div class="bold">VALEUR TOTALE</div>
+                            <div class="bold xlarge" style="margin-top: 1mm;">${formatCurrency(totalValue)} Ar</div>
+                        </div>
+                        
+                        <!-- Code-barres -->
+                        <div class="barcode-container">
+                            <div class="barcode">*${receiptNum}*</div>
+                            <div class="xsmall">${receiptNum}</div>
+                        </div>
+                        
+                        <div class="separator"></div>
+                        
+                        <!-- Signature -->
+                        <div class="signature-area">
+                            <div class="xsmall">Signature du collecteur</div>
+                            <div class="signature-line"></div>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div class="center xsmall" style="margin-top: 6mm; color: #666;">
+                            Merci de votre confiance<br>
+                            ${new Date().toLocaleString('fr-FR')}
+                        </div>
+                    </body>
+                    </html>`;
+                    
+                const win = window.open('', '_blank');
+                win.document.write(pdfContent);
+                win.document.close();
+                setTimeout(() => win.print(), 250);
+            }
+
+            /**
+             * Exposer les fonctions globalement
+             */
+            window.generateReceiptA4 = generateReceiptA4;
+            window.generateReceiptThermal = generateReceiptThermal;
+
+            /**
+             * Modal de sélection de format - Version épurée et minimaliste
+             */
+            window.generateReceipt = function(receptionId) {
+                // Supprimer le modal s'il existe déjà
+                const existing = document.getElementById('behavanaPrintModal');
+                if (existing) existing.remove();
+
+                const modal = document.createElement('div');
+                modal.id = 'behavanaPrintModal';
+                modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;';
+                
+                modal.innerHTML = `
+                    <div style="background:white;padding:32px;border-radius:8px;width:340px;box-shadow:0 4px 24px rgba(0,0,0,0.15);">
+                        <h3 style="margin:0 0 8px 0;color:#1a1a1a;font-size:20px;font-weight:600;">Impression du reçu</h3>
+                        <p style="font-size:14px;color:#666;margin:0 0 24px 0;line-height:1.5;">Choisissez le format d'impression</p>
+                        
+                        <button id="btnA4" style="width:100%;padding:16px;margin-bottom:10px;border:1px solid #e0e0e0;border-radius:6px;background:white;color:#1a1a1a;font-weight:500;cursor:pointer;font-size:15px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+                            <span style="font-size:18px;">📄</span>
+                            <span>Format A4</span>
+                        </button>
+                        
+                        <button id="btnThermal" style="width:100%;padding:16px;margin-bottom:20px;border:1px solid #e0e0e0;border-radius:6px;background:white;color:#1a1a1a;font-weight:500;cursor:pointer;font-size:15px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;">
+                            <span style="font-size:18px;">🧾</span>
+                            <span>Ticket 80mm</span>
+                        </button>
+                        
+                        <button onclick="document.getElementById('behavanaPrintModal').remove()" style="width:100%;padding:12px;background:none;border:none;color:#666;cursor:pointer;font-size:14px;border-radius:6px;transition:background 0.2s;">
+                            Annuler
+                        </button>
+                    </div>`;
+                    
+                document.body.appendChild(modal);
+
+                // Effets hover
+                const btnA4 = document.getElementById('btnA4');
+                const btnThermal = document.getElementById('btnThermal');
+                
+                btnA4.onmouseenter = () => btnA4.style.background = '#f5f5f5';
+                btnA4.onmouseleave = () => btnA4.style.background = 'white';
+                btnThermal.onmouseenter = () => btnThermal.style.background = '#f5f5f5';
+                btnThermal.onmouseleave = () => btnThermal.style.background = 'white';
+
+                // Actions des boutons
+                btnA4.onclick = () => { generateReceiptA4(receptionId); modal.remove(); };
+                btnThermal.onclick = () => { generateReceiptThermal(receptionId); modal.remove(); };
+                
+                // Fermeture au clic extérieur
+                modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+                
+                // Fermeture avec Escape
+                const escHandler = (e) => {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', escHandler);
+                    }
+                };
+                document.addEventListener('keydown', escHandler);
+            };
+        })();
 
     </script>
 </body>
