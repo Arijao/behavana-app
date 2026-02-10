@@ -5242,8 +5242,42 @@
         </div>
     </div>
 
-    <!-- Delivery Modal -->
+    <!-- Modal Ajustement Tri Post-Réception -->
+    <div id="adjust-modal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <span class="material-icons">tune</span>
+                    Ajustement Tri Post-Réception
+                </h2>
+                <button class="close-btn" onclick="closeAdjustModal()">&times;</button>
+            </div>
 
+            <div id="adjust-reception-info" style="background: rgba(103, 80, 164, 0.15); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                <!-- Les infos de la réception d'origine seront affichées ici -->
+            </div>
+
+            <input type="hidden" id="adjust-original-reception-id">
+
+            <!-- Conteneur pour les ajustements multiples -->
+            <div id="adjustments-container"></div>
+
+            <button type="button" class="btn btn-primary" onclick="addAdjustmentRow()" style="width: 100%; margin: 16px 0;">
+                <span class="material-icons">add</span>
+                Ajouter un ajustement
+            </button>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" onclick="closeAdjustModal()">Annuler</button>
+                <button type="button" class="btn btn-success" onclick="saveAllAdjustments()">
+                    <span class="material-icons">check_circle</span>
+                    Enregistrer tous les ajustements
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delivery Modal -->
 
     <div class="modal" id="delivery-modal">
         <div class="modal-content">
@@ -5765,6 +5799,10 @@
                 });
         }
         async function saveToDB(storeName, data) {
+            if (!storeName || !data) {
+                console.error('saveToDB: storeName or data is undefined', { storeName, data });
+                return;
+            }
             try {
                 await executeWhenReadyPromise();
                 if (!db || db.readyState === 'done') {
@@ -5803,6 +5841,10 @@
             });
         }
         function saveToDB_Fallback(storeName, data) {
+            if (!data || !storeName || !appData[storeName]) {
+                console.error('Invalid data or storeName for fallback save', { storeName, data });
+                return;
+            }
             if (!data.id) {
                 data.id = Date.now() + Math.random();
             }
@@ -6539,6 +6581,309 @@
                 document.getElementById('quick-weight-input').focus();
             }, 300);
         }
+
+        // ==========================================
+        // AJUSTEMENT TRI POST-RÉCEPTION
+        // ==========================================
+
+        let adjustmentCounter = 0;
+        let originalReception = null;
+
+        function openAdjustModal(receptionId) {
+            originalReception = appData.receptions.find(r => r.id === receptionId);
+            if (!originalReception) {
+                showToast('Réception introuvable', 'error');
+                return;
+            }
+
+            const collector = appData.collectors.find(c => c.id === originalReception.collectorId);
+            
+            // Afficher les informations de la réception d'origine
+            const infoDiv = document.getElementById('adjust-reception-info');
+            infoDiv.innerHTML = `
+                <h3 style="margin-bottom: 12px; font-size: 16px;">📦 Réception d'origine</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    <div><strong>Date:</strong> ${formatDate(originalReception.date)}</div>
+                    <div><strong>Collecteur:</strong> ${collector ? collector.name : 'N/A'}</div>
+                    <div><strong>Qualité:</strong> <span class="status-badge status-${originalReception.quality.toLowerCase()}">${originalReception.quality}</span></div>
+                    <div><strong>Poids Brut:</strong> ${originalReception.grossWeight} kg</div>
+                    <div><strong>Tare:</strong> ${originalReception.tare} kg</div>
+                    <div><strong>Poids Net:</strong> ${originalReception.netWeight} kg</div>
+                    <div><strong>Prix:</strong> ${formatCurrency(originalReception.price)}/kg</div>
+                    <div><strong>Valeur:</strong> ${formatCurrency(originalReception.totalValue)}</div>
+                </div>
+            `;
+
+            // Stocker l'ID
+            document.getElementById('adjust-original-reception-id').value = receptionId;
+            
+            // Reset
+            adjustmentCounter = 0;
+            document.getElementById('adjustments-container').innerHTML = '';
+            
+            // Ajouter la première ligne
+            addAdjustmentRow();
+
+            // Afficher le modal
+            document.getElementById('adjust-modal').classList.add('active');
+        }
+
+        function closeAdjustModal() {
+            document.getElementById('adjust-modal').classList.remove('active');
+            document.getElementById('adjustments-container').innerHTML = '';
+            adjustmentCounter = 0;
+            originalReception = null;
+        }
+
+        function addAdjustmentRow() {
+            adjustmentCounter++;
+            const rowId = `adjust-row-${adjustmentCounter}`;
+            
+            const container = document.getElementById('adjustments-container');
+            
+            // Récupérer toutes les qualités uniques
+            const allQualities = [...new Set(appData.receptions.map(r => r.quality))];
+            
+            const rowDiv = document.createElement('div');
+            rowDiv.id = rowId;
+            rowDiv.className = 'adjustment-row';
+            rowDiv.style.cssText = 'background: rgba(80, 80, 80, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 16px; position: relative;';
+            
+            rowDiv.innerHTML = `
+                <button type="button" class="btn btn-icon btn-danger" onclick="removeAdjustmentRow('${rowId}')" 
+                        style="position: absolute; top: 8px; right: 8px; width: 32px; height: 32px;">
+                    <span class="material-icons" style="font-size: 18px;">close</span>
+                </button>
+                
+                <h4 style="margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.9);">Ajustement #${adjustmentCounter}</h4>
+                
+                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                    
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label required">Nouvelle Qualité</label>
+                        <select class="form-select adjust-quality" data-row="${rowId}" required>
+                            <option value="">-- Sélectionner --</option>
+                            ${allQualities.filter(q => q !== originalReception.quality).map(q => `<option value="${q}">${q}</option>`).join('')}
+                            <option value="__NEW__">+ Nouvelle qualité...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Poids Brut (kg)</label>
+                        <input type="number" class="form-input adjust-gross" data-row="${rowId}" step="0.01" min="0" placeholder="Ex: 300">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Tare (kg)</label>
+                        <input type="number" class="form-input adjust-tare" data-row="${rowId}" step="0.01" min="0" placeholder="Ex: 5">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label required">Poids Net (kg)</label>
+                        <input type="number" class="form-input adjust-net" data-row="${rowId}" step="0.01" min="0.01" required placeholder="Ex: 295">
+                        <small class="form-helper-text">Calculé auto ou saisie directe</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Prix/kg (Ariary)</label>
+                        <input type="number" class="form-input adjust-price" data-row="${rowId}" step="1" min="0" placeholder="Auto selon qualité">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Valeur Totale</label>
+                        <input type="text" class="form-input adjust-total" data-row="${rowId}" readonly style="background: rgba(255,255,255,0.1); cursor: not-allowed;" placeholder="Calculé auto">
+                    </div>
+
+                </div>
+
+                <div class="form-group" style="margin-top: 12px; margin-bottom: 0;">
+                    <label class="form-label">Note / Raison</label>
+                    <input type="text" class="form-input adjust-note" data-row="${rowId}" placeholder="Ex: Tri manuel - produits abîmés détectés">
+                </div>
+            `;
+            
+            container.appendChild(rowDiv);
+            
+            // Ajouter les événements pour les calculs automatiques
+            setupAdjustmentRowEvents(rowId);
+        }
+
+        function removeAdjustmentRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        function setupAdjustmentRowEvents(rowId) {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+
+            const qualitySelect = row.querySelector('.adjust-quality');
+            const grossInput = row.querySelector('.adjust-gross');
+            const tareInput = row.querySelector('.adjust-tare');
+            const netInput = row.querySelector('.adjust-net');
+            const priceInput = row.querySelector('.adjust-price');
+            const totalInput = row.querySelector('.adjust-total');
+
+            // Gestion nouvelle qualité
+            qualitySelect.addEventListener('change', function() {
+                if (this.value === '__NEW__') {
+                    const newQuality = prompt('Entrez le nom de la nouvelle qualité:');
+                    if (newQuality && newQuality.trim()) {
+                        const trimmedQuality = newQuality.trim();
+                        const newOption = document.createElement('option');
+                        newOption.value = trimmedQuality;
+                        newOption.textContent = trimmedQuality;
+                        newOption.selected = true;
+                        this.insertBefore(newOption, this.lastElementChild);
+                    } else {
+                        this.value = '';
+                    }
+                }
+                // Auto-remplir le prix selon la qualité si vide
+                if (this.value && !priceInput.value) {
+                    const qualityPrices = {
+                        'LAVA': 9600,
+                        'VANILLE': 8500,
+                        // Ajouter d'autres qualités par défaut ici
+                    };
+                    if (qualityPrices[this.value]) {
+                        priceInput.value = qualityPrices[this.value];
+                        calculateTotal();
+                    }
+                }
+            });
+
+            // Calcul automatique Poids Net = Poids Brut - Tare
+            function calculateNet() {
+                const gross = parseFloat(grossInput.value) || 0;
+                const tare = parseFloat(tareInput.value) || 0;
+                if (gross > 0 && tare >= 0) {
+                    netInput.value = (gross - tare).toFixed(2);
+                    calculateTotal();
+                }
+            }
+
+            grossInput.addEventListener('input', calculateNet);
+            tareInput.addEventListener('input', calculateNet);
+
+            // Calcul Valeur Totale = Poids Net × Prix
+            function calculateTotal() {
+                const net = parseFloat(netInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
+                if (net > 0 && price > 0) {
+                    totalInput.value = formatCurrency(net * price);
+                } else {
+                    totalInput.value = '';
+                }
+            }
+
+            netInput.addEventListener('input', calculateTotal);
+            priceInput.addEventListener('input', calculateTotal);
+        }
+
+        function saveAllAdjustments() {
+            const container = document.getElementById('adjustments-container');
+            const rows = container.querySelectorAll('.adjustment-row');
+            
+            if (rows.length === 0) {
+                showToast('Aucun ajustement à enregistrer', 'error');
+                return;
+            }
+
+            const adjustments = [];
+            let totalAdjustedWeight = 0;
+            let hasError = false;
+
+            // Collecter tous les ajustements
+            rows.forEach((row, index) => {
+                const quality = row.querySelector('.adjust-quality').value;
+                const gross = parseFloat(row.querySelector('.adjust-gross').value) || 0;
+                const tare = parseFloat(row.querySelector('.adjust-tare').value) || 0;
+                const net = parseFloat(row.querySelector('.adjust-net').value) || 0;
+                const price = parseFloat(row.querySelector('.adjust-price').value) || 0;
+                const note = row.querySelector('.adjust-note').value;
+
+                if (!quality) {
+                    showToast(`Ajustement #${index + 1}: Veuillez sélectionner une qualité`, 'error');
+                    hasError = true;
+                    return;
+                }
+
+                if (net <= 0) {
+                    showToast(`Ajustement #${index + 1}: Le poids net doit être supérieur à 0`, 'error');
+                    hasError = true;
+                    return;
+                }
+
+                totalAdjustedWeight += net;
+
+                adjustments.push({
+                    quality,
+                    grossWeight: gross || net,
+                    tare: tare,
+                    netWeight: net,
+                    price: price || 0,
+                    note
+                });
+            });
+
+            if (hasError) return;
+
+            // Vérifier que le total ajusté ne dépasse pas le poids net d'origine
+            if (totalAdjustedWeight > originalReception.netWeight) {
+                showToast(`Le total des poids ajustés (${totalAdjustedWeight.toFixed(2)} kg) dépasse le poids net disponible (${originalReception.netWeight} kg)`, 'error');
+                return;
+            }
+
+            // Confirmer l'opération
+            if (!confirm(`Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`)) {
+                return;
+            }
+
+            // Sauvegarder
+            (async () => {
+                try {
+                    // Sauvegarder les nouvelles réceptions dans la DB
+                    for (const adj of adjustments) {
+                        const newReception = {
+                            id: Date.now() + Math.random(),
+                            date: originalReception.date,
+                            collectorId: originalReception.collectorId,
+                            quality: adj.quality,
+                            grossWeight: adj.grossWeight,
+                            tare: adj.tare,
+                            netWeight: adj.netWeight,
+                            price: adj.price,
+                            totalValue: adj.netWeight * adj.price,
+                            year: originalReception.year,
+                            note: adj.note ? `[Ajustement] ${adj.note}` : '[Ajustement tri post-réception]'
+                        };
+                        await saveToDB('receptions', newReception);
+                    }
+                    
+                    // Mettre à jour et sauvegarder la réception d'origine
+                    originalReception.netWeight = originalReception.netWeight - totalAdjustedWeight;
+                    originalReception.grossWeight = originalReception.netWeight + originalReception.tare;
+                    originalReception.totalValue = originalReception.netWeight * originalReception.price;
+                    await saveToDB('receptions', originalReception);
+
+                    // Rafraîchir l'affichage
+                    updateAllTables();
+                    
+                    showToast(`${adjustments.length} ajustement(s) enregistré(s) avec succès !`, 'success');
+                    closeAdjustModal();
+                } catch (error) {
+                    console.error('Erreur lors de la sauvegarde des ajustements:', error);
+                    showToast('Erreur lors de la sauvegarde des ajustements', 'error');
+                }
+            })();
+        }
+        //=========================================================
+        // fin Ajustement Tri Post-Réception
+        //=========================================================
+        
         function generateAutoNumber(prefix, dateStr, storeName) {
             const date = new Date(dateStr);
             const year = date.getFullYear();
@@ -7190,6 +7535,9 @@
                     <td>${formatCurrency(reception.price)}kg</td>
                     <td>${formatCurrency(reception.totalValue)}</td>
                     <td class="actions-cell">
+                        <button class="btn btn-icon btn-secondary" onclick="openAdjustModal(${reception.id})" title="Ajuster le tri post-réception">
+                            <span class="material-icons">tune</span>
+                        </button>
                         <button class="btn btn-icon btn-outline" onclick="openReceptionModal(${reception.id})" title="Modifier">
                             <span class="material-icons">edit</span>
                         </button>
