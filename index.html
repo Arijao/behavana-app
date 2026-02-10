@@ -6588,15 +6588,47 @@
 
         let adjustmentCounter = 0;
         let originalReception = null;
+        let isSaving = false;
 
         function openAdjustModal(receptionId) {
+            console.log('🔍 openAdjustModal appelé avec ID:', receptionId);
+            
             originalReception = appData.receptions.find(r => r.id === receptionId);
             if (!originalReception) {
                 showToast('Réception introuvable', 'error');
+                console.error('❌ Réception non trouvée:', receptionId);
                 return;
             }
 
+            console.log('Réception trouvée:', originalReception);
+
             const collector = appData.collectors.find(c => c.id === originalReception.collectorId);
+            
+            //Calculer la tare si elle n'existe pas
+            let tare = originalReception.tare;
+            
+            // Si la tare n'existe pas mais qu'on a grossWeight et netWeight, la calculer
+            if ((tare === undefined || tare === null) && 
+                originalReception.grossWeight && 
+                originalReception.netWeight) {
+                tare = originalReception.grossWeight - originalReception.netWeight;
+                console.log('📊 Tare calculée:', tare);
+            }
+            
+            // Si toujours pas de tare, utiliser 0
+            if (tare === undefined || tare === null || isNaN(tare)) {
+                tare = 0;
+                console.log('⚠️ Tare par défaut: 0');
+            }
+            
+            // Arrondir la tare
+            tare = parseFloat(tare.toFixed(2));
+            
+            // Sécuriser toutes les autres valeurs
+            const grossWeight = parseFloat((originalReception.grossWeight || 0).toFixed(2));
+            const netWeight = parseFloat((originalReception.netWeight || 0).toFixed(2));
+            const price = parseFloat((originalReception.price || 0).toFixed(0));
+            const totalValue = parseFloat((originalReception.totalValue || 0).toFixed(0));
             
             // Afficher les informations de la réception d'origine
             const infoDiv = document.getElementById('adjust-reception-info');
@@ -6606,11 +6638,11 @@
                     <div><strong>Date:</strong> ${formatDate(originalReception.date)}</div>
                     <div><strong>Collecteur:</strong> ${collector ? collector.name : 'N/A'}</div>
                     <div><strong>Qualité:</strong> <span class="status-badge status-${originalReception.quality.toLowerCase()}">${originalReception.quality}</span></div>
-                    <div><strong>Poids Brut:</strong> ${originalReception.grossWeight} kg</div>
-                    <div><strong>Tare:</strong> ${originalReception.tare} kg</div>
-                    <div><strong>Poids Net:</strong> ${originalReception.netWeight} kg</div>
-                    <div><strong>Prix:</strong> ${formatCurrency(originalReception.price)}/kg</div>
-                    <div><strong>Valeur:</strong> ${formatCurrency(originalReception.totalValue)}</div>
+                    <div><strong>Poids Brut:</strong> ${grossWeight} kg</div>
+                    <div><strong>Tare:</strong> ${tare} kg</div>
+                    <div><strong>Poids Net:</strong> ${netWeight} kg</div>
+                    <div><strong>Prix:</strong> ${formatCurrency(price)}/kg</div>
+                    <div><strong>Valeur:</strong> ${formatCurrency(totalValue)}</div>
                 </div>
             `;
 
@@ -6629,6 +6661,7 @@
         }
 
         function closeAdjustModal() {
+            console.log('🚪 Fermeture du modal');
             document.getElementById('adjust-modal').classList.remove('active');
             document.getElementById('adjustments-container').innerHTML = '';
             adjustmentCounter = 0;
@@ -6638,6 +6671,8 @@
         function addAdjustmentRow() {
             adjustmentCounter++;
             const rowId = `adjust-row-${adjustmentCounter}`;
+            
+            console.log('➕ Ajout de la ligne:', rowId);
             
             const container = document.getElementById('adjustments-container');
             
@@ -6709,6 +6744,7 @@
         }
 
         function removeAdjustmentRow(rowId) {
+            console.log('🗑️ Suppression de la ligne:', rowId);
             const row = document.getElementById(rowId);
             if (row) {
                 row.remove();
@@ -6746,6 +6782,7 @@
                     const qualityPrices = {
                         'LAVA': 9600,
                         'VANILLE': 8500,
+                        'FOHY': 7000,
                         // Ajouter d'autres qualités par défaut ici
                     };
                     if (qualityPrices[this.value]) {
@@ -6755,40 +6792,101 @@
                 }
             });
 
-            // Calcul automatique Poids Net = Poids Brut - Tare
-            function calculateNet() {
+            // ✅ CORRECTION: Calcul automatique bidirectionnel
+            
+            // Option 1: Poids Net = Poids Brut - Tare
+            function calculateNetFromGrossAndTare() {
                 const gross = parseFloat(grossInput.value) || 0;
                 const tare = parseFloat(tareInput.value) || 0;
-                if (gross > 0 && tare >= 0) {
-                    netInput.value = (gross - tare).toFixed(2);
+                if (gross > 0 && tare >= 0 && gross >= tare) {
+                    const net = gross - tare;
+                    netInput.value = net.toFixed(2);
+                    console.log(`📊 Net calculé: ${gross} - ${tare} = ${net}`);
                     calculateTotal();
                 }
             }
 
-            grossInput.addEventListener('input', calculateNet);
-            tareInput.addEventListener('input', calculateNet);
+            // Option 2: Tare = Poids Brut - Poids Net
+            function calculateTareFromGrossAndNet() {
+                const gross = parseFloat(grossInput.value) || 0;
+                const net = parseFloat(netInput.value) || 0;
+                if (gross > 0 && net > 0 && gross >= net && !tareInput.value) {
+                    const tare = gross - net;
+                    tareInput.value = tare.toFixed(2);
+                    console.log(`📊 Tare calculée: ${gross} - ${net} = ${tare}`);
+                }
+            }
+
+            // Option 3: Poids Brut = Poids Net + Tare
+            function calculateGrossFromNetAndTare() {
+                const net = parseFloat(netInput.value) || 0;
+                const tare = parseFloat(tareInput.value) || 0;
+                if (net > 0 && tare >= 0 && !grossInput.value) {
+                    const gross = net + tare;
+                    grossInput.value = gross.toFixed(2);
+                    console.log(`📊 Brut calculé: ${net} + ${tare} = ${gross}`);
+                }
+            }
+
+            // ✅ Événements intelligents
+            grossInput.addEventListener('input', function() {
+                calculateNetFromGrossAndTare();
+            });
+
+            tareInput.addEventListener('input', function() {
+                calculateNetFromGrossAndTare();
+            });
+
+            netInput.addEventListener('input', function() {
+                // Si on a le brut mais pas la tare, calculer la tare
+                if (grossInput.value && !tareInput.value) {
+                    calculateTareFromGrossAndNet();
+                }
+                // Si on a la tare mais pas le brut, calculer le brut
+                else if (tareInput.value && !grossInput.value) {
+                    calculateGrossFromNetAndTare();
+                }
+                calculateTotal();
+            });
 
             // Calcul Valeur Totale = Poids Net × Prix
             function calculateTotal() {
                 const net = parseFloat(netInput.value) || 0;
                 const price = parseFloat(priceInput.value) || 0;
                 if (net > 0 && price > 0) {
-                    totalInput.value = formatCurrency(net * price);
+                    const total = net * price;
+                    totalInput.value = formatCurrency(total);
                 } else {
                     totalInput.value = '';
                 }
             }
 
-            netInput.addEventListener('input', calculateTotal);
             priceInput.addEventListener('input', calculateTotal);
         }
 
-        function saveAllAdjustments() {
+        // ==========================================
+        // FONCTION saveAllAdjustments() SÉCURISÉE
+        // ==========================================
+        async function saveAllAdjustments() {
+            // ✅ Protection contre double exécution
+            if (isSaving) {
+                console.warn('⚠️ Sauvegarde déjà en cours, ignoré');
+                return;
+            }
+            
+            isSaving = true;
+            console.log('💾 === DÉBUT SAUVEGARDE AJUSTEMENTS ===');
+            console.log('📋 Réception originale:', originalReception);
+            
             const container = document.getElementById('adjustments-container');
             const rows = container.querySelectorAll('.adjustment-row');
             
+            console.log('📊 Nombre de lignes trouvées:', rows.length);
+            
             if (rows.length === 0) {
                 showToast('Aucun ajustement à enregistrer', 'error');
+                console.warn('⚠️ Aucune ligne d\'ajustement');
+                isSaving = false;
                 return;
             }
 
@@ -6804,6 +6902,8 @@
                 const net = parseFloat(row.querySelector('.adjust-net').value) || 0;
                 const price = parseFloat(row.querySelector('.adjust-price').value) || 0;
                 const note = row.querySelector('.adjust-note').value;
+
+                console.log(`📝 Ligne ${index + 1}:`, { quality, gross, tare, net, price, note });
 
                 if (!quality) {
                     showToast(`Ajustement #${index + 1}: Veuillez sélectionner une qualité`, 'error');
@@ -6829,56 +6929,268 @@
                 });
             });
 
-            if (hasError) return;
+            if (hasError) {
+                console.error('❌ Erreurs de validation détectées');
+                isSaving = false;
+                return;
+            }
+
+            console.log('✅ Ajustements collectés:', adjustments);
+            console.log('⚖️ Poids total ajusté:', totalAdjustedWeight);
+
+            // ✅ Arrondir le total pour éviter les erreurs de précision
+            totalAdjustedWeight = parseFloat(totalAdjustedWeight.toFixed(2));
 
             // Vérifier que le total ajusté ne dépasse pas le poids net d'origine
             if (totalAdjustedWeight > originalReception.netWeight) {
                 showToast(`Le total des poids ajustés (${totalAdjustedWeight.toFixed(2)} kg) dépasse le poids net disponible (${originalReception.netWeight} kg)`, 'error');
+                console.error('❌ Dépassement du poids disponible');
+                isSaving = false;
                 return;
             }
 
             // Confirmer l'opération
-            if (!confirm(`Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`)) {
+            const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`;
+            
+            console.log('❓ Confirmation demandée');
+            
+            if (!confirm(confirmMessage)) {
+                console.log('🚫 Opération annulée par l\'utilisateur');
+                isSaving = false;
                 return;
             }
 
-            // Sauvegarder
-            (async () => {
-                try {
-                    // Sauvegarder les nouvelles réceptions dans la DB
-                    for (const adj of adjustments) {
-                        const newReception = {
-                            id: Date.now() + Math.random(),
-                            date: originalReception.date,
-                            collectorId: originalReception.collectorId,
-                            quality: adj.quality,
-                            grossWeight: adj.grossWeight,
-                            tare: adj.tare,
-                            netWeight: adj.netWeight,
-                            price: adj.price,
-                            totalValue: adj.netWeight * adj.price,
-                            year: originalReception.year,
-                            note: adj.note ? `[Ajustement] ${adj.note}` : '[Ajustement tri post-réception]'
-                        };
-                        await saveToDB('receptions', newReception);
-                    }
-                    
-                    // Mettre à jour et sauvegarder la réception d'origine
-                    originalReception.netWeight = originalReception.netWeight - totalAdjustedWeight;
-                    originalReception.grossWeight = originalReception.netWeight + originalReception.tare;
-                    originalReception.totalValue = originalReception.netWeight * originalReception.price;
-                    await saveToDB('receptions', originalReception);
+            console.log('✅ Confirmation reçue, début de la sauvegarde...');
 
-                    // Rafraîchir l'affichage
-                    updateAllTables();
+            // Sauvegarder
+            try {
+                console.log('🔄 Début transaction DB...');
+                
+                // Trouver le max ID actuel
+                const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
+                console.log('🔢 Max ID actuel:', maxId);
+                
+                // Sauvegarder les nouvelles réceptions dans la DB
+                for (let i = 0; i < adjustments.length; i++) {
+                    const adj = adjustments[i];
+                    const newId = maxId + i + 1;
                     
-                    showToast(`${adjustments.length} ajustement(s) enregistré(s) avec succès !`, 'success');
-                    closeAdjustModal();
-                } catch (error) {
-                    console.error('Erreur lors de la sauvegarde des ajustements:', error);
-                    showToast('Erreur lors de la sauvegarde des ajustements', 'error');
+                    console.log(`💾 Création réception ${i + 1}/${adjustments.length} avec ID:`, newId);
+                    
+                    // ✅ CORRECTION: Vérifier et utiliser des valeurs par défaut
+                    const netWeight = parseFloat((adj.netWeight || 0).toFixed(2));
+                    const tare = parseFloat((adj.tare || 0).toFixed(2));
+                    const grossWeight = parseFloat((adj.grossWeight || netWeight).toFixed(2));
+                    const price = parseFloat((adj.price || 0).toFixed(0));
+                    const totalValue = parseFloat((netWeight * price).toFixed(0));
+                    
+                    const newReception = {
+                        id: newId,
+                        date: originalReception.date,
+                        collectorId: originalReception.collectorId,
+                        quality: adj.quality,
+                        grossWeight: grossWeight,
+                        tare: tare,
+                        netWeight: netWeight,
+                        price: price,
+                        totalValue: totalValue,
+                        year: originalReception.year,
+                        bagCount: originalReception.bagCount || 0, // ✅ Valeur par défaut
+                        bagWeight: originalReception.bagWeight || 0, // ✅ Valeur par défaut
+                        quickWeights: originalReception.quickWeights || [], // ✅ Valeur par défaut
+                        note: adj.note ? `[Ajustement] ${adj.note}` : '[Ajustement tri post-réception]',
+                        sourceReceptionId: originalReception.id,
+                        adjustmentDate: Date.now()
+                    };
+                    
+                    console.log('📦 Nouvelle réception:', newReception);
+                    
+                    // Sauvegarder en DB
+                    await saveToDB('receptions', newReception);
+                    console.log('✅ Sauvegardé en DB');
+                    
+                    // Ajouter à appData
+                    appData.receptions.push(newReception);
+                    console.log('✅ Ajouté à appData');
                 }
-            })();
+                
+                console.log('🔄 Mise à jour de la réception d\'origine...');
+                
+                // ✅ CORRECTION: Vérifier toutes les propriétés avant toFixed()
+                const oldNetWeight = originalReception.netWeight || 0;
+                
+                // Calculer le nouveau poids net avec arrondi
+                const newNetWeight = parseFloat((oldNetWeight - totalAdjustedWeight).toFixed(2));
+                const tare = parseFloat((originalReception.tare || 0).toFixed(2));
+                const newGrossWeight = parseFloat((newNetWeight + tare).toFixed(2));
+                const price = parseFloat((originalReception.price || 0).toFixed(0));
+                const newTotalValue = parseFloat((newNetWeight * price).toFixed(0));
+                
+                // ✅ S'assurer que les valeurs sont valides
+                originalReception.netWeight = newNetWeight >= 0 ? newNetWeight : 0;
+                originalReception.grossWeight = newGrossWeight >= 0 ? newGrossWeight : 0;
+                originalReception.totalValue = newTotalValue >= 0 ? newTotalValue : 0;
+                
+                // Ajouter une note
+                const adjustmentNote = `[Ajusté le ${formatDate(new Date())} - ${adjustments.length} tri(s)]`;
+                originalReception.note = originalReception.note 
+                    ? `${adjustmentNote} ${originalReception.note}` 
+                    : adjustmentNote;
+                
+                console.log('📝 Réception mise à jour:', {
+                    ancien: oldNetWeight,
+                    nouveau: originalReception.netWeight,
+                    difference: totalAdjustedWeight,
+                    grossWeight: originalReception.grossWeight
+                });
+                
+                await saveToDB('receptions', originalReception);
+                console.log('✅ Réception d\'origine mise à jour en DB');
+
+                // Rafraîchir l'affichage
+                console.log('🔄 Rafraîchissement de l\'affichage...');
+                updateAllTables();
+                
+                console.log('🎉 === SAUVEGARDE TERMINÉE AVEC SUCCÈS ===');
+                showToast(`${adjustments.length} ajustement(s) enregistré(s) avec succès !`, 'success');
+                
+                isSaving = false;
+                closeAdjustModal();
+                
+            } catch (error) {
+                console.error('❌ === ERREUR CRITIQUE ===');
+                console.error('Détails:', error);
+                console.error('Stack:', error.stack);
+                console.error('Ligne:', error.lineNumber || 'Non disponible');
+                
+                // ✅ Afficher plus de détails sur l'erreur
+                if (error.message.includes('toFixed')) {
+                    console.error('🔍 Données problématiques:', {
+                        originalReception,
+                        adjustments
+                    });
+                }
+                
+                showToast('Erreur lors de la sauvegarde des ajustements: ' + error.message, 'error');
+                isSaving = false;
+            }
+        }
+
+        function roundTo(number, decimals = 2) {
+            return parseFloat(parseFloat(number).toFixed(decimals));
+        }
+
+        // ==========================================
+        // FONCTION UTILITAIRE SÉCURISÉE
+        // ==========================================
+
+        // Fonction helper pour arrondir avec sécurité
+        function safeRound(value, decimals = 2) {
+            // Vérifier que la valeur existe et est un nombre
+            if (value === null || value === undefined || isNaN(value)) {
+                return 0;
+            }
+            // Convertir en nombre et arrondir
+            const num = parseFloat(value);
+            return parseFloat(num.toFixed(decimals));
+        }
+
+        // Utilisation:
+        // const netWeight = safeRound(adj.netWeight, 2);
+        // const price = safeRound(adj.price, 0);
+
+        // ==========================================
+        // VERSION ENCORE PLUS SÉCURISÉE (Optionnelle)
+        // ==========================================
+
+        // Si vous voulez être encore plus prudent, utilisez cette version:
+        function safeToFixed(value, decimals = 2, defaultValue = 0) {
+            try {
+                if (value === null || value === undefined || value === '') {
+                    return parseFloat(defaultValue.toFixed(decimals));
+                }
+                const num = parseFloat(value);
+                if (isNaN(num)) {
+                    return parseFloat(defaultValue.toFixed(decimals));
+                }
+                return parseFloat(num.toFixed(decimals));
+            } catch (e) {
+                console.warn('Erreur safeToFixed:', e, 'valeur:', value);
+                return parseFloat(defaultValue.toFixed(decimals));
+            }
+        }
+        // ==========================================
+        // HTML DU MODAL (À AJOUTER SI MANQUANT)
+        // ==========================================
+        /*
+        <div id="adjust-modal" class="modal">
+            <div class="modal-content" style="max-width: 1200px;">
+                <div class="modal-header">
+                    <h2>⚙️ Ajustement Tri Post-Réception</h2>
+                    <button class="close-btn" onclick="closeAdjustModal()">×</button>
+                </div>
+                
+                <div class="modal-body">
+                    <input type="hidden" id="adjust-original-reception-id">
+                    
+                    <div id="adjust-reception-info" class="info-box" style="margin-bottom: 20px;"></div>
+                    
+                    <div id="adjustments-container"></div>
+                    
+                    <button type="button" class="btn btn-secondary" onclick="addAdjustmentRow()" style="margin-top: 16px;">
+                        <span class="material-icons">add</span>
+                        Ajouter un ajustement
+                    </button>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeAdjustModal()">Annuler</button>
+                    <button type="button" class="btn btn-primary" onclick="saveAllAdjustments()">
+                        <span class="material-icons">save</span>
+                        Enregistrer tous les ajustements
+                    </button>
+                </div>
+            </div>
+        </div>
+        */
+
+        // ==========================================
+        // FONCTIONS AUXILIAIRES AMÉLIORÉES
+        // ==========================================
+
+        // ✅ Amélioration de saveToDB pour gérer les mises à jour vs insertions
+        async function saveToDB(storeName, data) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([storeName], 'readwrite');
+                const store = transaction.objectStore(storeName);
+                
+                // ✅ Utiliser 'put' au lieu de 'add' pour permettre les mises à jour
+                const request = store.put(data);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // ✅ Fonction pour recharger les données depuis IndexedDB
+        async function loadFromDB() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(['receptions', 'collectors'], 'readonly');
+                
+                const receptionsStore = transaction.objectStore('receptions');
+                const collectorsStore = transaction.objectStore('collectors');
+                
+                const receptionsRequest = receptionsStore.getAll();
+                const collectorsRequest = collectorsStore.getAll();
+                
+                transaction.oncomplete = () => {
+                    appData.receptions = receptionsRequest.result || [];
+                    appData.collectors = collectorsRequest.result || [];
+                    resolve();
+                };
+                
+                transaction.onerror = () => reject(transaction.error);
+            });
         }
         //=========================================================
         // fin Ajustement Tri Post-Réception
@@ -7074,7 +7386,7 @@
             closeModal('advance-modal');
             showToast('Avance enregistrée avec succès!');
         }
-        function saveReception() {
+        async function saveReception() {
             const collectorId = parseInt(document.getElementById('reception-collector').value);
             const date = document.getElementById('reception-date').value;
             const grossWeight = parseFloat(document.getElementById('reception-gross-weight').value);
@@ -7091,6 +7403,9 @@
                 return;
             }
 
+            const form = document.getElementById('reception-form');
+            const isEditing = form.dataset.editId; // ✅ Vérifier si on modifie ou crée
+            
             const reception = {
                 collectorId,
                 date,
@@ -7101,17 +7416,52 @@
                 quality: quality,
                 price,
                 totalValue,
-                quickWeights: [...quickWeights] // Tehirizina ny lanja tsirairay
+                quickWeights: [...quickWeights], // Tehirizina ny lanja tsirairay
+                year: new Date(date).getFullYear() // ✅ Ajouter l'année
             };
 
-            const form = document.getElementById('reception-form');
-            if (form.dataset.editId) {
+            // ✅ Gérer l'ID selon le mode (création vs modification)
+            if (isEditing) {
                 reception.id = parseInt(form.dataset.editId);
+            } else {
+                // ✅ Générer un nouvel ID unique pour les nouvelles réceptions
+                const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
+                reception.id = maxId + 1;
             }
 
-            saveToDB('receptions', reception);
-            closeModal('reception-modal');
-            showToast('Réception enregistrée avec succès!');
+            try {
+                console.log('💾 Sauvegarde de la réception:', reception);
+                
+                // ✅ Sauvegarder en base de données
+                await saveToDB('receptions', reception);
+                console.log('✅ Sauvegarde DB réussie');
+                
+                // ✅ Mettre à jour appData immédiatement
+                if (isEditing) {
+                    // Mode modification : remplacer l'enregistrement existant
+                    const index = appData.receptions.findIndex(r => r.id === reception.id);
+                    if (index !== -1) {
+                        appData.receptions[index] = reception;
+                        console.log('✅ Réception mise à jour dans appData');
+                    }
+                } else {
+                    // Mode création : ajouter le nouvel enregistrement
+                    appData.receptions.push(reception);
+                    console.log('✅ Réception ajoutée à appData');
+                }
+                
+                // ✅ RAFRAÎCHIR immédiatement l'affichage
+                updateAllTables();
+                console.log('✅ Tables rafraîchies');
+                
+                // Fermer le modal et afficher le succès
+                closeModal('reception-modal');
+                showToast(isEditing ? 'Réception modifiée avec succès!' : 'Réception enregistrée avec succès!');
+                
+            } catch (error) {
+                console.error('❌ Erreur lors de la sauvegarde:', error);
+                showToast('Erreur lors de la sauvegarde de la réception', 'error');
+            }
         }
 
         function saveDelivery() {
@@ -7505,7 +7855,6 @@
             const tableWrapper = tbody.closest('.data-table');
             tbody.innerHTML = '';
 
-            // 1) On ne garde que les réceptions de l'année active
             const receptionsForYear = getReceptionsForCurrentYear();
 
             if (receptionsForYear.length === 0) {
@@ -7520,20 +7869,26 @@
                 return;
             }
 
-            // 2) Pagination sur ces données filtrées
             const paginatedReceptions = getPaginatedData(receptionsForYear, 'receptions');
 
             paginatedReceptions.forEach(reception => {
                 const collector = appData.collectors.find(c => c.id === reception.collectorId);
+                
+                // ✅ CORRECTION: Sécuriser tous les affichages
+                const grossWeight = parseFloat((reception.grossWeight || 0).toFixed(2));
+                const netWeight = parseFloat((reception.netWeight || 0).toFixed(2));
+                const price = parseFloat((reception.price || 0).toFixed(0));
+                const totalValue = parseFloat((reception.totalValue || 0).toFixed(0));
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${formatDate(reception.date)}</td>
                     <td>${collector ? collector.name : 'Collecteur supprimé'}</td>
-                    <td>${reception.grossWeight} kg</td>
-                    <td>${reception.netWeight} kg</td>
+                    <td>${grossWeight} kg</td>
+                    <td>${netWeight} kg</td>
                     <td><span class="status-badge status-${reception.quality.toLowerCase()}">${reception.quality}</span></td>
-                    <td>${formatCurrency(reception.price)}kg</td>
-                    <td>${formatCurrency(reception.totalValue)}</td>
+                    <td>${formatCurrency(price)}/kg</td>
+                    <td>${formatCurrency(totalValue)}</td>
                     <td class="actions-cell">
                         <button class="btn btn-icon btn-secondary" onclick="openAdjustModal(${reception.id})" title="Ajuster le tri post-réception">
                             <span class="material-icons">tune</span>
