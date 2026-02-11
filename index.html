@@ -4352,6 +4352,87 @@
                 display: none !important;
             }
         }
+
+        .pagination-toolbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 12px;
+            border-top: 1px solid var(--md-sys-color-outline-variant);
+        }
+
+        .pagination-size-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .pagination-size-label {
+            font-size: 13px;
+            color: var(--md-sys-color-on-surface-variant);
+            white-space: nowrap;
+        }
+
+        .pagination-size-select {
+            min-width: 76px;
+            height: 34px;
+            padding: 0 8px;
+        }
+
+        .pagination-summary {
+            font-size: 14px;
+            color: var(--md-sys-color-on-surface);
+            white-space: nowrap;
+        }
+
+        .pagination-summary-page {
+            font-weight: 600;
+        }
+
+        .pagination-summary-total {
+            opacity: 0.78;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 768px) and (orientation: portrait) {
+            .pagination-toolbar {
+                flex-wrap: nowrap;
+                gap: 8px;
+                justify-content: space-between;
+                padding: 10px 8px;
+            }
+
+            .pagination-size-control {
+                gap: 6px;
+                min-width: 0;
+            }
+
+            .pagination-size-label {
+                font-size: 11px;
+            }
+
+            .pagination-size-select {
+                min-width: 62px;
+                height: 30px;
+                font-size: 12px;
+            }
+
+            .pagination-summary {
+                font-size: 12px;
+            }
+
+            .pagination-summary-total {
+                display: none;
+            }
+
+            .pagination-toolbar .btn.btn-icon {
+                width: 30px !important;
+                height: 30px !important;
+                min-width: 30px !important;
+            }
+        }
     </style>
 
 </head>
@@ -10161,10 +10242,10 @@
                 state.currentPage = totalPages;
             }
             return `
-                <div style="display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px; border-top: 1px solid var(--md-sys-color-outline-variant); flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 13px; color: var(--md-sys-color-on-surface-variant);">Lignes/page</span>
-                        <select class="form-select" style="min-width: 84px; height: 36px; padding: 0 8px;" onchange="setRowsPerPage('${tableName}', this.value)">
+                <div class="pagination-toolbar">
+                    <div class="pagination-size-control">
+                        <span class="pagination-size-label">Lignes/page</span>
+                        <select class="form-select pagination-size-select" onchange="setRowsPerPage('${tableName}', this.value)">
                             <option value="10" ${state.rowsPerPage === 10 ? 'selected' : ''}>10</option>
                             <option value="20" ${state.rowsPerPage === 20 ? 'selected' : ''}>20</option>
                             <option value="50" ${state.rowsPerPage === 50 ? 'selected' : ''}>50</option>
@@ -10174,8 +10255,9 @@
                     <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage - 1})" ${state.currentPage === 1 || totalItems === 0 ? 'disabled' : ''}>
                         <span class="material-icons">chevron_left</span>
                     </button>
-                    <span style="font-size: 14px; color: var(--md-sys-color-on-surface);">
-                        Page ${state.currentPage} / ${totalPages} (${totalItems} lignes)
+                    <span class="pagination-summary">
+                        <span class="pagination-summary-page">Page ${state.currentPage}/${totalPages}</span>
+                        <span class="pagination-summary-total">(${totalItems} lignes)</span>
                     </span>
                     <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage + 1})" ${state.currentPage === totalPages || totalItems === 0 ? 'disabled' : ''}>
                         <span class="material-icons">chevron_right</span>
