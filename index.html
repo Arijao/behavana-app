@@ -3147,6 +3147,138 @@
         }
 
         /* ========================================
+        YEAR CONTROL - MOBILE MODERN UI
+        ======================================== */
+        .year-mobile-controls {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            padding: 4px 6px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+        }
+
+        .year-mobile-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            color: rgba(255, 255, 255, 0.95);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .year-mobile-btn:active {
+            transform: scale(0.96);
+            background: rgba(255, 255, 255, 0.24);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .year-mobile-badge {
+            min-width: 64px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(103, 80, 164, 0.95), rgba(107, 87, 120, 0.9));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .year-mobile-range {
+            display: none;
+            width: 138px;
+            height: 6px;
+            margin-left: 8px;
+            appearance: none;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08));
+            border-radius: 999px;
+            outline: none;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .year-mobile-range::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            background: linear-gradient(135deg, #ffd86b, #ffbf00);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+            cursor: pointer;
+        }
+
+        .year-mobile-range::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            background: linear-gradient(135deg, #ffd86b, #ffbf00);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.28);
+            cursor: pointer;
+        }
+
+        .year-mobile-range::-moz-range-track {
+            height: 6px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08));
+        }
+
+        @media (max-width: 992px) {
+            .year-slider-container {
+                margin-left: 8px;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .year-slider-track {
+                display: none;
+            }
+
+            .year-slider-container {
+                margin-left: 6px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .year-mobile-controls {
+                display: inline-flex;
+            }
+
+            .year-mobile-range {
+                display: block;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .year-mobile-range {
+                width: 108px;
+            }
+
+            .year-mobile-badge {
+                min-width: 58px;
+                font-size: 14px;
+            }
+
+            .year-mobile-btn {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        /* ========================================
         RESPONSIVE - PETIT MOBILE
         ======================================== */
         @media (max-width: 375px) {
@@ -4095,6 +4227,131 @@
         .solde-global-card:hover .stat-trend {
             filter: brightness(1.15) !important;
         }
+
+        /* =====================================================
+        HEADER RESPONSIVE FIX - SEARCH + YEAR CONTROL
+        ===================================================== */
+        @media (max-width: 992px) {
+            .header h1 {
+                display: none !important;
+            }
+
+            .header {
+                display: grid !important;
+                grid-template-columns: 36px minmax(0, 1fr) auto 36px !important;
+                align-items: center !important;
+                column-gap: 8px !important;
+                padding: 0 10px !important;
+            }
+
+            #sidebar-toggle {
+                width: 36px !important;
+                height: 36px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .global-search-wrapper {
+                grid-column: 2 !important;
+                min-width: 0 !important;
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                height: 40px !important;
+                padding: 0 10px !important;
+                overflow: hidden !important;
+            }
+
+            #global-search-input {
+                min-width: 0 !important;
+                font-size: 13px !important;
+            }
+
+            .year-slider-container {
+                grid-column: 3 !important;
+                margin: 0 !important;
+                gap: 6px !important;
+                flex-shrink: 0 !important;
+                align-items: center !important;
+            }
+
+            .year-mobile-controls {
+                padding: 3px 5px !important;
+                gap: 6px !important;
+            }
+
+            .year-mobile-range {
+                width: 90px !important;
+                margin-left: 4px !important;
+            }
+
+            .header-actions {
+                grid-column: 4 !important;
+                margin: 0 !important;
+                gap: 0 !important;
+            }
+
+            .header-actions .theme-toggle,
+            .header-actions .btn-icon {
+                width: 34px !important;
+                height: 34px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                grid-template-columns: 34px minmax(0, 1fr) auto 34px !important;
+                column-gap: 6px !important;
+                padding: 0 8px !important;
+            }
+
+            .global-search-wrapper {
+                height: 38px !important;
+                border-radius: 12px !important;
+            }
+
+            .year-mobile-range {
+                width: 72px !important;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .year-mobile-range {
+                display: none !important;
+            }
+
+            .year-mobile-badge {
+                min-width: 54px !important;
+                font-size: 13px !important;
+                padding: 3px 6px !important;
+            }
+
+            .year-mobile-btn {
+                width: 26px !important;
+                height: 26px !important;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .header {
+                grid-template-columns: 32px minmax(0, 1fr) auto 32px !important;
+                column-gap: 5px !important;
+                padding: 0 6px !important;
+            }
+
+            .global-search-wrapper {
+                height: 34px !important;
+            }
+
+            .year-slider-container {
+                order: 0 !important;
+                margin: 0 !important;
+            }
+
+            .year-mobile-range {
+                display: none !important;
+            }
+        }
     </style>
 
 </head>
@@ -4218,6 +4475,17 @@
                             <span class="year-display-compact" id="yearDisplay">2026</span>
                         </div>
                     </div>
+                    <div class="year-mobile-controls">
+                        <button class="year-mobile-btn" type="button" onclick="changeYearBy(-1)" aria-label="Année précédente">
+                            <span class="material-icons">chevron_left</span>
+                        </button>
+                        <div class="year-mobile-badge" id="yearDisplayMobile">2026</div>
+                        <button class="year-mobile-btn" type="button" onclick="changeYearBy(1)" aria-label="Année suivante">
+                            <span class="material-icons">chevron_right</span>
+                        </button>
+                    </div>
+                    <input id="yearMobileRange" class="year-mobile-range" type="range" min="2023" max="2030" step="1"
+                        value="2026" aria-label="Sélectionner l'année">
                 </div>
 
 
@@ -5521,6 +5789,55 @@
         </div>
     </div>
     <!-- ================================== -->
+
+    <!-- Modal Paiement Solde Créditeur -->
+    <div class="modal" id="credit-payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Paiement du Solde Créditeur</h3>
+                <button class="close-btn" onclick="closeModal('credit-payment-modal')">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form id="credit-payment-form" onsubmit="submitCreditPayment(event)">
+                <input type="hidden" id="credit-payment-collector-id">
+                <div class="form-group">
+                    <label class="form-label">Collecteur</label>
+                    <input type="text" class="form-input" id="credit-payment-collector-name" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Solde créditeur actuel</label>
+                    <input type="text" class="form-input" id="credit-payment-balance" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Montant à payer (Ar)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" inputmode="numeric" class="form-input" id="credit-payment-amount"
+                            placeholder="0" required oninput="formatCreditPaymentAmount(this)">
+                        <button type="button" class="btn btn-outline" onclick="setCreditPaymentToFullBalance()"
+                            style="white-space: nowrap;">
+                            Payer tout
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date du paiement</label>
+                    <input type="date" class="form-input" id="credit-payment-date" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Note (optionnel)</label>
+                    <input type="text" class="form-input" id="credit-payment-note"
+                        placeholder="Ex: Par chèque N°123, En espèce...">
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline"
+                        onclick="closeModal('credit-payment-modal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Valider le paiement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!--Quality modal-->
     <div class="modal" id="quality-modal">
         <div class="modal-content">
@@ -5798,39 +6115,53 @@
                     updateAllTables();
                 });
         }
-        async function saveToDB(storeName, data) {
-            if (!storeName || !data) {
-                console.error('saveToDB: storeName or data is undefined', { storeName, data });
-                return;
-            }
+
+        async function saveToDB(storeName, data, onSuccess) {
             try {
                 await executeWhenReadyPromise();
                 if (!db || db.readyState === 'done') {
-                    console.warn(`Database not available for '${storeName}', using memory fallback.`);
-                    saveToDB_Fallback(storeName, data);
-                    return;
+                console.warn(`Database not available for '${storeName}', using memory fallback.`);
+                saveToDB_Fallback(storeName, data);
+                if (onSuccess) onSuccess();
+                return;
                 }
+                
                 await new Promise((resolve, reject) => {
-                    const transaction = db.transaction(storeName, 'readwrite');
-                    const store = transaction.objectStore(storeName);
-                    const request = store.put(data);
-                    transaction.oncomplete = () => {
-                        console.log(`Data successfully saved to ${storeName}.`);
-                        resolve();
-                    };
-                    transaction.onerror = (event) => {
-                        console.error(`Transaction error on ${storeName}:`, event.target.error);
-                        reject(event.target.error);
-                    };
+                const transaction = db.transaction(storeName, 'readwrite');
+                const store = transaction.objectStore(storeName);
+                const request = store.put(data);
+                transaction.oncomplete = () => {
+                    console.log(`Data successfully saved to ${storeName}.`);
+                    resolve();
+                };
+                transaction.onerror = (event) => {
+                    console.error(`Transaction error on ${storeName}:`, event.target.error);
+                    reject(event.target.error);
+                };
                 });
+                
                 invalidateCache();
+                
+                //  Attendre que loadData() termine avant d'appeler le callback
+                await new Promise((resolve) => {
                 loadData();
+                // On écoute la fin de loadData via un événement custom ou en modifiant loadData
+                // Pour une solution immédiate, on utilise un délai plus long et fiable
+                setTimeout(resolve, 300);
+                });
+                
+                // Appeler le callback APRÈS que les données soient chargées
+                if (onSuccess) {
+                onSuccess();
+                }
             } catch (error) {
                 console.error(`Failed to save data to ${storeName}. Error:`, error);
                 showToast(`Erreur lors de l'enregistrement dans ${storeName}.`, 'error');
                 saveToDB_Fallback(storeName, data);
+                if (onSuccess) onSuccess();
             }
         }
+
         function executeWhenReadyPromise() {
             return new Promise(resolve => {
                 if (dbInitialized && db) {
@@ -5878,10 +6209,20 @@
                         reject(event.target.error);
                     };
                 });
+
+                if (appData[storeName]) {
+                    const index = appData[storeName].findIndex(item => item.id === id);
+                    if (index >= 0) {
+                        appData[storeName].splice(index, 1);
+                    }
+                }
+
+                invalidateCache();
+                updateAllTables();
+
                 if (onSuccessCallback) {
                     onSuccessCallback();
                 }
-                loadData();
             } catch (error) {
                 console.error(`Failed to delete data with id ${id} from ${storeName}. Error:`, error);
                 showToast(`Erreur lors de la suppression dans ${storeName}.`, 'error');
@@ -6292,7 +6633,7 @@
             const modal = document.getElementById(modalId);
             if (!modal) return;
 
-            console.log('🚪 Closing modal:', modalId);
+            console.log(' Closing modal:', modalId);
 
             // FORCE close - remove ALL styles
             modal.style.display = 'none';
@@ -6306,20 +6647,20 @@
             if (modalId === 'quality-chart-modal' && window.qualityChartModalInstance) {
                 window.qualityChartModalInstance.destroy();
                 window.qualityChartModalInstance = null;
-                console.log('✅ Quality chart destroyed');
+                console.log('Quality chart destroyed');
             }
 
             // Destroy chart raha advances chart modal
             if (modalId === 'advances-chart-modal' && window.advancesChartModalInstance) {
                 window.advancesChartModalInstance.destroy();
                 window.advancesChartModalInstance = null;
-                console.log('✅ Advances chart destroyed');
+                console.log('Advances chart destroyed');
             }
 
             // Remove modal class active if exists
             modal.classList.remove('active');
 
-            console.log('✅ Modal closed:', modalId);
+            console.log('Modal closed:', modalId);
         }
 
 
@@ -6531,8 +6872,51 @@
             calculateReceptionValues();
         }
 
+        // Synchronisation ciblée du module Réception avant action utilisateur
+        async function syncReceptionModuleData() {
+            try {
+                await executeWhenReadyPromise();
+                if (!db) return;
+
+                const storesToSync = [
+                    'collectors',
+                    'receptions',
+                    'qualities',
+                    'advances',
+                    'remboursements',
+                    'paiements'
+                ].filter(store => db.objectStoreNames.contains(store));
+
+                if (storesToSync.length === 0) return;
+
+                const results = await Promise.all(storesToSync.map(storeName => {
+                    return new Promise((resolve, reject) => {
+                        const tx = db.transaction(storeName, 'readonly');
+                        const store = tx.objectStore(storeName);
+                        const request = store.getAll();
+                        request.onsuccess = () => resolve({ storeName, data: request.result || [] });
+                        request.onerror = () => reject(request.error);
+                    });
+                }));
+
+                results.forEach(({ storeName, data }) => {
+                    appData[storeName] = data;
+                });
+
+                invalidateCache();
+                updateCollectorSelects();
+                updateQualitySelect();
+                updateReceptionTable();
+                updateAnalysisTable();
+            } catch (error) {
+                console.error('Erreur sync module réception:', error);
+            }
+        }
+
         // Amélioration de la fonction d'ouverture du modal
-        function openReceptionModal(receptionId = null) {
+        async function openReceptionModal(receptionId = null) {
+            await syncReceptionModuleData();
+
             // Réinitialiser le pesage rapide (sans confirmation)
             quickWeights = [];
             renderQuickWeights();
@@ -6590,13 +6974,14 @@
         let originalReception = null;
         let isSaving = false;
 
-        function openAdjustModal(receptionId) {
-            console.log('🔍 openAdjustModal appelé avec ID:', receptionId);
+        async function openAdjustModal(receptionId) {
+            await syncReceptionModuleData();
+            console.log('openAdjustModal appelé avec ID:', receptionId);
             
             originalReception = appData.receptions.find(r => r.id === receptionId);
             if (!originalReception) {
                 showToast('Réception introuvable', 'error');
-                console.error('❌ Réception non trouvée:', receptionId);
+                console.error(' Réception non trouvée:', receptionId);
                 return;
             }
 
@@ -6612,13 +6997,13 @@
                 originalReception.grossWeight && 
                 originalReception.netWeight) {
                 tare = originalReception.grossWeight - originalReception.netWeight;
-                console.log('📊 Tare calculée:', tare);
+                console.log('Tare calculée:', tare);
             }
             
             // Si toujours pas de tare, utiliser 0
             if (tare === undefined || tare === null || isNaN(tare)) {
                 tare = 0;
-                console.log('⚠️ Tare par défaut: 0');
+                console.log('Tare par défaut: 0');
             }
             
             // Arrondir la tare
@@ -6661,7 +7046,7 @@
         }
 
         function closeAdjustModal() {
-            console.log('🚪 Fermeture du modal');
+            console.log('Fermeture du modal');
             document.getElementById('adjust-modal').classList.remove('active');
             document.getElementById('adjustments-container').innerHTML = '';
             adjustmentCounter = 0;
@@ -6672,7 +7057,7 @@
             adjustmentCounter++;
             const rowId = `adjust-row-${adjustmentCounter}`;
             
-            console.log('➕ Ajout de la ligne:', rowId);
+            console.log('Ajout de la ligne:', rowId);
             
             const container = document.getElementById('adjustments-container');
             
@@ -6744,7 +7129,7 @@
         }
 
         function removeAdjustmentRow(rowId) {
-            console.log('🗑️ Suppression de la ligne:', rowId);
+            console.log(' Suppression de la ligne:', rowId);
             const row = document.getElementById(rowId);
             if (row) {
                 row.remove();
@@ -6792,7 +7177,7 @@
                 }
             });
 
-            // ✅ CORRECTION: Calcul automatique bidirectionnel
+            //Calcul automatique bidirectionnel
             
             // Option 1: Poids Net = Poids Brut - Tare
             function calculateNetFromGrossAndTare() {
@@ -6801,7 +7186,7 @@
                 if (gross > 0 && tare >= 0 && gross >= tare) {
                     const net = gross - tare;
                     netInput.value = net.toFixed(2);
-                    console.log(`📊 Net calculé: ${gross} - ${tare} = ${net}`);
+                    console.log(`Net calculé: ${gross} - ${tare} = ${net}`);
                     calculateTotal();
                 }
             }
@@ -6813,7 +7198,7 @@
                 if (gross > 0 && net > 0 && gross >= net && !tareInput.value) {
                     const tare = gross - net;
                     tareInput.value = tare.toFixed(2);
-                    console.log(`📊 Tare calculée: ${gross} - ${net} = ${tare}`);
+                    console.log(`Tare calculée: ${gross} - ${net} = ${tare}`);
                 }
             }
 
@@ -6824,11 +7209,11 @@
                 if (net > 0 && tare >= 0 && !grossInput.value) {
                     const gross = net + tare;
                     grossInput.value = gross.toFixed(2);
-                    console.log(`📊 Brut calculé: ${net} + ${tare} = ${gross}`);
+                    console.log(`Brut calculé: ${net} + ${tare} = ${gross}`);
                 }
             }
 
-            // ✅ Événements intelligents
+            //Événements intelligents
             grossInput.addEventListener('input', function() {
                 calculateNetFromGrossAndTare();
             });
@@ -6868,24 +7253,33 @@
         // FONCTION saveAllAdjustments() SÉCURISÉE
         // ==========================================
         async function saveAllAdjustments() {
-            // ✅ Protection contre double exécution
+            // Protection contre double exécution
             if (isSaving) {
-                console.warn('⚠️ Sauvegarde déjà en cours, ignoré');
+                console.warn('Sauvegarde déjà en cours, ignoré');
                 return;
             }
             
             isSaving = true;
-            console.log('💾 === DÉBUT SAUVEGARDE AJUSTEMENTS ===');
-            console.log('📋 Réception originale:', originalReception);
+            console.log('=== DÉBUT SAUVEGARDE AJUSTEMENTS ===');
+            console.log('Réception originale:', originalReception);
+
+            await syncReceptionModuleData();
+            const originalReceptionId = originalReception?.id || parseInt(document.getElementById('adjust-original-reception-id').value, 10);
+            originalReception = appData.receptions.find(r => r.id === originalReceptionId);
+            if (!originalReception) {
+                showToast('Réception introuvable', 'error');
+                isSaving = false;
+                return;
+            }
             
             const container = document.getElementById('adjustments-container');
             const rows = container.querySelectorAll('.adjustment-row');
             
-            console.log('📊 Nombre de lignes trouvées:', rows.length);
+            console.log('Nombre de lignes trouvées:', rows.length);
             
             if (rows.length === 0) {
                 showToast('Aucun ajustement à enregistrer', 'error');
-                console.warn('⚠️ Aucune ligne d\'ajustement');
+                console.warn('Aucune ligne d\'ajustement');
                 isSaving = false;
                 return;
             }
@@ -6903,7 +7297,7 @@
                 const price = parseFloat(row.querySelector('.adjust-price').value) || 0;
                 const note = row.querySelector('.adjust-note').value;
 
-                console.log(`📝 Ligne ${index + 1}:`, { quality, gross, tare, net, price, note });
+                console.log(`Ligne ${index + 1}:`, { quality, gross, tare, net, price, note });
 
                 if (!quality) {
                     showToast(`Ajustement #${index + 1}: Veuillez sélectionner une qualité`, 'error');
@@ -6930,21 +7324,21 @@
             });
 
             if (hasError) {
-                console.error('❌ Erreurs de validation détectées');
+                console.error('Erreurs de validation détectées');
                 isSaving = false;
                 return;
             }
 
-            console.log('✅ Ajustements collectés:', adjustments);
-            console.log('⚖️ Poids total ajusté:', totalAdjustedWeight);
+            console.log('Ajustements collectés:', adjustments);
+            console.log('Poids total ajusté:', totalAdjustedWeight);
 
-            // ✅ Arrondir le total pour éviter les erreurs de précision
+            // Arrondir le total pour éviter les erreurs de précision
             totalAdjustedWeight = parseFloat(totalAdjustedWeight.toFixed(2));
 
             // Vérifier que le total ajusté ne dépasse pas le poids net d'origine
             if (totalAdjustedWeight > originalReception.netWeight) {
                 showToast(`Le total des poids ajustés (${totalAdjustedWeight.toFixed(2)} kg) dépasse le poids net disponible (${originalReception.netWeight} kg)`, 'error');
-                console.error('❌ Dépassement du poids disponible');
+                console.error('Dépassement du poids disponible');
                 isSaving = false;
                 return;
             }
@@ -6952,32 +7346,32 @@
             // Confirmer l'opération
             const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`;
             
-            console.log('❓ Confirmation demandée');
+            console.log('Confirmation demandée');
             
             if (!confirm(confirmMessage)) {
-                console.log('🚫 Opération annulée par l\'utilisateur');
+                console.log('Opération annulée par l\'utilisateur');
                 isSaving = false;
                 return;
             }
 
-            console.log('✅ Confirmation reçue, début de la sauvegarde...');
+            console.log('Confirmation reçue, début de la sauvegarde...');
 
             // Sauvegarder
             try {
-                console.log('🔄 Début transaction DB...');
+                console.log('Début transaction DB...');
                 
                 // Trouver le max ID actuel
                 const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
-                console.log('🔢 Max ID actuel:', maxId);
+                console.log('Max ID actuel:', maxId);
                 
                 // Sauvegarder les nouvelles réceptions dans la DB
                 for (let i = 0; i < adjustments.length; i++) {
                     const adj = adjustments[i];
                     const newId = maxId + i + 1;
                     
-                    console.log(`💾 Création réception ${i + 1}/${adjustments.length} avec ID:`, newId);
+                    console.log(`Création réception ${i + 1}/${adjustments.length} avec ID:`, newId);
                     
-                    // ✅ CORRECTION: Vérifier et utiliser des valeurs par défaut
+                    //Vérifier et utiliser des valeurs par défaut
                     const netWeight = parseFloat((adj.netWeight || 0).toFixed(2));
                     const tare = parseFloat((adj.tare || 0).toFixed(2));
                     const grossWeight = parseFloat((adj.grossWeight || netWeight).toFixed(2));
@@ -6995,28 +7389,24 @@
                         price: price,
                         totalValue: totalValue,
                         year: originalReception.year,
-                        bagCount: originalReception.bagCount || 0, // ✅ Valeur par défaut
-                        bagWeight: originalReception.bagWeight || 0, // ✅ Valeur par défaut
-                        quickWeights: originalReception.quickWeights || [], // ✅ Valeur par défaut
+                        bagCount: originalReception.bagCount || 0, //Valeur par défaut
+                        bagWeight: originalReception.bagWeight || 0, // Valeur par défaut
+                        quickWeights: originalReception.quickWeights || [], // Valeur par défaut
                         note: adj.note ? `[Ajustement] ${adj.note}` : '[Ajustement tri post-réception]',
                         sourceReceptionId: originalReception.id,
                         adjustmentDate: Date.now()
                     };
                     
-                    console.log('📦 Nouvelle réception:', newReception);
+                    console.log('Nouvelle réception:', newReception);
                     
                     // Sauvegarder en DB
                     await saveToDB('receptions', newReception);
-                    console.log('✅ Sauvegardé en DB');
-                    
-                    // Ajouter à appData
-                    appData.receptions.push(newReception);
-                    console.log('✅ Ajouté à appData');
+                    console.log('Sauvegardé en DB');
                 }
                 
-                console.log('🔄 Mise à jour de la réception d\'origine...');
+                console.log('Mise à jour de la réception d\'origine...');
                 
-                // ✅ CORRECTION: Vérifier toutes les propriétés avant toFixed()
+                //Vérifier toutes les propriétés avant toFixed()
                 const oldNetWeight = originalReception.netWeight || 0;
                 
                 // Calculer le nouveau poids net avec arrondi
@@ -7026,7 +7416,7 @@
                 const price = parseFloat((originalReception.price || 0).toFixed(0));
                 const newTotalValue = parseFloat((newNetWeight * price).toFixed(0));
                 
-                // ✅ S'assurer que les valeurs sont valides
+                //S'assurer que les valeurs sont valides
                 originalReception.netWeight = newNetWeight >= 0 ? newNetWeight : 0;
                 originalReception.grossWeight = newGrossWeight >= 0 ? newGrossWeight : 0;
                 originalReception.totalValue = newTotalValue >= 0 ? newTotalValue : 0;
@@ -7037,7 +7427,7 @@
                     ? `${adjustmentNote} ${originalReception.note}` 
                     : adjustmentNote;
                 
-                console.log('📝 Réception mise à jour:', {
+                console.log('Réception mise à jour:', {
                     ancien: oldNetWeight,
                     nouveau: originalReception.netWeight,
                     difference: totalAdjustedWeight,
@@ -7045,25 +7435,21 @@
                 });
                 
                 await saveToDB('receptions', originalReception);
-                console.log('✅ Réception d\'origine mise à jour en DB');
-
-                // Rafraîchir l'affichage
-                console.log('🔄 Rafraîchissement de l\'affichage...');
-                updateAllTables();
+                console.log('Réception d\'origine mise à jour en DB');
                 
-                console.log('🎉 === SAUVEGARDE TERMINÉE AVEC SUCCÈS ===');
+                console.log('=== SAUVEGARDE TERMINÉE AVEC SUCCÈS ===');
                 showToast(`${adjustments.length} ajustement(s) enregistré(s) avec succès !`, 'success');
                 
                 isSaving = false;
                 closeAdjustModal();
                 
             } catch (error) {
-                console.error('❌ === ERREUR CRITIQUE ===');
+                console.error('=== ERREUR CRITIQUE ===');
                 console.error('Détails:', error);
                 console.error('Stack:', error.stack);
                 console.error('Ligne:', error.lineNumber || 'Non disponible');
                 
-                // ✅ Afficher plus de détails sur l'erreur
+                //Afficher plus de détails sur l'erreur
                 if (error.message.includes('toFixed')) {
                     console.error('🔍 Données problématiques:', {
                         originalReception,
@@ -7158,17 +7544,51 @@
         // FONCTIONS AUXILIAIRES AMÉLIORÉES
         // ==========================================
 
-        // ✅ Amélioration de saveToDB pour gérer les mises à jour vs insertions
-        async function saveToDB(storeName, data) {
+        // ✅ saveToDB unifiée: persiste IndexedDB + synchronise appData + rafraîchit l'UI
+        async function saveToDB(storeName, data, onSuccess) {
             return new Promise((resolve, reject) => {
+                if (!db) {
+                    try {
+                        saveToDB_Fallback(storeName, data);
+                        if (typeof onSuccess === 'function') onSuccess(data);
+                        resolve(data.id);
+                    } catch (error) {
+                        reject(error);
+                    }
+                    return;
+                }
+
                 const transaction = db.transaction([storeName], 'readwrite');
                 const store = transaction.objectStore(storeName);
-                
-                // ✅ Utiliser 'put' au lieu de 'add' pour permettre les mises à jour
                 const request = store.put(data);
-                
-                request.onsuccess = () => resolve(request.result);
+
+                request.onsuccess = () => {
+                    const savedId = data.id ?? request.result;
+                    const savedItem = { ...data, id: savedId };
+
+                    if (!appData[storeName]) {
+                        appData[storeName] = [];
+                    }
+
+                    const existingIndex = appData[storeName].findIndex(item => item.id === savedId);
+                    if (existingIndex >= 0) {
+                        appData[storeName][existingIndex] = savedItem;
+                    } else {
+                        appData[storeName].push(savedItem);
+                    }
+
+                    invalidateCache();
+                    updateAllTables();
+
+                    if (typeof onSuccess === 'function') {
+                        onSuccess(savedItem);
+                    }
+
+                    resolve(savedId);
+                };
+
                 request.onerror = () => reject(request.error);
+                transaction.onerror = () => reject(transaction.error);
             });
         }
 
@@ -7382,11 +7802,17 @@
             if (form.dataset.editId) {
                 advance.id = parseInt(form.dataset.editId);
             }
+            
+            // ✅ Utiliser le callback pour forcer la mise à jour
             saveToDB('advances', advance);
+            
             closeModal('advance-modal');
             showToast('Avance enregistrée avec succès!');
         }
+
         async function saveReception() {
+            await syncReceptionModuleData();
+
             const collectorId = parseInt(document.getElementById('reception-collector').value);
             const date = document.getElementById('reception-date').value;
             const grossWeight = parseFloat(document.getElementById('reception-gross-weight').value);
@@ -7417,49 +7843,31 @@
                 price,
                 totalValue,
                 quickWeights: [...quickWeights], // Tehirizina ny lanja tsirairay
-                year: new Date(date).getFullYear() // ✅ Ajouter l'année
+                year: new Date(date).getFullYear() //Ajouter l'année
             };
 
-            // ✅ Gérer l'ID selon le mode (création vs modification)
+            //Gérer l'ID selon le mode (création vs modification)
             if (isEditing) {
                 reception.id = parseInt(form.dataset.editId);
             } else {
-                // ✅ Générer un nouvel ID unique pour les nouvelles réceptions
+                //Générer un nouvel ID unique pour les nouvelles réceptions
                 const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
                 reception.id = maxId + 1;
             }
 
             try {
-                console.log('💾 Sauvegarde de la réception:', reception);
+                console.log('Sauvegarde de la réception:', reception);
                 
-                // ✅ Sauvegarder en base de données
+                //Sauvegarder en base de données
                 await saveToDB('receptions', reception);
-                console.log('✅ Sauvegarde DB réussie');
-                
-                // ✅ Mettre à jour appData immédiatement
-                if (isEditing) {
-                    // Mode modification : remplacer l'enregistrement existant
-                    const index = appData.receptions.findIndex(r => r.id === reception.id);
-                    if (index !== -1) {
-                        appData.receptions[index] = reception;
-                        console.log('✅ Réception mise à jour dans appData');
-                    }
-                } else {
-                    // Mode création : ajouter le nouvel enregistrement
-                    appData.receptions.push(reception);
-                    console.log('✅ Réception ajoutée à appData');
-                }
-                
-                // ✅ RAFRAÎCHIR immédiatement l'affichage
-                updateAllTables();
-                console.log('✅ Tables rafraîchies');
+                console.log('Sauvegarde DB réussie');
                 
                 // Fermer le modal et afficher le succès
                 closeModal('reception-modal');
                 showToast(isEditing ? 'Réception modifiée avec succès!' : 'Réception enregistrée avec succès!');
                 
             } catch (error) {
-                console.error('❌ Erreur lors de la sauvegarde:', error);
+                console.error('Erreur lors de la sauvegarde:', error);
                 showToast('Erreur lors de la sauvegarde de la réception', 'error');
             }
         }
@@ -9727,45 +10135,55 @@
             };
         }
         const paginationState = {
-            collectors: { currentPage: 1, rowsPerPage: 50 },
-            advances: { currentPage: 1, rowsPerPage: 50 },
-            receptions: { currentPage: 1, rowsPerPage: 50 },
-            deliveries: { currentPage: 1, rowsPerPage: 50 },
-            analysis: { currentPage: 1, rowsPerPage: 50 },
-            expenses: { currentPage: 1, rowsPerPage: 50 },
-            remboursements: { currentPage: 1, rowsPerPage: 50 },
-            paiements: { currentPage: 1, rowsPerPage: 50 }
+            collectors: { currentPage: 1, rowsPerPage: 20 },
+            advances: { currentPage: 1, rowsPerPage: 20 },
+            receptions: { currentPage: 1, rowsPerPage: 20 },
+            deliveries: { currentPage: 1, rowsPerPage: 20 },
+            analysis: { currentPage: 1, rowsPerPage: 20 },
+            expenses: { currentPage: 1, rowsPerPage: 20 },
+            remboursements: { currentPage: 1, rowsPerPage: 20 },
+            paiements: { currentPage: 1, rowsPerPage: 20 }
         };
         function getPaginatedData(dataArray, tableName) {
             const state = paginationState[tableName];
+            const totalPages = Math.max(1, Math.ceil(dataArray.length / state.rowsPerPage));
+            if (state.currentPage > totalPages) {
+                state.currentPage = totalPages;
+            }
             const startIndex = (state.currentPage - 1) * state.rowsPerPage;
             const endIndex = startIndex + state.rowsPerPage;
             return dataArray.slice(startIndex, endIndex);
         }
         function createPaginationControls(tableName, totalItems) {
             const state = paginationState[tableName];
-            const totalPages = Math.ceil(totalItems / state.rowsPerPage);
-            if (totalPages <= 1) return '';
+            const totalPages = Math.max(1, Math.ceil(totalItems / state.rowsPerPage));
+            if (state.currentPage > totalPages) {
+                state.currentPage = totalPages;
+            }
             return `
-                <div style="display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px; border-top: 1px solid var(--md-sys-color-outline-variant);">
-                    <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage - 1})" ${state.currentPage === 1 ? 'disabled' : ''}>
+                <div style="display: flex; justify-content: center; align-items: center; gap: 16px; padding: 16px; border-top: 1px solid var(--md-sys-color-outline-variant); flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 13px; color: var(--md-sys-color-on-surface-variant);">Lignes/page</span>
+                        <select class="form-select" style="min-width: 84px; height: 36px; padding: 0 8px;" onchange="setRowsPerPage('${tableName}', this.value)">
+                            <option value="10" ${state.rowsPerPage === 10 ? 'selected' : ''}>10</option>
+                            <option value="20" ${state.rowsPerPage === 20 ? 'selected' : ''}>20</option>
+                            <option value="50" ${state.rowsPerPage === 50 ? 'selected' : ''}>50</option>
+                            <option value="100" ${state.rowsPerPage === 100 ? 'selected' : ''}>100</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage - 1})" ${state.currentPage === 1 || totalItems === 0 ? 'disabled' : ''}>
                         <span class="material-icons">chevron_left</span>
                     </button>
                     <span style="font-size: 14px; color: var(--md-sys-color-on-surface);">
                         Page ${state.currentPage} / ${totalPages} (${totalItems} lignes)
                     </span>
-                    <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage + 1})" ${state.currentPage === totalPages ? 'disabled' : ''}>
+                    <button class="btn btn-icon btn-outline" onclick="changePage('${tableName}', ${state.currentPage + 1})" ${state.currentPage === totalPages || totalItems === 0 ? 'disabled' : ''}>
                         <span class="material-icons">chevron_right</span>
                     </button>
                 </div>
             `;
         }
-        function changePage(tableName, newPage) {
-            const state = paginationState[tableName];
-            const dataArray = getDataArrayForTable(tableName);
-            const totalPages = Math.ceil(dataArray.length / state.rowsPerPage);
-            if (newPage < 1 || newPage > totalPages) return;
-            state.currentPage = newPage;
+        function rerenderPaginatedTable(tableName) {
             const updateFunctions = {
                 'collectors': updateCollectorsTable,
                 'advances': updateAdvancesTable,
@@ -9779,6 +10197,23 @@
             if (updateFunctions[tableName]) {
                 updateFunctions[tableName]();
             }
+        }
+        function setRowsPerPage(tableName, rowsPerPage) {
+            const state = paginationState[tableName];
+            if (!state) return;
+            const parsed = parseInt(rowsPerPage, 10);
+            if (![10, 20, 50, 100].includes(parsed)) return;
+            state.rowsPerPage = parsed;
+            state.currentPage = 1;
+            rerenderPaginatedTable(tableName);
+        }
+        function changePage(tableName, newPage) {
+            const state = paginationState[tableName];
+            const dataArray = getDataArrayForTable(tableName);
+            const totalPages = Math.max(1, Math.ceil(dataArray.length / state.rowsPerPage));
+            if (newPage < 1 || newPage > totalPages) return;
+            state.currentPage = newPage;
+            rerenderPaginatedTable(tableName);
         }
         function getDataArrayForTable(tableName) {
             switch (tableName) {
@@ -10972,51 +11407,91 @@
                 });
             }
         }
+        function formatCreditPaymentAmount(input) {
+            const rawValue = input.value.replace(/\D/g, '');
+            input.value = rawValue ? Number(rawValue).toLocaleString('fr-MG') : '';
+        }
+
+        function setCreditPaymentToFullBalance() {
+            const form = document.getElementById('credit-payment-form');
+            const maxBalance = parseInt(form.dataset.maxBalance || '0', 10);
+            const amountInput = document.getElementById('credit-payment-amount');
+            amountInput.value = maxBalance > 0 ? Number(maxBalance).toLocaleString('fr-MG') : '';
+        }
+
         function payCollectorCredit(collectorId) {
             const collector = appData.collectors.find(c => c.id === collectorId);
             if (!collector) {
-                alert("Collecteur non trouvé !");
+                showToast("Collecteur non trouvé !", "error");
                 return;
-            }
-            const balance = calculateCollectorBalance(collectorId);
-            if (balance <= 0) {
-                alert("Ce collecteur n'a pas de solde créditeur à payer.");
-                return;
-            }
-              let paymentAmount = balance;
-            const amountFromUser = prompt(`Solde créditeur actuel de ${collector.name} : ${formatCurrency(balance)}.\n\nEntrez le montant à payer (laissez vide pour payer la totalité) :`, balance);
-            
-            if (amountFromUser === null) return;
-            
-            if (amountFromUser.trim() !== "") {
-                const parsedAmount = parseInt(amountFromUser.replace(/\D/g, ''));
-                if (isNaN(parsedAmount) || parsedAmount <= 0) {
-                    alert("Montant invalide.");
-                    return;
-                }
-                if (parsedAmount > balance) {
-                    alert("Le montant ne peut pas dépasser le solde actuel.");
-                    return;
-                }
-                paymentAmount = parsedAmount;
             }
 
-            const noteFromUser = prompt(`Vous allez payer ${formatCurrency(paymentAmount)} à ${collector.name}.\n\nVeuillez entrer une note pour ce paiement (ex: Par chèque N°123, En espèce, etc.)`, paymentAmount === balance ? "Paiement du solde créditeur" : "Paiement partiel du solde créditeur");
-            if (noteFromUser === null) {
-                showToast("Paiement annulé.", "error");
+            const balance = calculateCollectorBalance(collectorId);
+            if (balance <= 0) {
+                showToast("Ce collecteur n'a pas de solde créditeur à payer.", "info");
                 return;
             }
-            if (confirm(`Confirmer le paiement de ${formatCurrency(paymentAmount)} à ${collector.name} avec la note : "${noteFromUser}" ?`)) {
-                const paiement = {
-                    collectorId: collectorId,
-                    amount: paymentAmount,
-                    date: new Date().toISOString().split('T')[0],
-                    note: noteFromUser.trim() || `Paiement du solde créditeur`,
-                    createdAt: new Date().toISOString()
-                };
-                saveToDB('paiements', paiement);
-                showToast(`Paiement de ${formatCurrency(paymentAmount)} à ${collector.name} enregistré avec succès!`);
+
+            const form = document.getElementById('credit-payment-form');
+            form.reset();
+            form.dataset.maxBalance = String(Math.round(balance));
+
+            document.getElementById('credit-payment-collector-id').value = collector.id;
+            document.getElementById('credit-payment-collector-name').value = collector.name;
+            document.getElementById('credit-payment-balance').value = formatCurrency(balance);
+            document.getElementById('credit-payment-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('credit-payment-note').value = 'Paiement du solde créditeur';
+
+            setCreditPaymentToFullBalance();
+            openModal('credit-payment-modal');
+
+            setTimeout(() => {
+                document.getElementById('credit-payment-amount').focus();
+            }, 100);
+        }
+
+        function submitCreditPayment(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('credit-payment-form');
+            const collectorId = parseInt(document.getElementById('credit-payment-collector-id').value, 10);
+            const collector = appData.collectors.find(c => c.id === collectorId);
+            if (!collector) {
+                showToast("Collecteur non trouvé !", "error");
+                return;
             }
+
+            const maxBalance = parseInt(form.dataset.maxBalance || '0', 10);
+            const amountRaw = document.getElementById('credit-payment-amount').value.replace(/\D/g, '');
+            const paymentAmount = parseInt(amountRaw, 10) || 0;
+            const paymentDate = document.getElementById('credit-payment-date').value || new Date().toISOString().split('T')[0];
+            const noteInput = document.getElementById('credit-payment-note').value.trim();
+
+            if (paymentAmount <= 0) {
+                showToast("Le montant doit être supérieur à zéro.", "error");
+                return;
+            }
+
+            if (paymentAmount > maxBalance) {
+                showToast("Le montant ne peut pas dépasser le solde créditeur.", "error");
+                return;
+            }
+
+            const defaultNote = paymentAmount === maxBalance
+                ? 'Paiement du solde créditeur'
+                : 'Paiement partiel du solde créditeur';
+
+            const paiement = {
+                collectorId: collectorId,
+                amount: paymentAmount,
+                date: paymentDate,
+                note: noteInput || defaultNote,
+                createdAt: new Date().toISOString()
+            };
+
+            saveToDB('paiements', paiement);
+            closeModal('credit-payment-modal');
+            showToast(`Paiement de ${formatCurrency(paymentAmount)} à ${collector.name} enregistré avec succès!`);
         }
         function updatePaiementsTable() {
             const tbody = document.getElementById('paiements-table');
@@ -11218,12 +11693,12 @@
             showToast("Export Excel vita soa aman-tsara!", "success");
         }
 
-        // ✅ SERVICE WORKER REGISTRATION AMBOARIANA
+        //SERVICE WORKER REGISTRATION AMBOARIANA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
                     .then(registration => {
-                        console.log('✅ Service Worker enregistré:', registration.scope);
+                        console.log('Service Worker enregistré:', registration.scope);
                         
                         // Vérifier les mises à jour
                         registration.addEventListener('updatefound', () => {
@@ -11240,7 +11715,7 @@
                         });
                     })
                     .catch(error => {
-                        console.error('❌ Service Worker registration failed:', error);
+                        console.error('Service Worker registration failed:', error);
                     });
                 
                 // Écouter les changements de contrôleur
@@ -11250,22 +11725,22 @@
             });
         }
 
-        // ✅ AFFICHER STATUS OFFLINE/ONLINE
+        //AFFICHER STATUS OFFLINE/ONLINE
         window.addEventListener('online', () => {
-            showToast('📶 Connecté à Internet', 'success', 2000);
+            showToast('Connecté à Internet', 'success', 2000);
         });
 
         window.addEventListener('offline', () => {
             showToast('📵 Mode Hors-ligne - Données enregistrées localement', 'info', 3000);
         });
 
-        // ✅ INSTALLER PROMPT PWA 
+        //INSTALLER PROMPT PWA 
         let deferredPrompt;
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            console.log('💾 App peut être installée!');
+            console.log('App peut être installée!');
             
             // Mampiseho bouton installation automatiquement
             const installBtn = document.getElementById('pwa-install-btn');
@@ -11274,21 +11749,21 @@
             }
             
             // Toast notification
-            showToast('💾 Afaka installer ny app! Jereo ny Settings.', 'info', 4000);
+            showToast('Afaka installer ny app! Jereo ny Settings.', 'info', 4000);
         });
 
         // Fonction d'installation - appelée par le bouton
         function installApp() {
             if (!deferredPrompt) {
-                showToast('⚠️ Azo installer sahady ny app, na tsy mbola vonona.', 'warning', 3000);
+                showToast('Azo installer sahady ny app, na tsy mbola vonona.', 'warning', 3000);
                 return;
             }
             
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    showToast('✅ App nao-installer soa aman-tsara!', 'success', 3000);
-                    console.log('✅ App installée!');
+                    showToast('App nao-installer soa aman-tsara!', 'success', 3000);
+                    console.log('App installée!');
                     
                     // Manafina ny bouton
                     const installBtn = document.getElementById('pwa-install-btn');
@@ -11302,7 +11777,7 @@
 
         // Vérifier si déjà installé
         window.addEventListener('appinstalled', () => {
-            console.log('✅ BEHAVANA a été installé avec succès!');
+            console.log(' BEHAVANA a été installé avec succès!');
             showToast('✅ Installation réussie!', 'success', 3000);
             deferredPrompt = null;
             
@@ -11347,11 +11822,11 @@
         // ========================================
 
         function renderQualityDetailTable() {
-            console.log('📊 Rendering quality detail table...');
+            console.log('Rendering quality detail table...');
 
             const tbody = document.getElementById('quality-detail-table');
             if (!tbody) {
-                console.error('❌ Table quality-detail-table tsy hita!');
+                console.error('Table quality-detail-table tsy hita!');
                 return;
             }
 
@@ -11380,7 +11855,7 @@
                     </td>
                 </tr>
                 `;
-                console.log(`⚠️ Aucune réception pour l'année ${currentYear}`);
+                console.log(`Aucune réception pour l'année ${currentYear}`);
                 return;
             }
 
@@ -11415,7 +11890,7 @@
                 </tr>
             `;
 
-            console.log(`✅ Table rendered: ${sortedData.length} qualities, ${totalPoids.toFixed(2)} kg total (Année ${currentYear})`);
+            console.log(`Table rendered: ${sortedData.length} qualities, ${totalPoids.toFixed(2)} kg total (Année ${currentYear})`);
         }
 
 
@@ -11423,7 +11898,7 @@
 
         // Manova ny chart container ho clickable
         function makeQualityChartClickable() {
-            console.log('🔍 Mitady quality chart container...');
+            console.log('Mitady quality chart container...');
 
             // Tadiavo DAHOLO ny chart-container
             const allContainers = document.querySelectorAll('.chart-container');
@@ -11434,12 +11909,12 @@
                 const canvas = container.querySelector('#qualityChart');
                 if (canvas) {
                     targetContainer = container;
-                    console.log('✅ Quality chart container hita!');
+                    console.log('Quality chart container hita!');
                 }
             });
 
             if (!targetContainer) {
-                console.warn('⚠️ Quality chart container tsy hita. Hanandrana indray...');
+                console.warn('Quality chart container tsy hita. Hanandrana indray...');
                 // Andraso kely dia manandrana indray
                 setTimeout(makeQualityChartClickable, 1000);
                 return;
@@ -11450,7 +11925,7 @@
 
             // Asiana onclick - misy protection hoe tsy mi-trigger rehefa canvas
             targetContainer.addEventListener('click', function (e) {
-                console.log('🖱️ Quality chart clicked!');
+                console.log('Quality chart clicked!');
                 openQualityChartModal();
             });
 
@@ -11466,7 +11941,7 @@
                 `;
             }
 
-            console.log('✅ Quality chart clickable tsara!');
+            console.log('Quality chart clickable tsara!');
         }
 
 
@@ -11491,11 +11966,11 @@
 
         // Render table détaillé - Advances
         function renderAdvancesDetailTable() {
-            console.log('📊 Rendering advances detail table...');
+            console.log('Rendering advances detail table...');
 
             const tbody = document.getElementById('advances-detail-table');
             if (!tbody) {
-                console.error('❌ Table advances-detail-table tsy hita!');
+                console.error(' Table advances-detail-table tsy hita!');
                 return;
             }
 
@@ -11556,16 +12031,16 @@
                 </tr>
             `;
 
-            console.log(`✅ Advances table rendered`);
+            console.log(`Advances table rendered`);
         }
 
         // Render graphique - Advances
         function renderAdvancesChartInModal() {
-            console.log('📊 Rendering advances chart in modal...');
+            console.log('Rendering advances chart in modal...');
 
             const ctx = document.getElementById('advancesChartModal');
             if (!ctx) {
-                console.error('❌ Canvas advancesChartModal tsy hita!');
+                console.error('Canvas advancesChartModal tsy hita!');
                 return;
             }
 
@@ -11652,7 +12127,7 @@
                 }
             });
 
-            console.log('✅ Advances chart rendered');
+            console.log('Advances chart rendered');
         }
 
         // Open advances modal - ITY NO TOKONY MISY
@@ -11668,7 +12143,7 @@
 
         // Manova advances chart ho clickable
         function makeAdvancesChartClickable() {
-            console.log('🔍 Mitady advances chart container...');
+            console.log('Mitady advances chart container...');
 
             const allContainers = document.querySelectorAll('.chart-container');
             let targetContainer = null;
@@ -11677,12 +12152,12 @@
                 const canvas = container.querySelector('#barChart');
                 if (canvas) {
                     targetContainer = container;
-                    console.log('✅ Advances chart container hita!');
+                    console.log('Advances chart container hita!');
                 }
             });
 
             if (!targetContainer) {
-                console.warn('⚠️ Advances chart container tsy hita.');
+                console.warn('Advances chart container tsy hita.');
                 setTimeout(makeAdvancesChartClickable, 1000);
                 return;
             }
@@ -11693,7 +12168,7 @@
             targetContainer.parentNode.replaceChild(newContainer, targetContainer);
 
             newContainer.addEventListener('click', function (e) {
-                console.log('🖱️ Advances chart clicked!');
+                console.log('Advances chart clicked!');
                 openAdvancesChartModal();
             });
 
@@ -11708,7 +12183,7 @@
                 `;
             }
 
-            console.log('✅ Advances chart clickable tsara!');
+            console.log('Advances chart clickable tsara!');
         }
 
         function renderQualityChartInModal() {
@@ -11896,18 +12371,46 @@
         let isDragging = false;
         let startY = 0;
         let startYear = 0;
+        
+        function getYearBounds() {
+            const now = new Date().getFullYear();
+            return {
+                minYear: now - 3,
+                maxYear: now + 4
+            };
+        }
 
         function initYearSlider() {
             const track = document.getElementById('yearSliderTrack');
             const thumb = document.getElementById('yearSliderThumb');
-            const fill = document.getElementById('yearSliderFill');
             const display = document.getElementById('yearDisplay');
+            const mobileRange = document.getElementById('yearMobileRange');
             
             if (!track || !thumb) return;
             
-            const now = new Date().getFullYear();
-            const minYear = now - 3;
-            const maxYear = now + 4;
+            const { minYear, maxYear } = getYearBounds();
+
+            if (mobileRange) {
+                mobileRange.min = String(minYear);
+                mobileRange.max = String(maxYear);
+                mobileRange.value = String(currentYear);
+
+                mobileRange.addEventListener('input', (e) => {
+                    const nextYear = parseInt(e.target.value, 10);
+                    if (Number.isNaN(nextYear) || nextYear === currentYear) return;
+                    currentYear = nextYear;
+                    updateSliderPosition(false);
+                });
+
+                mobileRange.addEventListener('change', (e) => {
+                    const nextYear = parseInt(e.target.value, 10);
+                    if (Number.isNaN(nextYear)) return;
+                    currentYear = nextYear;
+                    localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+                    updateSliderPosition(true);
+                    refreshAllData();
+                });
+            }
             
             // Initialiser la position
             updateSliderPosition();
@@ -12046,13 +12549,13 @@
             const thumb = document.getElementById('yearSliderThumb');
             const fill = document.getElementById('yearSliderFill');
             const display = document.getElementById('yearDisplay');
+            const displayMobile = document.getElementById('yearDisplayMobile');
+            const mobileRange = document.getElementById('yearMobileRange');
             const track = document.getElementById('yearSliderTrack');
             
             if (!thumb || !track) return;
             
-            const now = new Date().getFullYear();
-            const minYear = now - 3;
-            const maxYear = now + 4;
+            const { minYear, maxYear } = getYearBounds();
             const range = maxYear - minYear;
             const position = (currentYear - minYear) / range;
             
@@ -12069,6 +12572,16 @@
             if (display) {
                 display.textContent = currentYear;
             }
+
+            if (displayMobile) {
+                displayMobile.textContent = currentYear;
+            }
+
+            if (mobileRange) {
+                mobileRange.min = String(minYear);
+                mobileRange.max = String(maxYear);
+                mobileRange.value = String(currentYear);
+            }
             
             // Animation si demandée
             if (animate) {
@@ -12083,6 +12596,16 @@
                     }
                 }, 600);
             }
+        }
+
+        function changeYearBy(delta) {
+            const { minYear, maxYear } = getYearBounds();
+            const nextYear = Math.max(minYear, Math.min(maxYear, currentYear + delta));
+            if (nextYear === currentYear) return;
+            currentYear = nextYear;
+            localStorage.setItem(ACTIVE_YEAR_STORAGE_KEY, currentYear);
+            updateSliderPosition(true);
+            refreshAllData();
         }
 
         function refreshAllData() {
@@ -12934,7 +13457,7 @@
                 const totalValue = dailyReceptions.reduce((sum, r) => sum + r.totalValue, 0);
                 const receiptNum = `R${new Date(receptionDate).getTime().toString().slice(-5)}${collectorId}`;
 
-                // ✅ GÉNÉRATION DU QR CODE HORS LIGNE
+                // GÉNÉRATION DU QR CODE HORS LIGNE
                 const qrData = `BEHAVANA-${receiptNum}-${collector.name}-${totalNetWeight.toFixed(2)}kg-${formatCurrency(totalValue)}Ar`;
                 const qrCodeDataURL = generateQRCodeSVG(qrData);
 
