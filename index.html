@@ -2,11 +2,8 @@
 <html lang="fr">
 
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Material+Icons&family=Material+Symbols+Outlined&display=swap"
-        rel="stylesheet">
+    <!-- Polices locales — offline ready -->
+    <link rel="stylesheet" href="fonts/icon.css">
 
     
     <meta charset="UTF-8">
@@ -19,11 +16,11 @@
     <meta name="author" content="BEHAVANA">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="/behavana-app/manifest.json">
+    <link rel="manifest" href="manifest.json">
     
     <!-- Icons -->
-    <link rel="icon" href="/behavana-app/logo.jpg" type="image/jpeg">
-    <link rel="shortcut icon" href="/behavana-app/logo.jpg" type="image/jpeg">
+    <link rel="icon" href="logo.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="logo.jpg" type="image/jpeg">
     
     <!-- Theme Color (Android) -->
     <meta name="theme-color" content="#6750a4">
@@ -33,20 +30,18 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="BEHAVANA">
-    <link rel="apple-touch-icon" href="/behavana-app/logo.jpg">
+    <link rel="apple-touch-icon" href="logo.jpg">
     
     <!-- Windows/MS Support -->
     <meta name="msapplication-TileColor" content="#6750a4">
-    <meta name="msapplication-TileImage" content="/behavana-app/logo.jpg">
+    <meta name="msapplication-TileImage" content="logo.jpg">
     
     <!-- External Libraries -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
-    <script src="reception-export-enhanced.js"></script>
+
 
     <style>
         /* Landscape Mode Optimization for Small Screens */
@@ -11797,7 +11792,9 @@
                         });
                     })
                     .catch(error => {
-                        console.error('Service Worker registration failed:', error);
+                        if (location.protocol !== 'file:') {
+                            console.error('Service Worker registration failed:', error);
+                        }
                     });
                 
                 // Écouter les changements de contrôleur

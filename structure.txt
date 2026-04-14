@@ -1,0 +1,23 @@
+.
+├── fonts
+│   ├── fa
+│   ├── icon.css
+│   ├── material-icons-outlined-v110-latin-regular.woff2
+│   ├── material-icons-v145-latin-regular.woff2
+│   ├── material-symbols-outlined-v325-latin-regular.woff2
+│   ├── roboto-condensed-v31-latin-300italic.woff2
+│   ├── roboto-condensed-v31-latin-300.woff2
+│   ├── roboto-condensed-v31-latin-700italic.woff2
+│   ├── roboto-condensed-v31-latin-700.woff2
+│   ├── roboto-condensed-v31-latin-regular.woff2
+│   └── roboto-v51-latin-regular.woff2
+├── index.html
+├── logo-192.png
+├── logo-512.png
+├── logo.jpg
+├── logo-maskable.png
+├── manifest.json
+├── structure.txt
+└── sw.js
+
+3 directories, 18 files
