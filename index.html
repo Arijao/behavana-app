@@ -12003,7 +12003,7 @@
                         // Vérifier les mises à jour
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
+                            newWorker.addEventListener('statechange', async () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // Nouvelle version disponible
                                     if (await customConfirm('Misy version vaovao! Havaozina ve?', 'Mise à jour')) {
