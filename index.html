@@ -43,25 +43,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 
-    <!-- Confirmation Modal Glassmorphism -->
-    <div id="confirm-modal-overlay" class="confirm-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
-        <div class="confirm-modal-card">
-            <div class="confirm-modal-icon">
-                <span class="material-icons">help_outline</span>
-            </div>
-            <h2 id="confirm-modal-title" class="confirm-modal-title">Confirmation</h2>
-            <p id="confirm-modal-message" class="confirm-modal-message">Êtes-vous sûr de vouloir continuer ?</p>
-            <div class="confirm-modal-actions">
-                <button id="confirm-modal-cancel" class="confirm-modal-btn confirm-modal-btn-cancel">
-                    Annuler
-                </button>
-                <button id="confirm-modal-confirm" class="confirm-modal-btn confirm-modal-btn-confirm">
-                    Confirmer
-                </button>
-            </div>
-        </div>
-    </div>
-
 
     <style>
         /* Landscape Mode Optimization for Small Screens */
@@ -2230,149 +2211,7 @@
         }
 
         .modal-content::-webkit-scrollbar-thumb:hover {
-            background: var(--md-sys-color-outline);
-        }
-
-        /* ==========================================
-           CONFIRMATION MODAL GLASSMORPHISM
-           ========================================== */
-        .confirm-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px;
-        }
-
-        .confirm-modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .confirm-modal-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            border-radius: 28px;
-            padding: 32px;
-            width: 100%;
-            max-width: 440px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            text-align: center;
-        }
-
-        [data-theme="dark"] .confirm-modal-card {
-            background: rgba(30, 30, 45, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .confirm-modal-overlay.active .confirm-modal-card {
-            transform: scale(1) translateY(0);
-        }
-
-        .confirm-modal-icon {
-            width: 64px;
-            height: 64px;
-            background: var(--md-sys-color-primary-container);
-            color: var(--md-sys-color-primary);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 32px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-        }
-
-        .confirm-modal-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--md-sys-color-on-surface);
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-
-        .confirm-modal-message {
-            font-size: 15px;
-            color: var(--md-sys-color-on-surface-variant);
-            margin-bottom: 32px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        .confirm-modal-actions {
-            display: flex;
-            gap: 16px;
-        }
-
-        .confirm-modal-btn {
-            flex: 1;
-            padding: 14px 24px;
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            outline: none;
-        }
-
-        .confirm-modal-btn:focus-visible {
-            box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.3);
-        }
-
-        .confirm-modal-btn-cancel {
-            background: var(--md-sys-color-surface-variant);
-            color: var(--md-sys-color-on-surface-variant);
-        }
-
-        .confirm-modal-btn-cancel:hover {
-            background: var(--md-sys-color-outline-variant);
-            transform: translateY(-2px);
-        }
-
-        .confirm-modal-btn-confirm {
-            background: var(--md-sys-color-primary);
-            color: var(--md-sys-color-on-primary);
-            box-shadow: 0 4px 12px rgba(0, 97, 164, 0.2);
-        }
-
-        .confirm-modal-btn-confirm:hover {
-            background: #004a7c;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 97, 164, 0.3);
-        }
-
-        @media (max-width: 480px) {
-            .confirm-modal-card {
-                padding: 24px;
-            }
-            .confirm-modal-actions {
-                flex-direction: column-reverse;
-                gap: 12px;
-            }
-            .confirm-modal-btn {
-                width: 100%;
-            }
+            background-color: var(--md-sys-color-outline);
         }
 
         .filters {
@@ -6867,77 +6706,6 @@
             modal.style.visibility = '';
             modal.classList.add('active');
         }
-        /**
-         * Nouveau système de confirmation professionnel avec Glassmorphism
-         */
-        function customConfirm(message, title = 'Confirmation') {
-            return new Promise((resolve) => {
-                const overlay = document.getElementById('confirm-modal-overlay');
-                const messageEl = document.getElementById('confirm-modal-message');
-                const titleEl = document.getElementById('confirm-modal-title');
-                const confirmBtn = document.getElementById('confirm-modal-confirm');
-                const cancelBtn = document.getElementById('confirm-modal-cancel');
-                
-                // Sauvegarder l'élément actif pour le focus management
-                const previousActiveElement = document.activeElement;
-
-                messageEl.textContent = message;
-                titleEl.textContent = title;
-                overlay.classList.add('active');
-                
-                // Focus sur le bouton confirmer par défaut
-                setTimeout(() => confirmBtn.focus(), 100);
-
-                const handleConfirm = () => {
-                    cleanup();
-                    resolve(true);
-                };
-
-                const handleCancel = () => {
-                    cleanup();
-                    resolve(false);
-                };
-
-                const handleKeyDown = (e) => {
-                    if (e.key === 'Escape') handleCancel();
-                    if (e.key === 'Tab') {
-                        // Trap focus
-                        const focusableElements = [cancelBtn, confirmBtn];
-                        const first = focusableElements[0];
-                        const last = focusableElements[focusableElements.length - 1];
-                        
-                        if (e.shiftKey && document.activeElement === first) {
-                            last.focus();
-                            e.preventDefault();
-                        } else if (!e.shiftKey && document.activeElement === last) {
-                            first.focus();
-                            e.preventDefault();
-                        }
-                    }
-                };
-
-                const cleanup = () => {
-                    overlay.classList.remove('active');
-                    confirmBtn.removeEventListener('click', handleConfirm);
-                    cancelBtn.removeEventListener('click', handleCancel);
-                    document.removeEventListener('keydown', handleKeyDown);
-                    overlay.removeEventListener('click', handleOverlayClick);
-                    
-                    // Restaurer le focus
-                    if (previousActiveElement) previousActiveElement.focus();
-                };
-
-                const handleOverlayClick = (e) => {
-                    if (e.target === overlay) handleCancel();
-                };
-
-                confirmBtn.addEventListener('click', handleConfirm);
-                cancelBtn.addEventListener('click', handleCancel);
-                document.addEventListener('keydown', handleKeyDown);
-                overlay.addEventListener('click', handleOverlayClick);
-            });
-        }
-
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if (!modal) return;
@@ -7010,7 +6778,7 @@
             openModal('advance-modal');
         }
         // Fonction pour ajouter un poids avec validation
-        async function addQuickWeight() {
+        function addQuickWeight() {
             const input = document.getElementById('quick-weight-input');
             let val = input.value.trim().replace(',', '.');
             const weight = parseFloat(val);
@@ -7024,7 +6792,7 @@
 
             // Vérification limite raisonnable (éviter erreurs de saisie)
             if (weight > 100) {
-                if (!await customConfirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`, 'Attention')) {
+                if (!confirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`)) {
                     return;
                 }
             }
@@ -7143,18 +6911,24 @@
             updateReceptionFromQuickWeights();
 
             showToast(`✓ ${lastWeight} kg nesorina`, 'info', 1500);
-          // Fonction pour tout effacer avec confirmation
-        async function clearQuickWeights() {
+        }
+
+        // Fonction pour tout effacer avec confirmation
+        function clearQuickWeights() {
             if (quickWeights.length === 0) {
                 return;
             }
-            if (await customConfirm(`Hamafa ny lanja rehetra (${quickWeights.length} gony)?`)) {
+
+            if (confirm(`Hamafa ny lanja rehetra (${quickWeights.length} gony)?`)) {
                 quickWeights = [];
                 renderQuickWeights();
                 updateReceptionFromQuickWeights();
+
                 showToast('✓ Voafafa daholo', 'success', 1500);
             }
-        }     // Fonction pour mettre à jour les champs de réception
+        }
+
+        // Fonction pour mettre à jour les champs de réception
         function updateReceptionFromQuickWeights() {
             const totalWeight = quickWeights.reduce((sum, w) => sum + w, 0);
             const bagCount = quickWeights.length;
@@ -7648,8 +7422,11 @@
 
             // Confirmer l'opération
             const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`;
-
-            if (!await customConfirm(confirmMessage, 'Confirmer l\'ajustement')) {
+            
+            console.log('Confirmation demandée');
+            
+            if (!confirm(confirmMessage)) {
+                console.log('Opération annulée par l\'utilisateur');
                 isSaving = false;
                 return;
             }
@@ -8196,29 +7973,29 @@
             closeModal('delivery-modal');
             showToast('Livraison enregistrée avec succès!');
         }
-        async function deleteCollector(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer ce collecteur?')) {
+        function deleteCollector(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce collecteur?')) {
                 deleteFromDB('collectors', id, () => {
                     showToast('Collecteur supprimé.', 'error');
                 });
             }
         }
-        async function deleteAdvance(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer cette avance?')) {
+        function deleteAdvance(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette avance?')) {
                 deleteFromDB('advances', id, () => {
                     showToast('Avance supprimée.', 'error');
                 });
             }
         }
-        async function deleteReception(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer cette réception?')) {
+        function deleteReception(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette réception?')) {
                 deleteFromDB('receptions', id, () => {
                     showToast('Réception supprimée.', 'error');
                 });
             }
         }
-        async function deleteDelivery(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer cette livraison?')) {
+        function deleteDelivery(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette livraison?')) {
                 deleteFromDB('deliveries', id, () => {
                     showToast('Livraison supprimée.', 'error');
                 });
@@ -8274,7 +8051,7 @@
         }
 
         // --- Fonctions Pesage Rapide pour Livraison ---
-        async function addDeliveryQuickWeight() {
+        function addDeliveryQuickWeight() {
             const input = document.getElementById('delivery-quick-weight-input');
             let val = input.value.trim().replace(',', '.');
             const weight = parseFloat(val);
@@ -8286,7 +8063,7 @@
             }
 
             if (weight > 100) {
-                if (!await customConfirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`, 'Attention')) {
+                if (!confirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`)) {
                     return;
                 }
             }
@@ -8390,9 +8167,9 @@
             showToast(`✓ ${lastWeight} kg nesorina`, 'info', 1500);
         }
 
-        async function clearDeliveryQuickWeights() {
+        function clearDeliveryQuickWeights() {
             if (deliveryQuickWeights.length === 0) return;
-            if (await customConfirm(`Hamafa ny lanja rehetra (${deliveryQuickWeights.length} gony)?`)) {
+            if (confirm(`Hamafa ny lanja rehetra (${deliveryQuickWeights.length} gony)?`)) {
                 deliveryQuickWeights = [];
                 renderDeliveryQuickWeights();
                 updateDeliveryFromQuickWeights();
@@ -9005,10 +8782,11 @@
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = async function (e) {
+                reader.onload = function (e) {
                     try {
                         const importedData = JSON.parse(e.target.result);
-                        if (await customConfirm('Êtes-vous sûr de vouloir importer ces données? Cela remplacera toutes les données existantes.')) {
+                        console.log('Raw imported data:', importedData);
+                        if (confirm('Êtes-vous sûr de vouloir importer ces données? Cela remplacera toutes les données existantes.')) {
                             executeWhenReady(() => {
                                 if (!db) {
                                     console.warn('Database not available, importing to memory');
@@ -9023,7 +8801,7 @@
                                         paiements: importedData.paiements || []
                                     };
                                     updateAllTables();
-                                    showToast('Données importées avec succès!');
+                                    alert('Données importées avec succès (mode mémoire)!');
                                     return;
                                 }
                                 console.log('Starting database import process...');
@@ -9034,13 +8812,13 @@
                                     });
                                 } catch (error) {
                                     console.error('Import error:', error);
-                                    showToast('Erreur lors de l\'importation: ' + error.message, 'error');
+                                    alert('Erreur lors de l\'importation: ' + error.message);
                                 }
                             });
                         }
                     } catch (error) {
                         console.error('JSON parse error:', error);
-                        showToast('Erreur lors de l\'importation du fichier JSON: ' + error.message, 'error');
+                        alert('Erreur lors de l\'importation du fichier JSON: ' + error.message);
                     }
                 };
                 reader.readAsText(file);
@@ -9220,9 +8998,9 @@
                 if (callback) callback();
             }
         }
-        async function resetData() {
-            if (await customConfirm('Êtes-vous sûr de vouloir effacer toutes les données? Cette action est irréversible.', 'Attention !')) {
-                if (await customConfirm('Confirmation finale: Toutes les données seront perdues définitivement!', 'Action Irréversible')) {
+        function resetData() {
+            if (confirm('Êtes-vous sûr de vouloir effacer toutes les données? Cette action est irréversible.')) {
+                if (confirm('Confirmation finale: Toutes les données seront perdues définitivement!')) {
                     executeWhenReady(() => {
                         if (!db) {
                             console.warn('Database not available, clearing memory data');
@@ -11278,8 +11056,8 @@
             closeModal('quality-modal');
             showToast('Qualité enregistrée avec succès!');
         }
-        async function deleteQuality(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer cette qualité?')) {
+        function deleteQuality(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette qualité?')) {
                 deleteFromDB('qualities', id, () => {
                     showToast('Qualité supprimée.', 'error');
                 });
@@ -11510,8 +11288,8 @@
             closeModal('expense-modal');
             showToast('Dépense enregistrée avec succès!');
         }
-        async function deleteExpense(id) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
+        function deleteExpense(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
                 deleteFromDB('expenses', id, () => {
                     showToast('Dépense supprimée.', 'error');
                 });
@@ -11700,8 +11478,8 @@
             }
             openRemboursementModal(rem.collectorId, remboursementId);
         }
-        async function deleteRemboursement(remboursementId) {
-            if (await customConfirm('Êtes-vous sûr de vouloir supprimer ce remboursement ? Cette action est irréversible.')) {
+        function deleteRemboursement(remboursementId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce remboursement ? Cette action est irréversible.')) {
                 deleteFromDB('remboursements', remboursementId, () => {
                     showToast('Remboursement supprimé.', 'error');
                 });
@@ -11864,8 +11642,8 @@
                 rendementCard.querySelector('.insight-icon').style.backgroundColor = 'var(--md-sys-color-primary)';
             }
         }
-        async function deletePaiement(paiementId) {
-            if (await customConfirm('ATTENTION : Annuler un paiement va recréer le crédit pour le collecteur. Êtes-vous sûr de vouloir continuer ?', 'Attention')) {
+        function deletePaiement(paiementId) {
+            if (confirm('ATTENTION : Annuler un paiement va recréer le crédit pour le collecteur. Êtes-vous sûr de vouloir continuer ?')) {
                 deleteFromDB('paiements', paiementId, () => {
                     showToast('Paiement annulé avec succès.', 'error');
                 });
@@ -12003,10 +11781,10 @@
                         // Vérifier les mises à jour
                         registration.addEventListener('updatefound', () => {
                             const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', async () => {
+                            newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // Nouvelle version disponible
-                                    if (await customConfirm('Misy version vaovao! Havaozina ve?', 'Mise à jour')) {
+                                    if (confirm('Misy version vaovao! Havaozina ve?')) {
                                         newWorker.postMessage({ type: 'SKIP_WAITING' });
                                         window.location.reload();
                                     }
