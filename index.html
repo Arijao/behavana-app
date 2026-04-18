@@ -2353,6 +2353,38 @@
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.82);
             margin-bottom: 28px;
+            white-space: pre-line;
+        }
+
+        /* Bloc de stats interne au dialog (ajustement) */
+        #bvn-confirm-message .bvn-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            text-align: left;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        #bvn-confirm-message .bvn-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+        #bvn-confirm-message .bvn-stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+        }
+        #bvn-confirm-message .bvn-stat-value {
+            font-weight: 700;
+            color: var(--md-sys-color-primary, #00d4aa);
+            font-size: 13px;
+            white-space: nowrap;
         }
 
         #bvn-confirm-actions {
@@ -8171,13 +8203,25 @@
             }
 
             // Confirmer l'opération
-            const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg`;
+            const remainingWeight = (originalReception.netWeight - totalAdjustedWeight).toFixed(2);
+            const confirmMessageHtml = `
+                <span>Vous allez créer <strong>${adjustments.length}</strong> nouvelle(s) réception(s) à partir de cette réception.</span>
+                <div class="bvn-stats">
+                    <div class="bvn-stat-row">
+                        <span class="bvn-stat-label">📦 Poids total ajusté</span>
+                        <span class="bvn-stat-value">${totalAdjustedWeight.toFixed(2)} kg</span>
+                    </div>
+                    <div class="bvn-stat-row">
+                        <span class="bvn-stat-label">🔄 Poids restant (qualité d'origine)</span>
+                        <span class="bvn-stat-value">${remainingWeight} kg</span>
+                    </div>
+                </div>`;
 
             console.log('Confirmation demandée');
 
             showConfirmDialog({
                 title: 'Confirmer l\'ajustement',
-                message: confirmMessage,
+                messageHtml: confirmMessageHtml,
                 confirmLabel: 'Confirmer',
                 icon: 'fa-sliders-h',
                 danger: false,
@@ -14699,7 +14743,12 @@
             } = options || {};
 
             titleEl.textContent   = title;
-            messageEl.textContent = message;
+            // Support rich HTML message via messageHtml option, fallback to text
+            if (options.messageHtml) {
+                messageEl.innerHTML = options.messageHtml;
+            } else {
+                messageEl.innerText = message;
+            }
             btnOk.textContent     = confirmLabel;
             btnCancel.textContent = cancelLabel;
 
