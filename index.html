@@ -2866,6 +2866,22 @@
         }
 
 
+        /* ── Highlight recherche globale ── */
+        mark.search-hl {
+            background: rgba(0, 212, 170, 0.22);
+            color: inherit;
+            border-radius: 3px;
+            padding: 0 2px;
+            font-weight: 700;
+            text-decoration: none;
+            /* Accent couleur primaire du thème */
+            box-shadow: inset 0 -2px 0 var(--md-sys-color-primary, #00d4aa);
+        }
+        [data-theme="light"] mark.search-hl {
+            background: rgba(0, 122, 98, 0.15);
+            box-shadow: inset 0 -2px 0 var(--md-sys-color-primary, #007a62);
+        }
+
         
     </style>
     <style>
@@ -11171,7 +11187,7 @@
                 updateCurrentActiveTable();
                 return;
             }
-            if (query.length < 2) return;
+            if (query.length < 1) return;
             const activeSection = document.querySelector('.content-section.active');
             if (!activeSection) return;
             const sectionId = activeSection.id;
@@ -11290,7 +11306,7 @@
                 `;
                 return;
             }
-            renderTableRows(sectionId, tableName, filteredData, tbody);
+            renderTableRows(sectionId, tableName, filteredData, tbody, query);
         }
 
         function calculateSearchSummary(sectionId, data) {
@@ -11413,7 +11429,37 @@
             }
         }
 
-        function renderTableRows(sectionId, tableName, data, tbody) {
+        /**
+         * highlightText — entoure les occurrences de `query` dans `text` avec <mark class="search-hl">.
+         * Insensible à la casse. Échappe le HTML pour éviter les injections.
+         * @param {string} text  — texte brut à afficher
+         * @param {string} query — terme recherché (déjà en lowercase)
+         * @returns {string} HTML sécurisé avec balises <mark>
+         */
+        function highlightText(text, query) {
+            if (!text || !query) return escapeHtml(String(text ?? ''));
+            const escaped = escapeHtml(String(text));
+            if (!query.trim()) return escaped;
+            // Échapper les caractères spéciaux regex dans la query
+            const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${safeQuery})`, 'gi');
+            return escaped.replace(regex, '<mark class="search-hl">$1</mark>');
+        }
+
+        /** Échappe les caractères HTML dangereux */
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderTableRows(sectionId, tableName, data, tbody, query) {
+            // query peut être undefined (appel sans recherche) → pas de highlight
+            const q = (query || '').toLowerCase().trim();
+            const hl = (text) => q ? highlightText(text, q) : escapeHtml(String(text ?? ''));
             switch (sectionId) {
                 case 'collectors':
                     data.forEach(collector => {
@@ -11421,11 +11467,11 @@
                         const status = getCollectorStatus(balance);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Nom">${collector.name}</td>
-                            <td data-label="Téléphone">${collector.phone}</td>
-                            <td data-label="C.I.N">${collector.cin || ''}</td>
-                            <td data-label="Délivré le">${collector.cinDate ? formatDate(collector.cinDate) : ''}</td>
-                            <td data-label="Adresse">${collector.address || ''}</td>
+                            <td data-label="Nom">${hl(collector.name)}</td>
+                            <td data-label="Téléphone">${hl(collector.phone)}</td>
+                            <td data-label="C.I.N">${hl(collector.cin || '')}</td>
+                            <td data-label="Délivré le">${hl(collector.cinDate ? formatDate(collector.cinDate) : '')}</td>
+                            <td data-label="Adresse">${hl(collector.address || '')}</td>
                             <td data-label="Statut"><span class="status-badge status-${status.class}">${status.label}</span></td>
                             <td data-label="Solde">${formatCurrency(Math.abs(balance))}</td>
                             <td class="actions-cell">
@@ -11445,10 +11491,10 @@
                         const collector = appData.collectors.find(c => c.id === advance.collectorId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Date">${formatDate(advance.date)}</td>
-                            <td data-label="Collecteur">${collector ? collector.name : 'Collecteur supprimé'}</td>
+                            <td data-label="Date">${hl(formatDate(advance.date))}</td>
+                            <td data-label="Collecteur">${hl(collector ? collector.name : 'Collecteur supprimé')}</td>
                             <td data-label="Montant">${formatCurrency(advance.amount)}</td>
-                            <td data-label="Motif">${advance.motif || 'N/A'}</td>
+                            <td data-label="Motif">${hl(advance.motif || 'N/A')}</td>
                             <td class="actions-cell">
                                 <button class="btn btn-icon btn-outline" onclick="openAdvanceModal(${advance.id})" title="Modifier">
                                     <span class="material-icons">edit</span>
@@ -11467,11 +11513,11 @@
                         const collector = appData.collectors.find(c => c.id === reception.collectorId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${formatDate(reception.date)}</td>
-                            <td>${collector ? collector.name : 'Collecteur supprimé'}</td>
+                            <td>${hl(formatDate(reception.date))}</td>
+                            <td>${hl(collector ? collector.name : 'Collecteur supprimé')}</td>
                             <td>${reception.grossWeight} kg</td>
                             <td>${reception.netWeight} kg</td>
-                            <td><span class="status-badge status-${reception.quality.toLowerCase()}">${reception.quality}</span></td>
+                            <td><span class="status-badge status-${reception.quality.toLowerCase()}">${hl(reception.quality)}</span></td>
                             <td>${formatCurrency(reception.price)}/kg</td>
                             <td>${formatCurrency(reception.totalValue)}</td>
                             <td class="actions-cell">
@@ -11493,12 +11539,12 @@
                     data.forEach(delivery => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${formatDate(delivery.date)}</td>
-                            <td>${delivery.invoice}</td>
-                            <td><span class="status-badge" style="background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container);">${delivery.quality || 'N/A'}</span></td>
+                            <td>${hl(formatDate(delivery.date))}</td>
+                            <td>${hl(delivery.invoice)}</td>
+                            <td><span class="status-badge" style="background-color: var(--md-sys-color-tertiary-container); color: var(--md-sys-color-on-tertiary-container);">${hl(delivery.quality || 'N/A')}</span></td>
                             <td>${delivery.weight} kg</td>
                             <td>${formatCurrency(delivery.totalValue)}</td>
-                            <td>${delivery.exporter}</td>
+                            <td>${hl(delivery.exporter)}</td>
                             <td class="actions-cell">
                                 <button class="btn btn-icon btn-outline" onclick="openDeliveryModal(${delivery.id})" title="Modifier">
                                     <span class="material-icons">edit</span>
@@ -11536,7 +11582,7 @@
                         }
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Collecteur">${collector.name}</td>
+                            <td data-label="Collecteur">${hl(collector.name)}</td>
                             <td data-label="Total Débits">${formatCurrency(totalDebits)}</td>
                             <td data-label="Total Crédits">${formatCurrency(totalCredits)}</td>
                             <td data-label="Solde">${formatCurrency(balance)}</td>
@@ -11555,9 +11601,9 @@
                     data.forEach(expense => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Date">${formatDate(expense.date)}</td>
-                            <td data-label="Catégorie">${expense.category}</td>
-                            <td data-label="Description">${expense.description}</td>
+                            <td data-label="Date">${hl(formatDate(expense.date))}</td>
+                            <td data-label="Catégorie">${hl(expense.category)}</td>
+                            <td data-label="Description">${hl(expense.description)}</td>
                             <td data-label="Montant">${formatCurrency(expense.amount)}</td>
                             <td class="actions-cell">
                                 <button class="btn btn-icon btn-outline" onclick="openExpenseModal(${expense.id})" title="Modifier">
@@ -11576,10 +11622,10 @@
                         const collector = appData.collectors.find(c => c.id === rem.collectorId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Date">${formatDate(rem.date)}</td>
-                            <td data-label="Collecteur">${collector ? collector.name : 'Collecteur supprimé'}</td>
+                            <td data-label="Date">${hl(formatDate(rem.date))}</td>
+                            <td data-label="Collecteur">${hl(collector ? collector.name : 'Collecteur supprimé')}</td>
                             <td data-label="Montant">${formatCurrency(rem.amount)}</td>
-                            <td data-label="Note">${rem.note || ''}</td>
+                            <td data-label="Note">${hl(rem.note || '')}</td>
                             <td class="actions-cell">
                                 <button class="btn btn-icon btn-outline" onclick="openRemboursementModalToEdit(${rem.id})" title="Modifier">
                                     <span class="material-icons">edit</span>
@@ -11597,10 +11643,10 @@
                         const collector = appData.collectors.find(c => c.id === p.collectorId);
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td data-label="Date">${formatDate(p.date)}</td>
-                            <td data-label="Collecteur">${collector ? collector.name : 'Collecteur supprimé'}</td>
+                            <td data-label="Date">${hl(formatDate(p.date))}</td>
+                            <td data-label="Collecteur">${hl(collector ? collector.name : 'Collecteur supprimé')}</td>
                             <td data-label="Montant">${formatCurrency(p.amount)}</td>
-                            <td data-label="Note">${p.note || ''}</td>
+                            <td data-label="Note">${hl(p.note || '')}</td>
                             <td class="actions-cell">
                                 <button class="btn btn-icon btn-danger" onclick="deletePaiement(${p.id})" title="Annuler ce paiement">
                                     <span class="material-icons">delete_forever</span>
