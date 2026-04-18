@@ -4600,6 +4600,293 @@
                 min-width: 30px !important;
             }
         }
+
+        /* =====================================================
+           GLASSMORPHISM — Module Avances (modal + boutons)
+           Scopé sur #advance-modal pour zéro impact ailleurs
+        ===================================================== */
+
+        /* Fond de l'overlay : voile légèrement plus profond */
+        #advance-modal {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        /* Carte modal : verre dépoli */
+        #advance-modal .modal-content {
+            background: rgba(var(--bvn-glass-rgb, 255,255,255), 0.10);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.28),
+                0 1px 0 rgba(255, 255, 255, 0.12) inset;
+        }
+
+        /* Fallback thème clair : fond teinté primaire */
+        :root #advance-modal .modal-content {
+            background: rgba(209, 228, 255, 0.55);   /* primary-container@55% */
+            border-color: rgba(0, 97, 164, 0.18);
+        }
+
+        /* Thème sombre : verre sombre */
+        [data-theme="dark"] #advance-modal .modal-content {
+            background: rgba(16, 8, 28, 0.60);
+            border-color: rgba(208, 188, 255, 0.15);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.55),
+                0 1px 0 rgba(208, 188, 255, 0.08) inset;
+        }
+
+        /* En-tête : gradient glass */
+        #advance-modal .modal-header {
+            background: linear-gradient(
+                135deg,
+                rgba(var(--bvn-primary-rgb, 0,97,164), 0.25) 0%,
+                rgba(107, 87, 120, 0.20) 100%
+            );
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        [data-theme="dark"] #advance-modal .modal-header {
+            background: linear-gradient(
+                135deg,
+                rgba(79, 55, 139, 0.45) 0%,
+                rgba(99, 59, 72, 0.30) 100%
+            );
+            border-bottom: 1px solid rgba(208, 188, 255, 0.12);
+        }
+
+        /* Titre : lisibilité renforcée */
+        #advance-modal .modal-title {
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+            letter-spacing: 0.01em;
+        }
+
+        /* Inputs dans le modal : glass léger */
+        #advance-modal .form-input,
+        #advance-modal .form-select {
+            background: rgba(255, 255, 255, 0.50);
+            border: 1px solid rgba(0, 97, 164, 0.20);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        #advance-modal .form-input:focus,
+        #advance-modal .form-select:focus {
+            background: rgba(255, 255, 255, 0.75);
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 97, 164, 0.14);
+            outline: none;
+        }
+
+        [data-theme="dark"] #advance-modal .form-input,
+        [data-theme="dark"] #advance-modal .form-select {
+            background: rgba(16, 8, 28, 0.55);
+            border-color: rgba(208, 188, 255, 0.18);
+            color: var(--md-sys-color-on-surface);
+        }
+
+        [data-theme="dark"] #advance-modal .form-input:focus,
+        [data-theme="dark"] #advance-modal .form-select:focus {
+            background: rgba(16, 8, 28, 0.75);
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px rgba(208, 188, 255, 0.14);
+        }
+
+        /* ── Bouton Enregistrer (submit) — glass primary ── */
+        #advance-modal .btn-primary {
+            background: linear-gradient(
+                135deg,
+                rgba(0, 97, 164, 0.85) 0%,
+                rgba(0, 75, 130, 0.92) 100%
+            );
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow:
+                0 4px 14px rgba(0, 97, 164, 0.35),
+                0 1px 0 rgba(255, 255, 255, 0.20) inset;
+            color: #ffffff;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #advance-modal .btn-primary:hover {
+            background: linear-gradient(
+                135deg,
+                rgba(0, 113, 190, 0.92) 0%,
+                rgba(0, 87, 150, 0.96) 100%
+            );
+            box-shadow:
+                0 6px 20px rgba(0, 97, 164, 0.45),
+                0 1px 0 rgba(255, 255, 255, 0.25) inset;
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] #advance-modal .btn-primary {
+            background: linear-gradient(
+                135deg,
+                rgba(79, 55, 139, 0.80) 0%,
+                rgba(103, 80, 164, 0.88) 100%
+            );
+            border-color: rgba(208, 188, 255, 0.25);
+            box-shadow:
+                0 4px 14px rgba(103, 80, 164, 0.40),
+                0 1px 0 rgba(208, 188, 255, 0.15) inset;
+        }
+
+        [data-theme="dark"] #advance-modal .btn-primary:hover {
+            box-shadow:
+                0 6px 20px rgba(103, 80, 164, 0.55),
+                0 1px 0 rgba(208, 188, 255, 0.20) inset;
+        }
+
+        /* ── Bouton Annuler (outline) — glass neutre ── */
+        #advance-modal .btn-outline {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(0, 97, 164, 0.30);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: var(--md-sys-color-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #advance-modal .btn-outline:hover {
+            background: rgba(209, 228, 255, 0.45);
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 4px 12px rgba(0, 97, 164, 0.18);
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] #advance-modal .btn-outline {
+            background: rgba(208, 188, 255, 0.08);
+            border-color: rgba(208, 188, 255, 0.25);
+            color: var(--md-sys-color-primary);
+        }
+
+        [data-theme="dark"] #advance-modal .btn-outline:hover {
+            background: rgba(208, 188, 255, 0.16);
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 4px 12px rgba(103, 80, 164, 0.25);
+        }
+
+        /* ── Bouton "Nouvelle Avance" dans la section ── */
+        #advances .btn-primary {
+            background: linear-gradient(
+                135deg,
+                rgba(0, 97, 164, 0.88) 0%,
+                rgba(0, 75, 130, 0.94) 100%
+            );
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow:
+                0 4px 14px rgba(0, 97, 164, 0.30),
+                0 1px 0 rgba(255, 255, 255, 0.18) inset;
+            color: #ffffff;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #advances .btn-primary:hover {
+            box-shadow:
+                0 6px 20px rgba(0, 97, 164, 0.42),
+                0 1px 0 rgba(255, 255, 255, 0.24) inset;
+            transform: translateY(-2px);
+        }
+
+        [data-theme="dark"] #advances .btn-primary {
+            background: linear-gradient(
+                135deg,
+                rgba(79, 55, 139, 0.82) 0%,
+                rgba(103, 80, 164, 0.90) 100%
+            );
+            border-color: rgba(208, 188, 255, 0.20);
+            box-shadow:
+                0 4px 14px rgba(103, 80, 164, 0.38),
+                0 1px 0 rgba(208, 188, 255, 0.12) inset;
+        }
+
+        /* ── Boutons d'action (éditer / supprimer) dans le tableau ── */
+        #advances .btn-icon.btn-outline {
+            background: rgba(255, 255, 255, 0.22);
+            border: 1px solid rgba(0, 97, 164, 0.22);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        #advances .btn-icon.btn-outline:hover {
+            background: rgba(209, 228, 255, 0.50);
+            border-color: var(--md-sys-color-primary);
+            transform: translateY(-2px) scale(1.06);
+        }
+
+        #advances .btn-icon.btn-danger {
+            background: rgba(186, 26, 26, 0.12);
+            border: 1px solid rgba(186, 26, 26, 0.22);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        #advances .btn-icon.btn-danger:hover {
+            background: rgba(186, 26, 26, 0.22);
+            border-color: var(--md-sys-color-error);
+            transform: translateY(-2px) scale(1.06);
+        }
+
+        [data-theme="dark"] #advances .btn-icon.btn-outline {
+            background: rgba(208, 188, 255, 0.08);
+            border-color: rgba(208, 188, 255, 0.18);
+        }
+
+        [data-theme="dark"] #advances .btn-icon.btn-danger {
+            background: rgba(255, 180, 171, 0.08);
+            border-color: rgba(255, 180, 171, 0.18);
+        }
+
+        /* ── Boutons de filtre rapide (Aujourd'hui, Semaine…) ── */
+        #advances .filters .btn-outline {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(0, 97, 164, 0.22);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+        }
+
+        #advances .filters .btn-outline:hover {
+            background: rgba(209, 228, 255, 0.42);
+            border-color: var(--md-sys-color-primary);
+            transform: translateY(-1px);
+        }
+
+        [data-theme="dark"] #advances .filters .btn-outline {
+            background: rgba(208, 188, 255, 0.06);
+            border-color: rgba(208, 188, 255, 0.18);
+            color: var(--md-sys-color-primary);
+        }
+
+        [data-theme="dark"] #advances .filters .btn-outline:hover {
+            background: rgba(208, 188, 255, 0.14);
+        }
+
+        /* Responsive : pas de blur sur appareils faibles (économie GPU) */
+        @media (prefers-reduced-motion: reduce) {
+            #advance-modal .modal-content,
+            #advance-modal .modal-header,
+            #advance-modal .form-input,
+            #advance-modal .form-select,
+            #advance-modal .btn-primary,
+            #advance-modal .btn-outline,
+            #advances .btn-primary,
+            #advances .btn-icon {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+        }
     </style>
 
 </head>
@@ -5561,7 +5848,7 @@
     <div class="modal" id="advance-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Nouvelle Avance</h3>
+                <h3 class="modal-title" id="advance-modal-title">Nouvelle Avance</h3>
                 <button class="close-btn" onclick="closeModal('advance-modal')">
                     <span class="material-icons">close</span>
                 </button>
@@ -6937,17 +7224,26 @@
             const form = document.getElementById('advance-form');
             form.reset();
             delete form.dataset.editId;
+
+            // Titre dynamique selon le mode
+            const modalTitle = document.getElementById('advance-modal-title');
+
             if (advanceId) {
                 const advance = appData.advances.find(a => a.id === advanceId);
                 if (advance) {
                     document.getElementById('advance-date').value = advance.date;
                     document.getElementById('advance-collector').value = advance.collectorId;
-                    document.getElementById('advance-amount').value = advance.amount;
+                    // Afficher le montant formaté en mode édition
+                    document.getElementById('advance-amount').value = advance.amount > 0
+                        ? advance.amount.toLocaleString('fr-FR').replace(/\u202f/g, ' ')
+                        : '';
                     document.getElementById('advance-motif').value = advance.motif || '';
                     form.dataset.editId = advanceId;
+                    if (modalTitle) modalTitle.textContent = 'Modifier une Avance';
                 }
             } else {
                 setCurrentDate();
+                if (modalTitle) modalTitle.textContent = 'Nouvelle Avance';
             }
             openModal('advance-modal');
         }
@@ -7950,6 +8246,8 @@
                 e.preventDefault();
                 saveAdvance();
             });
+            // ── Formatage montant avance (séparateur milliers, entiers uniquement) ──
+            document.getElementById('advance-amount').addEventListener('input', formatAdvanceAmount);
             document.getElementById('reception-form').addEventListener('submit', function (e) {
                 e.preventDefault();
                 saveReception();
@@ -7971,31 +8269,30 @@
             document.getElementById('expense-amount').addEventListener('input', formatExpenseAmount);
         }
 
-        // ── Formatage live du champ Montant — séparateur milliers (espace), entiers uniquement ──
-        function formatExpenseAmount(e) {
-            const input = e.target;
-            const rawValue = input.value;
+        // ── Formatage live des montants — Avances & Dépenses partagent formatAmountField ──
+        function formatAdvanceAmount(e) { formatAmountField(e.target); }
+        function formatExpenseAmount(e) { formatAmountField(e.target); }
 
-            // Sauvegarder la position du curseur avant modification
+        /**
+         * Formatage générique : séparateur de milliers (espace), entiers uniquement.
+         * Maintient la position du curseur stable après reformatage.
+         * @param {HTMLInputElement} input
+         */
+        function formatAmountField(input) {
+            const rawValue = input.value;
             const selStart = input.selectionStart;
-            // Compter les espaces avant le curseur pour maintenir la position relative
             const spacesBeforeCursor = (rawValue.slice(0, selStart).match(/ /g) || []).length;
 
-            // Nettoyer : garder uniquement les chiffres
             const digitsOnly = rawValue.replace(/\D/g, '');
+            const formatted = digitsOnly === ''
+                ? ''
+                : parseInt(digitsOnly, 10).toLocaleString('fr-FR').replace(/\u202f/g, ' ');
 
-            // Formater avec séparateur de milliers (espace insécable → espace normal)
-            const formatted = digitsOnly === '' ? '' : parseInt(digitsOnly, 10).toLocaleString('fr-FR').replace(/\u202f/g, ' ');
-
-            // Mettre à jour la valeur si elle a changé (évite la boucle infinie)
             if (input.value !== formatted) {
                 input.value = formatted;
-
-                // Recalculer la position du curseur
-                const newSpacesBeforeCursor = (formatted.slice(0, selStart).match(/ /g) || []).length;
-                const spaceDiff = newSpacesBeforeCursor - spacesBeforeCursor;
-                const newPos = Math.max(0, Math.min(selStart + spaceDiff, formatted.length));
-                try { input.setSelectionRange(newPos, newPos); } catch (_) { /* input pas en focus */ }
+                const newSpaces = (formatted.slice(0, selStart).match(/ /g) || []).length;
+                const newPos = Math.max(0, Math.min(selStart + (newSpaces - spacesBeforeCursor), formatted.length));
+                try { input.setSelectionRange(newPos, newPos); } catch (_) { /* hors focus */ }
             }
         }
 
