@@ -7145,21 +7145,8 @@
             const receptionsData = getReceptionsForCurrentYear();
             const deliveriesData = getDeliveriesForCurrentYear();
             
-            // ✅ FILTRER: Collecteurs actifs (avec données) ET disponibles dans l'année
-            const collectorsData = appData.collectors.filter(collector => {
-                // D'abord vérifier si le collecteur existe dans cette année
-                if (!isCollectorAvailableInCurrentYear(collector)) {
-                    return false;
-                }
-                
-                // Ensuite vérifier s'il a des données
-                const hasAdvances = advancesData.some(a => a.collectorId === collector.id);
-                const hasReceptions = receptionsData.some(r => r.collectorId === collector.id);
-                const hasRemboursements = getRemboursementsForCurrentYear().some(rem => rem.collectorId === collector.id);
-                const hasPaiements = getPaiementsForCurrentYear().some(p => p.collectorId === collector.id);
-                
-                return hasAdvances || hasReceptions || hasRemboursements || hasPaiements;
-            });
+            // ── Réutilise getActiveCollectors() — logique centralisée, pas de duplication ──
+            const collectorsData = getActiveCollectors();
             
             // ... reste du code identique
             
@@ -7263,15 +7250,11 @@
             }
         }
         function calculateDebtorsCount() {
-            let debtorsCount = 0;
             if (!appData.collectors) return 0;
-            appData.collectors.forEach(collector => {
-                const balance = calculateCollectorBalance(collector.id);
-                if (balance < 0) {
-                    debtorsCount++;
-                }
-            });
-            return debtorsCount;
+            // ── Uniquement les collecteurs actifs sur l'année courante ──
+            return getActiveCollectors().filter(collector =>
+                calculateCollectorBalance(collector.id) < 0
+            ).length;
         }
 
         function updateProgressBars(balanceInfo, totalWeight) {
@@ -9474,6 +9457,33 @@
                 .reduce((sum, reception) => sum + reception.totalValue, 0);
         }
 
+        /**
+         * Retourne la liste des collecteurs ACTIFS sur l'année courante.
+         * Un collecteur est actif s'il a au moins une avance, une réception,
+         * un remboursement ou un paiement sur la période sélectionnée.
+         * Logique centralisée — utilisée par tous les rapports et exports.
+         * @returns {Array} Liste filtrée de collecteurs
+         */
+        function getActiveCollectors() {
+            const advancesYear        = getAdvancesForCurrentYear();
+            const receptionsYear      = getReceptionsForCurrentYear();
+            const remboursementsYear  = getRemboursementsForCurrentYear();
+            const paiementsYear       = getPaiementsForCurrentYear();
+
+            // Construire des sets d'IDs actifs par type — O(n) au lieu de O(n×m)
+            const idsWithAdvances       = new Set(advancesYear.map(a => a.collectorId));
+            const idsWithReceptions     = new Set(receptionsYear.map(r => r.collectorId));
+            const idsWithRemboursements = new Set(remboursementsYear.map(r => r.collectorId));
+            const idsWithPaiements      = new Set(paiementsYear.map(p => p.collectorId));
+
+            return (appData.collectors || []).filter(collector =>
+                idsWithAdvances.has(collector.id)       ||
+                idsWithReceptions.has(collector.id)     ||
+                idsWithRemboursements.has(collector.id) ||
+                idsWithPaiements.has(collector.id)
+            );
+        }
+
         function getCollectorStatus(balance) {
             if (balance > 0) {
                 return { class: 'crediteur', label: 'Créditeur' };
@@ -10299,7 +10309,13 @@
             `;
             let totalDebiteur = 0;
             let totalCrediteur = 0;
-            appData.collectors.forEach(collector => {
+            // ── Collecteurs actifs sur l'année courante uniquement ──
+            const activeCollectors = getActiveCollectors();
+            if (activeCollectors.length === 0) {
+                showToast('Aucun collecteur actif sur cette période.', 'error');
+                return;
+            }
+            activeCollectors.forEach(collector => {
                 const totalAdvances = getTotalAdvances(collector.id);
                 const totalPaiements = getPaiementsForCurrentYear()
                     .filter(p => p.collectorId === collector.id)
@@ -10352,6 +10368,18 @@
             printWindow.print();
         }
         function exportPoidsAnalysis() {
+            // ── Correction bug : receptionsYear était une var locale d'une autre fonction ──
+            const receptionsYear = getReceptionsForCurrentYear();
+
+            // ── Filtrage intelligent : collecteurs actifs sur l'année uniquement ──
+            const activeCollectors = getActiveCollectors();
+
+            if (activeCollectors.length === 0) {
+                showToast('Aucun collecteur actif sur cette période.', 'error');
+                return;
+            }
+
+            // ── Qualités présentes sur l'année courante (pas toutes les données) ──
             const toutesLesQualites = [...new Set(receptionsYear.map(r => r.quality))].sort();
             let pdfContent = `
                 <html>
@@ -10422,11 +10450,12 @@
             const totalParQualite = {};
             toutesLesQualites.forEach(q => totalParQualite[q] = 0);
             let grandTotalPoids = 0;
-            appData.collectors.forEach(collector => {
+            // ── Collecteurs actifs uniquement · données filtrées sur l'année ──
+            activeCollectors.forEach(collector => {
                 let totalPoidsParCollecteur = 0;
                 pdfContent += `<tr><td class="collector-name">${collector.name}</td>`;
                 toutesLesQualites.forEach(qualite => {
-                    const poids = appData.receptions
+                    const poids = receptionsYear
                         .filter(r => r.collectorId === collector.id && r.quality === qualite)
                         .reduce((sum, r) => sum + r.netWeight, 0);
                     pdfContent += `<td>${poids > 0 ? formatNumber(poids) : '-'}</td>`;
@@ -10828,10 +10857,11 @@
         function exportCollectorReport(collectorId) {
             const collector = appData.collectors.find(c => c.id === collectorId);
             if (!collector) return;
-            const advances = appData.advances.filter(a => a.collectorId === collectorId);
-            const receptions = appData.receptions.filter(r => r.collectorId === collectorId);
-            const remboursements = (appData.remboursements || []).filter(rem => rem.collectorId === collectorId);
-            const paiements = (appData.paiements || []).filter(p => p.collectorId === collectorId);
+            // ── Données filtrées sur l'année courante (cohérence avec le reste de l'app) ──
+            const advances       = getAdvancesForCurrentYear().filter(a => a.collectorId === collectorId);
+            const receptions     = getReceptionsForCurrentYear().filter(r => r.collectorId === collectorId);
+            const remboursements = getRemboursementsForCurrentYear().filter(rem => rem.collectorId === collectorId);
+            const paiements      = getPaiementsForCurrentYear().filter(p => p.collectorId === collectorId);
             const totalAdvances = advances.reduce((sum, a) => sum + a.amount, 0);
             const totalDeliveries = receptions.reduce((sum, r) => sum + r.totalValue, 0);
             const totalRemboursements = remboursements.reduce((sum, rem) => sum + rem.amount, 0);
