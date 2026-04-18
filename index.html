@@ -6613,7 +6613,7 @@
     <div class="modal" id="remboursement-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Enregistrer un Remboursement</h3>
+                <h3 class="modal-title" id="remboursement-modal-title">Enregistrer un Remboursement</h3>
                 <button class="close-btn" onclick="closeModal('remboursement-modal')">
                     <span class="material-icons">close</span>
                 </button>
@@ -6626,7 +6626,8 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Montant du remboursement (Ar)</label>
-                    <input type="text" inputmode="numeric" class="form-input" id="remboursement-amount" required
+                    <input type="text" inputmode="numeric" pattern="[0-9 ]*" autocomplete="off"
+                        class="form-input" id="remboursement-amount" required
                         placeholder="0">
                 </div>
                 <div class="form-group">
@@ -6641,7 +6642,7 @@
                 <div class="btn-group">
                     <button type="button" class="btn btn-outline"
                         onclick="closeModal('remboursement-modal')">Annuler</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" id="remboursement-submit-btn" class="btn btn-primary">Enregistrer</button>
                 </div>
             </form>
         </div>
@@ -8597,6 +8598,18 @@
 
             // ── Formatage montant dépense (séparateur milliers, entiers uniquement) ──
             document.getElementById('expense-amount').addEventListener('input', formatExpenseAmount);
+
+            // ── Formatage montant remboursement (séparateur milliers, entiers uniquement) ──
+            document.getElementById('remboursement-amount').addEventListener('input', function (e) {
+                formatAmountField(e.target);
+            });
+            // Nettoyage au collé-copié (cas "50,000" ou "50.000" depuis presse-papier)
+            document.getElementById('remboursement-amount').addEventListener('paste', function (e) {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text');
+                this.value = pasted.replace(/\D/g, '');
+                formatAmountField(this);
+            });
         }
 
         // ── Formatage live des montants — Avances & Dépenses partagent formatAmountField ──
@@ -12248,6 +12261,8 @@
                 return;
             }
             const form = document.getElementById('remboursement-form');
+            const titleEl = document.getElementById('remboursement-modal-title');
+            const submitBtn = document.getElementById('remboursement-submit-btn');
             form.reset();
             delete form.dataset.editId;
             document.getElementById('remboursement-collector-id').value = collector.id;
@@ -12257,9 +12272,16 @@
                 const rem = appData.remboursements.find(r => r.id === remboursementId);
                 if (rem) {
                     form.dataset.editId = remboursementId;
-                    document.getElementById('remboursement-amount').value = rem.amount;
+                    // Afficher le montant formaté (séparateur milliers) en mode édition
+                    const amountInput = document.getElementById('remboursement-amount');
+                    amountInput.value = rem.amount
+                        ? parseInt(rem.amount, 10).toLocaleString('fr-FR').replace(/\u202f/g, ' ')
+                        : '';
                     document.getElementById('remboursement-date').value = rem.date;
                     document.getElementById('remboursement-note').value = rem.note;
+                    // Titre + bouton mode modification
+                    titleEl.textContent  = 'Modifier un Remboursement';
+                    submitBtn.textContent = 'Modifier';
                 }
             } else {
                 const balance = calculateCollectorBalance(collector.id);
@@ -12268,6 +12290,9 @@
                 } else {
                     document.getElementById('remboursement-amount').placeholder = '0';
                 }
+                // Titre + bouton mode création
+                titleEl.textContent  = 'Enregistrer un Remboursement';
+                submitBtn.textContent = 'Enregistrer';
             }
             openModal('remboursement-modal');
         }
