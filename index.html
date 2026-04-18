@@ -2214,6 +2214,177 @@
             background-color: var(--md-sys-color-outline);
         }
 
+        /* ==========================================
+           CONFIRM DIALOG — Glassmorphism Premium
+        ========================================== */
+        #bvn-confirm-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            /* Scrim with blur */
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px) saturate(1.4);
+            -webkit-backdrop-filter: blur(12px) saturate(1.4);
+            opacity: 0;
+            transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #bvn-confirm-overlay.bvn-open {
+            display: flex;
+            opacity: 0; /* starts invisible, animation kicks in */
+        }
+        #bvn-confirm-overlay.bvn-visible {
+            opacity: 1;
+        }
+
+        #bvn-confirm-dialog {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 24px;
+            padding: 32px 28px 24px;
+            /* Glassmorphism card */
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(32px) saturate(1.8);
+            -webkit-backdrop-filter: blur(32px) saturate(1.8);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            box-shadow:
+                0 8px 40px rgba(0, 0, 0, 0.35),
+                0 1px 0 rgba(255, 255, 255, 0.18) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.12) inset;
+            transform: scale(0.88) translateY(24px);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        opacity 0.3s ease;
+            opacity: 0;
+            /* Light mode override */
+            color: #fff;
+        }
+        [data-theme="dark"] #bvn-confirm-dialog {
+            background: rgba(16, 8, 28, 0.55);
+            border-color: rgba(208, 188, 255, 0.18);
+            box-shadow:
+                0 8px 48px rgba(0, 0, 0, 0.55),
+                0 1px 0 rgba(208, 188, 255, 0.12) inset;
+        }
+        #bvn-confirm-overlay.bvn-visible #bvn-confirm-dialog {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* Glow accent strip */
+        #bvn-confirm-dialog::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 24px; right: 24px;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            background: linear-gradient(90deg,
+                var(--md-sys-color-primary),
+                var(--md-sys-color-tertiary));
+            opacity: 0.85;
+        }
+
+        #bvn-confirm-icon-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s;
+        }
+        #bvn-confirm-icon-wrap.bvn-danger {
+            background: rgba(186, 26, 26, 0.25);
+            border-color: rgba(255, 100, 100, 0.3);
+        }
+        #bvn-confirm-icon-wrap i {
+            font-size: 26px;
+            color: #fff;
+        }
+
+        #bvn-confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #fff;
+            letter-spacing: 0.2px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        #bvn-confirm-message {
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 28px;
+        }
+
+        #bvn-confirm-actions {
+            display: flex;
+            gap: 12px;
+        }
+        #bvn-confirm-actions button {
+            flex: 1;
+            padding: 13px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+        }
+        #bvn-confirm-actions button:focus-visible {
+            outline: 2px solid rgba(255,255,255,0.7);
+            outline-offset: 2px;
+        }
+        #bvn-btn-cancel {
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(8px);
+        }
+        #bvn-btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        #bvn-btn-confirm {
+            background: linear-gradient(135deg,
+                var(--md-sys-color-error) 0%,
+                #c62828 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(186, 26, 26, 0.4);
+        }
+        #bvn-btn-confirm.bvn-neutral {
+            background: linear-gradient(135deg,
+                var(--md-sys-color-primary) 0%,
+                var(--md-sys-color-tertiary) 100%);
+            box-shadow: 0 4px 16px rgba(103, 80, 164, 0.4);
+        }
+        #bvn-btn-confirm:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        #bvn-btn-confirm:active,
+        #bvn-btn-cancel:active {
+            transform: scale(0.96) translateY(0);
+        }
+
+        @media (max-width: 400px) {
+            #bvn-confirm-actions { flex-direction: column; }
+        }
+
         .filters {
             display: flex;
             gap: 16px;
@@ -13783,6 +13954,210 @@
             };
         })();
 
+    </script>
+
+    <!-- =====================================================
+         BVN CONFIRM DIALOG — Composant Glassmorphism Premium
+         Réutilisable · Non invasif · Compatible thème clair/sombre
+         Usage: showConfirmDialog({ title, message, onConfirm, danger })
+    ===================================================== -->
+    <div id="bvn-confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="bvn-confirm-title">
+        <div id="bvn-confirm-dialog">
+            <div id="bvn-confirm-icon-wrap">
+                <i class="fas fa-trash-alt" id="bvn-confirm-icon"></i>
+            </div>
+            <div id="bvn-confirm-title">Confirmer la suppression</div>
+            <div id="bvn-confirm-message">Cette action est irréversible.</div>
+            <div id="bvn-confirm-actions">
+                <button id="bvn-btn-cancel" type="button">Annuler</button>
+                <button id="bvn-btn-confirm" type="button">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        'use strict';
+
+        const overlay   = document.getElementById('bvn-confirm-overlay');
+        const dialog    = document.getElementById('bvn-confirm-dialog');
+        const iconWrap  = document.getElementById('bvn-confirm-icon-wrap');
+        const iconEl    = document.getElementById('bvn-confirm-icon');
+        const titleEl   = document.getElementById('bvn-confirm-title');
+        const messageEl = document.getElementById('bvn-confirm-message');
+        const btnCancel = document.getElementById('bvn-btn-cancel');
+        const btnOk     = document.getElementById('bvn-btn-confirm');
+
+        let _onConfirm = null;
+        let _animFrame = null;
+
+        function openDialog() {
+            overlay.classList.add('bvn-open');
+            // Force reflow so transition plays
+            void overlay.offsetWidth;
+            requestAnimationFrame(() => {
+                overlay.classList.add('bvn-visible');
+            });
+            // Trap focus on confirm button
+            requestAnimationFrame(() => btnOk.focus());
+        }
+
+        function closeDialog() {
+            overlay.classList.remove('bvn-visible');
+            // Wait for CSS transition before hiding
+            overlay.addEventListener('transitionend', function handler() {
+                overlay.removeEventListener('transitionend', handler);
+                overlay.classList.remove('bvn-open');
+                _onConfirm = null;
+            }, { once: true });
+        }
+
+        /**
+         * showConfirmDialog(options)
+         * @param {Object} options
+         * @param {string}   [options.title]     - Titre du dialogue
+         * @param {string}   [options.message]   - Message explicatif
+         * @param {string}   [options.confirmLabel] - Texte du bouton de confirmation
+         * @param {string}   [options.cancelLabel]  - Texte du bouton annuler
+         * @param {boolean}  [options.danger=true]  - Style rouge destructif (false = violet neutre)
+         * @param {string}   [options.icon]      - Classe Font Awesome icon (ex: 'fa-trash-alt')
+         * @param {Function} options.onConfirm   - Callback exécuté si confirmé
+         */
+        window.showConfirmDialog = function (options) {
+            const {
+                title        = 'Confirmer la suppression',
+                message      = 'Cette action est irréversible.',
+                confirmLabel = 'Supprimer',
+                cancelLabel  = 'Annuler',
+                danger       = true,
+                icon         = 'fa-trash-alt',
+                onConfirm
+            } = options || {};
+
+            titleEl.textContent   = title;
+            messageEl.textContent = message;
+            btnOk.textContent     = confirmLabel;
+            btnCancel.textContent = cancelLabel;
+
+            // Icon
+            iconEl.className = 'fas ' + icon;
+            iconWrap.className = 'bvn-danger'; // reset
+            if (!danger) iconWrap.classList.remove('bvn-danger');
+
+            // Confirm button color
+            btnOk.className = danger ? '' : 'bvn-neutral';
+
+            _onConfirm = typeof onConfirm === 'function' ? onConfirm : null;
+            openDialog();
+        };
+
+        // Button handlers
+        btnOk.addEventListener('click', function () {
+            closeDialog();
+            if (typeof _onConfirm === 'function') {
+                // Small delay so close animation starts first
+                setTimeout(_onConfirm, 120);
+            }
+        });
+
+        btnCancel.addEventListener('click', closeDialog);
+
+        // Close on overlay backdrop click
+        overlay.addEventListener('click', function (e) {
+            if (e.target === overlay) closeDialog();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && overlay.classList.contains('bvn-open')) {
+                closeDialog();
+            }
+        });
+
+        // ---- Patch: remplace les confirm() natifs par showConfirmDialog ----
+
+        function deleteCollector(id) {
+            showConfirmDialog({
+                title:   'Supprimer le collecteur',
+                message: 'Êtes-vous sûr de vouloir supprimer ce collecteur ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('collectors', id, () => showToast('Collecteur supprimé.', 'error'))
+            });
+        }
+
+        function deleteAdvance(id) {
+            showConfirmDialog({
+                title:   'Supprimer l\'avance',
+                message: 'Êtes-vous sûr de vouloir supprimer cette avance ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('advances', id, () => showToast('Avance supprimée.', 'error'))
+            });
+        }
+
+        function deleteReception(id) {
+            showConfirmDialog({
+                title:   'Supprimer la réception',
+                message: 'Êtes-vous sûr de vouloir supprimer cette réception ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('receptions', id, () => showToast('Réception supprimée.', 'error'))
+            });
+        }
+
+        function deleteDelivery(id) {
+            showConfirmDialog({
+                title:   'Supprimer la livraison',
+                message: 'Êtes-vous sûr de vouloir supprimer cette livraison ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('deliveries', id, () => showToast('Livraison supprimée.', 'error'))
+            });
+        }
+
+        function deleteExpense(id) {
+            showConfirmDialog({
+                title:   'Supprimer la dépense',
+                message: 'Êtes-vous sûr de vouloir supprimer cette dépense ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('expenses', id, () => showToast('Dépense supprimée.', 'error'))
+            });
+        }
+
+        function resetData() {
+            showConfirmDialog({
+                title:        '⚠️ Effacer toutes les données',
+                message:      'Toutes les données seront perdues définitivement et cette action ne peut pas être annulée.',
+                confirmLabel: 'Tout effacer',
+                icon:         'fa-database',
+                onConfirm: () => {
+                    // Double confirmation pour une action aussi critique
+                    showConfirmDialog({
+                        title:        'Confirmation finale',
+                        message:      'Êtes-vous absolument certain ? Toutes les données seront définitivement supprimées.',
+                        confirmLabel: 'Oui, effacer définitivement',
+                        icon:         'fa-exclamation-triangle',
+                        onConfirm: () => {
+                            executeWhenReady(() => {
+                                if (!db) {
+                                    appData = { collectors: [], advances: [], receptions: [], deliveries: [], expenses: [] };
+                                    updateAllTables();
+                                    showToast('Toutes les données ont été supprimées (mode mémoire).', 'error');
+                                    return;
+                                }
+                                clearAllData(() => {
+                                    appData = { collectors: [], advances: [], receptions: [], deliveries: [], expenses: [] };
+                                    updateAllTables();
+                                    showToast('Toutes les données ont été effacées.', 'error');
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        // Expose les nouvelles fonctions globalement (écrase les précédentes)
+        window.deleteCollector = deleteCollector;
+        window.deleteAdvance   = deleteAdvance;
+        window.deleteReception = deleteReception;
+        window.deleteDelivery  = deleteDelivery;
+        window.deleteExpense   = deleteExpense;
+        window.resetData       = resetData;
+
+    })();
     </script>
 </body>
 
