@@ -5968,18 +5968,21 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Catégorie</label>
-                    <select class="form-select" id="expense-category" required>
-                        <option value="">Sélectionner une catégorie</option>
-                        <option value="Paiement Collecteur">Paiement Solde Collecteur</option>
-                        <option value="Salaire">Salaire Mpiasa</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Nourriture">Nourriture / Sakafo</option>
-                        <option value="Ristourne">Ristourne / Quittance</option>
-                        <option value="Carburant">Carburant</option>
-                        <option value="Logistique">Logistique (sacs, matériels...)</option>
-                        <option value="Administratif">Administratif (téléphone, internet...)</option>
-                        <option value="Autre">Autre</option>
-                    </select>
+                    <input type="text" class="form-input" id="expense-category" required
+                        list="expense-category-suggestions"
+                        placeholder="Ex: Transport, Salaire, Carburant..."
+                        autocomplete="off">
+                    <datalist id="expense-category-suggestions">
+                        <option value="Paiement Collecteur">
+                        <option value="Salaire">
+                        <option value="Transport">
+                        <option value="Nourriture">
+                        <option value="Ristourne">
+                        <option value="Carburant">
+                        <option value="Logistique">
+                        <option value="Administratif">
+                        <option value="Autre">
+                    </datalist>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Description</label>
@@ -7963,7 +7966,39 @@
                 e.preventDefault();
                 saveExpense();
             });
+
+            // ── Formatage montant dépense (séparateur milliers, entiers uniquement) ──
+            document.getElementById('expense-amount').addEventListener('input', formatExpenseAmount);
         }
+
+        // ── Formatage live du champ Montant — séparateur milliers (espace), entiers uniquement ──
+        function formatExpenseAmount(e) {
+            const input = e.target;
+            const rawValue = input.value;
+
+            // Sauvegarder la position du curseur avant modification
+            const selStart = input.selectionStart;
+            // Compter les espaces avant le curseur pour maintenir la position relative
+            const spacesBeforeCursor = (rawValue.slice(0, selStart).match(/ /g) || []).length;
+
+            // Nettoyer : garder uniquement les chiffres
+            const digitsOnly = rawValue.replace(/\D/g, '');
+
+            // Formater avec séparateur de milliers (espace insécable → espace normal)
+            const formatted = digitsOnly === '' ? '' : parseInt(digitsOnly, 10).toLocaleString('fr-FR').replace(/\u202f/g, ' ');
+
+            // Mettre à jour la valeur si elle a changé (évite la boucle infinie)
+            if (input.value !== formatted) {
+                input.value = formatted;
+
+                // Recalculer la position du curseur
+                const newSpacesBeforeCursor = (formatted.slice(0, selStart).match(/ /g) || []).length;
+                const spaceDiff = newSpacesBeforeCursor - spacesBeforeCursor;
+                const newPos = Math.max(0, Math.min(selStart + spaceDiff, formatted.length));
+                try { input.setSelectionRange(newPos, newPos); } catch (_) { /* input pas en focus */ }
+            }
+        }
+
         function formatPhoneNumber(e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length >= 10) {
@@ -11428,6 +11463,10 @@
             const form = document.getElementById('expense-form');
             form.reset();
             delete form.dataset.editId;
+
+            // Mettre à jour le datalist avec les catégories déjà saisies
+            _refreshExpenseCategoryDatalist();
+
             if (expenseId) {
                 const expense = appData.expenses.find(e => e.id === expenseId);
                 if (expense) {
@@ -11435,12 +11474,38 @@
                     document.getElementById('expense-date').value = expense.date;
                     document.getElementById('expense-category').value = expense.category;
                     document.getElementById('expense-description').value = expense.description;
-                    document.getElementById('expense-amount').value = expense.amount;
+                    // Afficher le montant formaté en mode édition
+                    const amountFormatted = expense.amount > 0
+                        ? expense.amount.toLocaleString('fr-FR').replace(/\u202f/g, ' ')
+                        : '';
+                    document.getElementById('expense-amount').value = amountFormatted;
                 }
             } else {
                 document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
             }
             openModal('expense-modal');
+        }
+
+        // Rafraîchit le datalist catégories avec les valeurs déjà présentes en base
+        function _refreshExpenseCategoryDatalist() {
+            const datalist = document.getElementById('expense-category-suggestions');
+            if (!datalist) return;
+
+            // Catégories par défaut (toujours présentes)
+            const defaults = [
+                'Paiement Collecteur', 'Salaire', 'Transport', 'Nourriture',
+                'Ristourne', 'Carburant', 'Logistique', 'Administratif', 'Autre'
+            ];
+
+            // Catégories saisies librement dans les données existantes
+            const existing = [...new Set((appData.expenses || []).map(e => e.category).filter(Boolean))];
+
+            // Union des deux listes, sans doublons, triée
+            const allCategories = [...new Set([...defaults, ...existing])].sort();
+
+            datalist.innerHTML = allCategories
+                .map(cat => `<option value="${cat.replace(/"/g, '&quot;')}">`)
+                .join('');
         }
         function saveExpense() {
             const form = document.getElementById('expense-form');
