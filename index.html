@@ -7524,7 +7524,6 @@
             let val = input.value.trim().replace(',', '.');
             const weight = parseFloat(val);
 
-            // Validation
             if (isNaN(weight) || weight <= 0) {
                 showToast('Ampidiro lanja marina (> 0 kg)', 'error', 2000);
                 input.focus();
@@ -7533,23 +7532,30 @@
 
             // Vérification limite raisonnable (éviter erreurs de saisie)
             if (weight > 100) {
-                if (!confirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`)) {
-                    return;
-                }
+                showConfirmDialog({
+                    title: 'Sac très lourd',
+                    message: `Gony mavesatra loatra: ${weight} kg. Hanohy ve?`,
+                    confirmLabel: 'Continuer',
+                    icon: 'fa-exclamation-triangle',
+                    danger: false,
+                    onConfirm: () => {
+                        quickWeights.push(weight);
+                        input.value = '';
+                        input.focus();
+                        renderQuickWeights();
+                        updateReceptionFromQuickWeights();
+                        showToast(`✓ ${weight} kg nampiana`, 'success', 1000);
+                    }
+                });
+                return;
             }
 
             // Ajouter le poids
             quickWeights.push(weight);
-
-            // Réinitialiser l'input et focus
             input.value = '';
             input.focus();
-
-            // Mettre à jour l'affichage
             renderQuickWeights();
             updateReceptionFromQuickWeights();
-
-            // Animation de succès
             showToast(`✓ ${weight} kg nampiana`, 'success', 1000);
         }
 
@@ -7656,17 +7662,20 @@
 
         // Fonction pour tout effacer avec confirmation
         function clearQuickWeights() {
-            if (quickWeights.length === 0) {
-                return;
-            }
-
-            if (confirm(`Hamafa ny lanja rehetra (${quickWeights.length} gony)?`)) {
-                quickWeights = [];
-                renderQuickWeights();
-                updateReceptionFromQuickWeights();
-
-                showToast('✓ Voafafa daholo', 'success', 1500);
-            }
+            if (quickWeights.length === 0) return;
+            showConfirmDialog({
+                title: 'Vider les pesées',
+                message: `Hamafa ny lanja rehetra (${quickWeights.length} gony)?`,
+                confirmLabel: 'Vider',
+                icon: 'fa-weight-hanging',
+                danger: false,
+                onConfirm: () => {
+                    quickWeights = [];
+                    renderQuickWeights();
+                    updateReceptionFromQuickWeights();
+                    showToast('✓ Voafafa daholo', 'success', 1500);
+                }
+            });
         }
 
         // Fonction pour mettre à jour les champs de réception
@@ -8162,25 +8171,26 @@
             }
 
             // Confirmer l'opération
-            const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg\n\nConfirmer?`;
-            
+            const confirmMessage = `Vous allez créer ${adjustments.length} nouvelle(s) réception(s) à partir de cette réception.\n\nPoids total ajusté: ${totalAdjustedWeight.toFixed(2)} kg\nPoids restant dans la qualité d'origine: ${(originalReception.netWeight - totalAdjustedWeight).toFixed(2)} kg`;
+
             console.log('Confirmation demandée');
-            
-            if (!confirm(confirmMessage)) {
-                console.log('Opération annulée par l\'utilisateur');
-                isSaving = false;
-                return;
-            }
 
-            console.log('Confirmation reçue, début de la sauvegarde...');
+            showConfirmDialog({
+                title: 'Confirmer l\'ajustement',
+                message: confirmMessage,
+                confirmLabel: 'Confirmer',
+                icon: 'fa-sliders-h',
+                danger: false,
+                onConfirm: async () => {
+                    console.log('Confirmation reçue, début de la sauvegarde...');
 
-            // Sauvegarder
-            try {
-                console.log('Début transaction DB...');
-                
-                // Trouver le max ID actuel
-                const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
-                console.log('Max ID actuel:', maxId);
+                    // Sauvegarder
+                    try {
+                        console.log('Début transaction DB...');
+                        
+                        // Trouver le max ID actuel
+                        const maxId = Math.max(...appData.receptions.map(r => r.id || 0), 0);
+                        console.log('Max ID actuel:', maxId);
                 
                 // Sauvegarder les nouvelles réceptions dans la DB
                 for (let i = 0; i < adjustments.length; i++) {
@@ -8258,27 +8268,30 @@
                 console.log('=== SAUVEGARDE TERMINÉE AVEC SUCCÈS ===');
                 showToast(`${adjustments.length} ajustement(s) enregistré(s) avec succès !`, 'success');
                 
-                isSaving = false;
-                closeAdjustModal();
-                
-            } catch (error) {
-                console.error('=== ERREUR CRITIQUE ===');
-                console.error('Détails:', error);
-                console.error('Stack:', error.stack);
-                console.error('Ligne:', error.lineNumber || 'Non disponible');
-                
-                //Afficher plus de détails sur l'erreur
-                if (error.message.includes('toFixed')) {
-                    console.error('🔍 Données problématiques:', {
-                        originalReception,
-                        adjustments
-                    });
+                    isSaving = false;
+                    closeAdjustModal();
+                    
+                } catch (error) {
+                    console.error('=== ERREUR CRITIQUE ===');
+                    console.error('Détails:', error);
+                    console.error('Stack:', error.stack);
+                    console.error('Ligne:', error.lineNumber || 'Non disponible');
+                    
+                    if (error.message.includes('toFixed')) {
+                        console.error('🔍 Données problématiques:', {
+                            originalReception,
+                            adjustments
+                        });
+                    }
+                    
+                    showToast('Erreur lors de la sauvegarde des ajustements: ' + error.message, 'error');
+                    isSaving = false;
                 }
-                
-                showToast('Erreur lors de la sauvegarde des ajustements: ' + error.message, 'error');
-                isSaving = false;
-            }
-        }
+            }   // fin onConfirm
+            }); // fin showConfirmDialog
+            // Si l'utilisateur annule, isSaving sera remis à false via le bouton Annuler
+            // On le remet ici pour sécurité (le dialog est async, donc on sort de la fonction)
+            isSaving = false;
 
         function roundTo(number, decimals = 2) {
             return parseFloat(parseFloat(number).toFixed(decimals));
@@ -8590,7 +8603,7 @@
             
             // Validation téléphone
             if (phone && (phone.length !== 10 || !phone.startsWith('0'))) {
-                alert('Le numéro de téléphone doit contenir 10 chiffres et commencer par 0.');
+                showToast('Le numéro de téléphone doit contenir 10 chiffres et commencer par 0.', 'error');
                 return;
             }
             
@@ -8747,34 +8760,6 @@
             closeModal('delivery-modal');
             showToast('Livraison enregistrée avec succès!');
         }
-        function deleteCollector(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce collecteur?')) {
-                deleteFromDB('collectors', id, () => {
-                    showToast('Collecteur supprimé.', 'error');
-                });
-            }
-        }
-        function deleteAdvance(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette avance?')) {
-                deleteFromDB('advances', id, () => {
-                    showToast('Avance supprimée.', 'error');
-                });
-            }
-        }
-        function deleteReception(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette réception?')) {
-                deleteFromDB('receptions', id, () => {
-                    showToast('Réception supprimée.', 'error');
-                });
-            }
-        }
-        function deleteDelivery(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette livraison?')) {
-                deleteFromDB('deliveries', id, () => {
-                    showToast('Livraison supprimée.', 'error');
-                });
-            }
-        }
         function setupReceptionCalculations() {
             ['reception-gross-weight', 'reception-bag-count', 'reception-bag-weight', 'reception-price', 'reception-net-weight'].forEach(id => {
                 document.getElementById(id).addEventListener('input', calculateReceptionValues);
@@ -8837,15 +8822,27 @@
             }
 
             if (weight > 100) {
-                if (!confirm(`Gony mavesatra loatra: ${weight} kg. Hanohy ve?`)) {
-                    return;
-                }
+                showConfirmDialog({
+                    title: 'Sac très lourd',
+                    message: `Gony mavesatra loatra: ${weight} kg. Hanohy ve?`,
+                    confirmLabel: 'Continuer',
+                    icon: 'fa-exclamation-triangle',
+                    danger: false,
+                    onConfirm: () => {
+                        deliveryQuickWeights.push(weight);
+                        input.value = '';
+                        input.focus();
+                        renderDeliveryQuickWeights();
+                        updateDeliveryFromQuickWeights();
+                        showToast(`✓ ${weight} kg nampiana`, 'success', 1000);
+                    }
+                });
+                return;
             }
 
             deliveryQuickWeights.push(weight);
             input.value = '';
             input.focus();
-
             renderDeliveryQuickWeights();
             updateDeliveryFromQuickWeights();
             showToast(`✓ ${weight} kg nampiana`, 'success', 1000);
@@ -8943,12 +8940,19 @@
 
         function clearDeliveryQuickWeights() {
             if (deliveryQuickWeights.length === 0) return;
-            if (confirm(`Hamafa ny lanja rehetra (${deliveryQuickWeights.length} gony)?`)) {
-                deliveryQuickWeights = [];
-                renderDeliveryQuickWeights();
-                updateDeliveryFromQuickWeights();
-                showToast('✓ Voafafa daholo', 'success', 1500);
-            }
+            showConfirmDialog({
+                title: 'Vider les pesées',
+                message: `Hamafa ny lanja rehetra (${deliveryQuickWeights.length} gony)?`,
+                confirmLabel: 'Vider',
+                icon: 'fa-weight-hanging',
+                danger: false,
+                onConfirm: () => {
+                    deliveryQuickWeights = [];
+                    renderDeliveryQuickWeights();
+                    updateDeliveryFromQuickWeights();
+                    showToast('✓ Voafafa daholo', 'success', 1500);
+                }
+            });
         }
 
         function updateDeliveryFromQuickWeights() {
@@ -9587,39 +9591,46 @@
                     try {
                         const importedData = JSON.parse(e.target.result);
                         console.log('Raw imported data:', importedData);
-                        if (confirm('Êtes-vous sûr de vouloir importer ces données? Cela remplacera toutes les données existantes.')) {
-                            executeWhenReady(() => {
-                                if (!db) {
-                                    console.warn('Database not available, importing to memory');
-                                    appData = {
-                                        collectors: importedData.collectors || [],
-                                        advances: importedData.advances || [],
-                                        receptions: importedData.receptions || [],
-                                        deliveries: importedData.deliveries || [],
-                                        qualities: importedData.qualities || [],
-                                        expenses: importedData.expenses || [],
-                                        remboursements: importedData.remboursements || [],
-                                        paiements: importedData.paiements || []
-                                    };
-                                    updateAllTables();
-                                    alert('Données importées avec succès (mode mémoire)!');
-                                    return;
-                                }
-                                console.log('Starting database import process...');
-                                try {
-                                    clearAllData(() => {
-                                        console.log('Database cleared, starting import...');
-                                        importNewData(importedData);
-                                    });
-                                } catch (error) {
-                                    console.error('Import error:', error);
-                                    alert('Erreur lors de l\'importation: ' + error.message);
-                                }
-                            });
-                        }
+                        showConfirmDialog({
+                            title: 'Importer les données',
+                            message: 'Êtes-vous sûr de vouloir importer ces données ? Cela remplacera toutes les données existantes.',
+                            confirmLabel: 'Importer',
+                            icon: 'fa-file-import',
+                            danger: false,
+                            onConfirm: () => {
+                                executeWhenReady(() => {
+                                    if (!db) {
+                                        console.warn('Database not available, importing to memory');
+                                        appData = {
+                                            collectors: importedData.collectors || [],
+                                            advances: importedData.advances || [],
+                                            receptions: importedData.receptions || [],
+                                            deliveries: importedData.deliveries || [],
+                                            qualities: importedData.qualities || [],
+                                            expenses: importedData.expenses || [],
+                                            remboursements: importedData.remboursements || [],
+                                            paiements: importedData.paiements || []
+                                        };
+                                        updateAllTables();
+                                        showToast('Données importées avec succès (mode mémoire)!', 'success');
+                                        return;
+                                    }
+                                    console.log('Starting database import process...');
+                                    try {
+                                        clearAllData(() => {
+                                            console.log('Database cleared, starting import...');
+                                            importNewData(importedData);
+                                        });
+                                    } catch (error) {
+                                        console.error('Import error:', error);
+                                        showToast('Erreur lors de l\'importation: ' + error.message, 'error');
+                                    }
+                                });
+                            }
+                        });
                     } catch (error) {
                         console.error('JSON parse error:', error);
-                        alert('Erreur lors de l\'importation du fichier JSON: ' + error.message);
+                        showToast('Erreur lors de l'importation du fichier JSON : ' + error.message, 'error');
                     }
                 };
                 reader.readAsText(file);
@@ -9702,7 +9713,7 @@
                         setTimeout(() => {
                             console.log('All imports completed, reloading data...');
                             loadData();
-                            alert('Données importées avec succès! Toutes les relations ont été préservées.');
+                            showToast('Données importées avec succès ! Toutes les relations ont été préservées.', 'success');
                         }, 500);
                     }
                 };
@@ -9797,38 +9808,6 @@
             } catch (error) {
                 console.error(`Error importing to ${storeName}:`, error);
                 if (callback) callback();
-            }
-        }
-        function resetData() {
-            if (confirm('Êtes-vous sûr de vouloir effacer toutes les données? Cette action est irréversible.')) {
-                if (confirm('Confirmation finale: Toutes les données seront perdues définitivement!')) {
-                    executeWhenReady(() => {
-                        if (!db) {
-                            console.warn('Database not available, clearing memory data');
-                            appData = {
-                                collectors: [],
-                                advances: [],
-                                receptions: [],
-                                deliveries: [],
-                                expenses: []
-                            };
-                            updateAllTables();
-                            alert('Toutes les données ont été supprimées (mode mémoire).');
-                            return;
-                        }
-                        clearAllData(() => {
-                            appData = {
-                                collectors: [],
-                                advances: [],
-                                receptions: [],
-                                deliveries: [],
-                                expenses: []
-                            };
-                            updateAllTables();
-                            alert('Toutes les données ont été supprimées.');
-                        });
-                    });
-                }
             }
         }
         function exportInvoice() {
@@ -9950,7 +9929,7 @@
         function generateDeliveryPDF(deliveryId, type = 'BL') {
             const delivery = appData.deliveries.find(d => d.id === deliveryId);
             if (!delivery) {
-                alert("Erreur: Impossible de trouver la livraison.");
+                showToast("Erreur: Impossible de trouver la livraison.", "error");
                 return;
             }
 
@@ -10106,21 +10085,21 @@
         function generateReceipt(receptionId) {
             const baseReception = appData.receptions.find(r => r.id === receptionId);
             if (!baseReception) {
-                alert("Erreur: Impossible de trouver la réception de base.");
+                showToast("Erreur: Impossible de trouver la réception de base.", "error");
                 return;
             }
             const receptionDate = baseReception.date;
             const collectorId = baseReception.collectorId;
             const collector = appData.collectors.find(c => c.id === collectorId);
             if (!collector) {
-                alert("Erreur: Impossible de trouver les informations du collecteur.");
+                showToast("Erreur: Impossible de trouver les informations du collecteur.", "error");
                 return;
             }
             const dailyReceptions = appData.receptions.filter(r =>
                 r.collectorId === collectorId && r.date === receptionDate
             );
             if (dailyReceptions.length === 0) {
-                alert("Aucune réception trouvée pour ce collecteur à cette date.");
+                showToast("Aucune réception trouvée pour ce collecteur à cette date.", "error");
                 return;
             }
             const totalNetWeight = dailyReceptions.reduce((sum, r) => sum + r.netWeight, 0);
@@ -10648,7 +10627,7 @@
         function showCollectorDetails(collectorId) {
             const collector = appData.collectors.find(c => c.id === collectorId);
             if (!collector) {
-                alert("Tsy hita ny Collecteur!");
+                showToast("Tsy hita ny Collecteur!", "error");
                 return;
             }
             const advances = getAdvancesForCurrentYear()
@@ -11878,11 +11857,11 @@
             showToast('Qualité enregistrée avec succès!');
         }
         function deleteQuality(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette qualité?')) {
-                deleteFromDB('qualities', id, () => {
-                    showToast('Qualité supprimée.', 'error');
-                });
-            }
+            showConfirmDialog({
+                title: 'Supprimer la qualité',
+                message: 'Êtes-vous sûr de vouloir supprimer cette qualité ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('qualities', id, () => showToast('Qualité supprimée.', 'error'))
+            });
         }
         function updateQualitySelect() {
             const datalist = document.getElementById('quality-list');
@@ -12139,13 +12118,6 @@
             closeModal('expense-modal');
             showToast('Dépense enregistrée avec succès!');
         }
-        function deleteExpense(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer cette dépense?')) {
-                deleteFromDB('expenses', id, () => {
-                    showToast('Dépense supprimée.', 'error');
-                });
-            }
-        }
         function updatePrixRevientAnalysis() {
             const container = document.getElementById('prix-revient-container');
             container.innerHTML = '';
@@ -12226,7 +12198,7 @@
         function openRemboursementModal(collectorId, remboursementId = null) {
             const collector = appData.collectors.find(c => c.id === collectorId);
             if (!collector) {
-                alert("Collecteur non trouvé !");
+                showToast("Collecteur non trouvé !", "error");
                 return;
             }
             const form = document.getElementById('remboursement-form');
@@ -12264,7 +12236,7 @@
                 note: document.getElementById('remboursement-note').value.trim(),
             };
             if (remboursement.amount <= 0) {
-                alert("Le montant du remboursement doit être supérieur à zéro.");
+                showToast("Le montant du remboursement doit être supérieur à zéro.", "error");
                 return;
             }
             if (form.dataset.editId) {
@@ -12324,17 +12296,17 @@
         function openRemboursementModalToEdit(remboursementId) {
             const rem = appData.remboursements.find(r => r.id === remboursementId);
             if (!rem) {
-                alert("Remboursement non trouvé !");
+                showToast("Remboursement non trouvé !", "error");
                 return;
             }
             openRemboursementModal(rem.collectorId, remboursementId);
         }
         function deleteRemboursement(remboursementId) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce remboursement ? Cette action est irréversible.')) {
-                deleteFromDB('remboursements', remboursementId, () => {
-                    showToast('Remboursement supprimé.', 'error');
-                });
-            }
+            showConfirmDialog({
+                title: 'Supprimer le remboursement',
+                message: 'Êtes-vous sûr de vouloir supprimer ce remboursement ? Cette action est irréversible.',
+                onConfirm: () => deleteFromDB('remboursements', remboursementId, () => showToast('Remboursement supprimé.', 'error'))
+            });
         }
         function formatCreditPaymentAmount(input) {
             const rawValue = input.value.replace(/\D/g, '');
@@ -12494,11 +12466,14 @@
             }
         }
         function deletePaiement(paiementId) {
-            if (confirm('ATTENTION : Annuler un paiement va recréer le crédit pour le collecteur. Êtes-vous sûr de vouloir continuer ?')) {
-                deleteFromDB('paiements', paiementId, () => {
-                    showToast('Paiement annulé avec succès.', 'error');
-                });
-            }
+            showConfirmDialog({
+                title: 'Annuler le paiement',
+                message: 'ATTENTION : Annuler un paiement va recréer le crédit pour le collecteur. Êtes-vous sûr de vouloir continuer ?',
+                confirmLabel: 'Oui, annuler',
+                icon: 'fa-undo',
+                danger: true,
+                onConfirm: () => deleteFromDB('paiements', paiementId, () => showToast('Paiement annulé avec succès.', 'error'))
+            });
         }
         function exportAnalysisToExcel() {
             const table = document.getElementById('analysis-table');
@@ -12635,10 +12610,17 @@
                             newWorker.addEventListener('statechange', () => {
                                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                     // Nouvelle version disponible
-                                    if (confirm('Misy version vaovao! Havaozina ve?')) {
-                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
-                                        window.location.reload();
-                                    }
+                                    showConfirmDialog({
+                                        title: 'Mise à jour disponible',
+                                        message: 'Misy version vaovao! Havaozina ve?',
+                                        confirmLabel: 'Mettre à jour',
+                                        icon: 'fa-sync-alt',
+                                        danger: false,
+                                        onConfirm: () => {
+                                            newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                            window.location.reload();
+                                        }
+                                    });
                                 }
                             });
                         });
@@ -14830,12 +14812,14 @@
         }
 
         // Expose les nouvelles fonctions globalement (écrase les précédentes)
-        window.deleteCollector = deleteCollector;
-        window.deleteAdvance   = deleteAdvance;
-        window.deleteReception = deleteReception;
-        window.deleteDelivery  = deleteDelivery;
-        window.deleteExpense   = deleteExpense;
-        window.resetData       = resetData;
+        window.deleteCollector     = deleteCollector;
+        window.deleteAdvance       = deleteAdvance;
+        window.deleteReception     = deleteReception;
+        window.deleteDelivery      = deleteDelivery;
+        window.deleteExpense       = deleteExpense;
+        window.deleteRemboursement = deleteRemboursement;
+        window.deletePaiement      = deletePaiement;
+        window.resetData           = resetData;
 
     })();
     </script>
